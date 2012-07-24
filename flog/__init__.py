@@ -3,7 +3,7 @@ from os.path import abspath, dirname, join, isdir, isfile, getmtime, normpath
 import sys
 import re
 from StringIO import StringIO
-from asciidocapi import AsciiDocAPI
+from flog.asciidocapi import AsciiDocAPI
 from werkzeug.contrib.atom import AtomFeed
 import dateutil.parser
 import itertools

@@ -102,10 +102,8 @@ def posts_index():
   posts = [get_data(n) for n in posts[:FEED_SIZE]]
   last, _, _ = posts[-1]
   prev_meta = None
-  print 'LAST', last
   if post_exists(last - 1):
     prev_meta = post_meta(last - 1)
-  print 'METAAAA', prev_meta
   return render_template('posts_index.html',
       posts=posts,
       n=last,

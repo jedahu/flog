@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block header %}
+  {% include 'title-block.html' %}
+{% endblock %}
+{% block content %}
+  {{ content }}
+  <div class='latest-posts'>
+    <h2>Latest posts</h2>
+    {% for n, meta in posts %}
+      <article class='hentry' role='main'>
+        <hgroup>
+          <h1 class='entry-title' role='header'>
+            <a href='{{ url_for('post', n=n) }}'><span class='n'>{{ n }}.</span> {{ meta.title }}</a>
+          </h1>
+          <div class='ctime'>
+            {{ meta.revisions[0].date }}
+          </div>
+        </hgroup>
+        {{ content }}
+      </article>
+    {% endfor %}
+  </div>
+  {% include 'post_nextprev.html' %}
+{% endblock %}
+

@@ -1,0 +1,14 @@
+{% if prev_meta or next_meta %}
+  <nav class='nextprev'>
+    {% if prev_meta %}
+      <a class='prev' href='{{ url_for('post', n=n - 1) }}'>
+        {{ prev_meta.title }}
+      </a>
+    {% endif %}
+    {% if next_meta %}
+      <a class='next' href='{{ url_for('post', n=n + 1) }}'>
+        {{ next_meta.title }}
+      </a>
+    {% endif %}
+  </nav>
+{% endif %}

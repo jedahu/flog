@@ -1,0 +1,25 @@
+<div class='title-block' role='banner'>
+  <div class='title' role='header'>
+    <a href='{{ url_for('root') }}'>{{ config.TITLE }}</a>
+  </div>
+  {% if config.VCARD %}
+    <div class='vcard'>
+      {% if config.VCARD.photo %}
+        <img class='photo' src='{{ config.VCARD.photo }}'>
+      {% endif %}
+      <div class='fn' role='header'>{{ config.VCARD.name }}</div>
+      <div class='adr'>{{ config.VCARD.address }}</div>
+      <div class='role'>{{ config.VCARD.role }}</div>
+      <div class='note'>{{ config.VCARD.note }}</div>
+    </div>
+  {% endif %}
+  <nav class='tabs'>
+    {% if config.NAV %}
+      <ul>
+        {% for name, path in config.NAV %}
+          <li><a href='{{ path }}'>{{ name }}</a></li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </nav>
+</div>

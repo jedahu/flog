@@ -1,0 +1,5 @@
+/MANIFEST
+*.cache
+/dist
+/node_modules
+/venv

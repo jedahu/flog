@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+  <head>
+    {% block head %}
+      <title>{% block title %}{{ config.TITLE }}{% endblock %}</title>
+      <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Vollkorn:r,i|Lato:r,i,b|Inconsolata|Nobile:r,i,b'>
+      <link rel='stylesheet' href='{{ url_for('static', filename='css/dejavu-down-arrowhead.css') }}'>
+      <link rel='stylesheet' href='{{ url_for('css', path='base')}}'>
+      <link rel='stylesheet' href='{{ url_for('static', filename='css/pygment.css')}}'>
+      <link
+          rel='alternate'
+          type='application/atom+xml'
+          title='{{ config.TITLE }}
+          href='{{ url_for('posts_feed') }}'>
+      <script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
+      <meta name='MSSmartTagsPreventParsing' content='true'>
+      <meta name='generator' content='flog'>
+      <meta name='blog name' content='{{ config.TITLE }}'>
+    {% endblock %}
+  </head>
+  <body>
+    <header id='header'>
+      {% block header %}{% endblock %}
+    </header>
+    <div id='content'>
+      {% block content %}{% endblock %}
+    </div>
+    <footer id='footer'>
+      {% block footer %}{% endblock %}
+    </footer>
+  </body>
+</html>

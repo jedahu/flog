@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}{{ meta['title'] }}{% endblock %}
+{% block head %}
+  {{ super() }}
+  <link rel='stylesheet' href='{{ url_for('static', filename='css/post.css') }}'>
+{% endblock %}
+{% block header %}
+  {% include 'title-block.html' %}
+  <h1 class='page-title'>{{ meta.title }}</h1>
+{% endblock %}
+{% block content %}
+  <article role='main'>
+    <hgroup>
+      <div class='meta'>
+        <div class='ctime'>
+          Created: <span class='time'>{{ meta.revisions[0].date }}.</span>
+        </div>
+        {% if len(meta.revisions) > 1 %}
+          <div class='mtime'>
+            Updated: <span class='time'>{{ meta.revisions[-1].date }}.</span>
+          </div>
+        {% endif %}
+      </div>
+    </hgroup>
+    {{ content }}
+  </article>
+{% endblock %}

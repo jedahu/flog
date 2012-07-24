@@ -1,0 +1,11 @@
+@font-face {
+  font-family: 'Deja Vu Sans';
+  src: url('dejavusans-down-arrowhead-webfont.eot');
+  src: url('dejavusans-down-arrowhead-webfont.eot?iefix') format('eot'),
+    url('dejavusans-down-arrowhead-webfont.woff') format('woff'),
+    url('dejavusans-down-arrowhead-webfont.ttf') format('truetype'),
+    url('dejavusans-down-arrowhead-webfont.svg#webfontah70SG4t') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+

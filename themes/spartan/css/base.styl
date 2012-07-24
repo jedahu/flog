@@ -1,0 +1,192 @@
+@charset 'UTF-8'
+
+.content
+  margin-left 4em
+  width 40em
+
+.smaller-block
+  font-size 0.8em
+
+.monospace
+  font-family Inconsolata, monospace
+
+html
+  font-family Nobile, Helvetica, Arial, sans-serif
+  font-size 85%
+  line-height 1.8em
+
+#content
+  @extends .content
+  margin-top 4em
+  font-size 1em
+
+  .hentry
+    margin-top 4em
+    padding-bottom 4em
+
+    .entry-title
+      padding-top 1em
+
+      .n
+        position absolute
+        font-size 3em
+        z-index -1
+        color #ff9999
+
+    .meta
+      @extends .smaller-block
+
+    .attribution.ulist
+      @extends .smaller-block
+      margin-top 3em
+
+      ul
+        list-style-type none
+
+    footer
+      @extends .smaller-block
+      margin-top 3em
+
+  .nextprev
+    padding-left 1px
+    padding-right 1px
+    padding-bottom 3em
+    background-color black
+    color white
+    height 2em
+
+    a,
+    a:hover
+      color inherit
+
+    .prev
+      float left
+
+      &:before
+        content '❮ '
+        font-size 1.2em
+
+      &:hover:before
+        color red
+
+    .next
+      float right
+
+      &:after
+        content ' ❯'
+        font-size 1.2em
+
+      &:hover:after
+        color red
+
+#footer,
+#header
+  @extends .content
+
+  .title-block
+
+    .title
+      text-transform uppercase
+      font-size 3.4em
+      padding-top 0.5em
+
+    .vcard
+      @extends .smaller-block
+
+      .photo
+        float right
+        margin-top -5.1em
+        height 13.9em
+
+      .fn
+        margin-top 0.8em
+        font-weight bold
+
+    .tabs
+      clear both
+      padding-left 1px
+      color white
+      background-color black
+      font-size 1.2em
+      font-family Vollkorn
+      text-transform uppercase
+
+      a,
+      a:hover
+        color inherit
+
+      a:after
+        content ' ❯'
+        font-size 1.2em
+        color transparent
+
+      a:hover:after
+        color red
+
+      ul
+        margin-bottom 0
+        list-style-type none
+
+        li
+          display inline-block
+          margin-right 2em
+
+  .page-title
+    margin-top 0
+    padding-top 0.5em
+    color white
+    background-color black
+    font-size 3em
+
+    &:after
+      content '⌄'
+      font-family 'Deja Vu Sans', Helvetica, Arial, sans-serif
+      font-size 1.2em
+
+  .the-end
+    padding-left 1px
+    color white
+    background-color black
+
+
+a,
+a:hover
+  text-decoration none
+  color navy
+
+ul,
+ol
+  list-style-position outside
+  padding-left 0
+
+  p
+    display inline
+
+h1, h2, h3, h4, h5, h6, .title
+  font-family Vollkorn, Georgia, serif
+  font-weight normal
+  padding-top 1em
+
+  & a,
+  & a:hover
+    color black
+
+h1
+  font-size 1.6em
+
+h2
+  font-size 1.4em
+
+h3
+  font-size 1.2em
+
+h4
+  font-size 1em
+
+.ctime,
+.mtime,
+.time
+  @extends .monospace
+
+pre
+  @extends .monospace

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Posts{% endblock %}
+{% block head %}
+  {{ super() }}
+  <script src='{{ url_for('static', filename='css/jquery.ias.min.js') }}'></script>
+  <script>
+    jQuery.ias({
+        container: '#content',
+        item: '.hentry',
+        pagination: '#content .nextprev',
+        next: '.nextprev .prev',
+        loader: '...'
+    });
+  </script>
+{% endblock %}
+{% block header %}
+  {% include 'title-block.html' %}
+  <h1 class='page-title'>Posts</h1>
+{% endblock %}
+{% block content %}
+  {% for n, content, meta in posts %}
+    {% include 'post_article.html' %}
+  {% endfor %}
+  {% include 'post_nextprev.html' %}
+{% endblock %}
+{% block footer %}
+  <div class='the-end'>THE END</div>
+{% endblock %}

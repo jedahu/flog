@@ -1,7 +1,7 @@
 include CHANGES LICENSE
-include asciidocapi.py
 include *.txt
 include *.rst
 include *.md
 include *.asciidoc
 recursive-include docs *
+recursive-include flog *

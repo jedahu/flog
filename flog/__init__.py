@@ -8,7 +8,7 @@ from werkzeug.contrib.atom import AtomFeed
 import dateutil.parser
 import itertools
 import subprocess
-from filecache import filecache
+import wsgistate.file
 from flask import Flask, Markup, render_template, send_file, abort
 from flask import redirect, url_for, make_response
 app = Flask(__name__, static_url_path='/never-used')
@@ -60,17 +60,8 @@ if not isdir(THEME_PATH):
   raise Exception('Theme not found: ' + THEME_PATH)
 
 
-# Cache
-def identity(x):
-  return x
-
-if DEBUG:
-  filecache = identity
-
-
 # Routes
 @app.route('/')
-@filecache
 def root():
   '''Site index'''
   posts = os.listdir(join(SRC_DIR, POSTS_PATH))
@@ -82,7 +73,6 @@ def root():
       content=content)
 
 @app.route(join('/', POSTS_PATH, '<int:n>') + '/')
-@filecache
 def post(n):
   '''Blog post'''
   print 'post!'
@@ -101,7 +91,6 @@ def post(n):
       content=content)
 
 @app.route(join('/', POSTS_PATH) + '/')
-@filecache
 def posts_index():
   '''Blog post index'''
   posts = os.listdir(join(SRC_DIR, POSTS_PATH))
@@ -124,7 +113,6 @@ def posts_index():
 
 
 @app.route(normpath(join('/', PAGES_PATH) + '/<path:path>'))
-@filecache
 def page_or_media(path):
   '''Asciidoc page or other (media) file'''
   fpath = join(SRC_DIR, PAGES_PATH, path)
@@ -145,13 +133,11 @@ def favicon():
   abort(404)
 
 @app.route(join('/', POSTS_PATH, 'feed') + '/')
-@filecache
 def posts_feed():
   '''Blog posts atom feed'''
   return generate_feed()
 
 @app.route('/css/<path:path>.css')
-@filecache
 def css(path):
   '''CSS and Stylus files (which are converted to CSS)'''
   fpath = join(THEME_PATH, 'css', path)
@@ -162,7 +148,12 @@ def css(path):
     if code != 0:
       return abort(500)
   if isfile(csspath):
-    return send_file(csspath)
+    # For some reason this doesn't work from a module
+    # return send_file(csspath)
+    with open(csspath) as f:
+      response = make_response(f.read())
+      response.mimetype = 'text/css'
+      return response
   else:
     return abort(404)
 
@@ -208,7 +199,6 @@ def post_exists(n):
   fpath = join(SRC_DIR, POSTS_PATH, str(n), 'index')
   return isfile(fpath)
 
-@filecache
 def post_meta(n):
   '''Return meta information from post n with base-url of abs_url'''
   abs_url = join('/', POSTS_PATH, str(n))
@@ -256,7 +246,6 @@ def asciidoc_html_from_string(s, abs_url):
   out_buf.close()
   return Markup(unicode(html, 'utf-8'))
 
-@filecache
 def asciidoc_meta(fpath, abs_url):
   '''Parse meta information from asciidoc file at fpath, with a base-url of
   abs_url'''
@@ -328,3 +317,5 @@ def generate_feed():
 
 if __name__ == '__main__':
   app.run(debug=True)
+else:
+  app.wsgi_app = wsgistate.file.memoize('/tmp/flog-cache', timeout=99999999999999)(app.wsgi_app)

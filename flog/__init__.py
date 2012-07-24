@@ -30,7 +30,7 @@ for key in config_defaults:
   if key not in app.config:
     app.config[key] = config_defaults[key]
 
-THIS_DIR = abspath(dirname(sys.argv[0]))
+THIS_DIR = app.config.root_path
 FLOG_CONF = os.environ.get('FLOG_CONF')
 FLOG_DIR = dirname(FLOG_CONF)
 SRC_DIR = join(FLOG_DIR, app.config['SRC_DIR'])

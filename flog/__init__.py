@@ -158,26 +158,6 @@ def posts_feed():
     return generate_feed()
   return posts_feed_impl()
 
-@app.route('/css/<path:path>.css')
-def css(path):
-  '''CSS and Stylus files (which are converted to CSS)'''
-  fpath = join(THEME_PATH, 'css', path)
-  csspath = fpath + '.css'
-  stylpath = fpath + '.styl'
-  if isfile(stylpath):
-    code = subprocess.call([STYLUS_PATH, '-c', stylpath])
-    if code != 0:
-      return abort(500)
-  if isfile(csspath):
-    # For some reason this doesn't work from a module
-    # return send_file(csspath)
-    with open(csspath) as f:
-      response = make_response(f.read())
-      response.mimetype = 'text/css'
-      return response
-  else:
-    return abort(404)
-
 
 @app.context_processor
 def inject_template_vars():

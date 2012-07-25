@@ -93,7 +93,6 @@ def post(n):
   '''Blog post'''
   @cache
   def post_impl(n):
-    print 'post!'
     content, meta = parse_post(n, join('/', POSTS_PATH, str(n)))
     prev_meta = None
     next_meta = None
@@ -194,7 +193,6 @@ def media(fpath):
 @cache
 def page(fpath, abs_url):
   '''Render page at fpath with a base-url of abs_url'''
-  print 'page!'
   fp = join(fpath, 'index')
   if isfile(fp):
     content, meta = parse_page(fp, abs_url)
@@ -325,7 +323,6 @@ def generate_feed():
       url=ROOT_URL,
       subtitle='...')
   for n, meta in itertools.islice(metas, FEED_SIZE):
-    print meta['revisions']
     post_url = ROOT_URL + POSTS_PATH + '/' + n + '/'
     post_id = TAG_URI.format(n=n) if TAG_URI else post_url
     feed.add(meta['title'],

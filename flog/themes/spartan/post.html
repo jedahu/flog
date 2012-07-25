@@ -2,8 +2,7 @@
 {% block title %}{{ meta.title }}{% endblock %}
 {% block head %}
   {{ super() }}
-  <link rel='stylesheet' type='text/css' href='{{ url_for('.static', filename='css/post.css') }}'>
-  <link rel='canonical' href='{{ url_for('.post', n = n) }}'>
+  <link rel='canonical' href='{{ url_for('post', n = n) }}'>
   <meta name='entry-id' content='tag:jedatwork.com,2012:{{ n }}'>
 {% endblock %}
 {% block content %}

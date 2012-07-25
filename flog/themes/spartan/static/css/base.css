@@ -1,1 +1,212 @@
-
+@charset 'UTF-8';
+.content,
+#content,
+#footer,
+#header {
+  margin-left: 4em;
+  width: 40em;
+}
+.smaller-block,
+#content .hentry .meta,
+#content .hentry .attribution.ulist,
+#content .hentry footer,
+#footer .title-block .vcard,
+#header .title-block .vcard {
+  font-size: 0.8em;
+}
+.monospace,
+.ctime,
+.mtime,
+.time,
+pre {
+  font-family: Inconsolata, monospace;
+}
+html {
+  font-family: Nobile, Helvetica, Arial, sans-serif;
+  font-size: 85%;
+  line-height: 1.8em;
+}
+#content {
+  margin-top: 4em;
+  font-size: 1em;
+}
+#content .hentry {
+  margin-top: 4em;
+  padding-bottom: 4em;
+}
+#content .hentry .entry-title {
+  padding-top: 1em;
+}
+#content .hentry .entry-title .n {
+  position: absolute;
+  font-size: 3em;
+  z-index: -1;
+  color: #f99;
+}
+#content .hentry .attribution.ulist {
+  margin-top: 3em;
+}
+#content .hentry .attribution.ulist ul {
+  list-style-type: none;
+}
+#content .hentry footer {
+  margin-top: 3em;
+}
+#content .nextprev {
+  padding-left: 1px;
+  padding-right: 1px;
+  padding-bottom: 3em;
+  background-color: #000;
+  color: #fff;
+  height: 2em;
+}
+#content .nextprev a,
+#content .nextprev a:hover {
+  color: inherit;
+}
+#content .nextprev .prev {
+  float: left;
+}
+#content .nextprev .prev:before {
+  content: '❮ ';
+  font-size: 1.2em;
+}
+#content .nextprev .prev:hover:before {
+  color: #f00;
+}
+#content .nextprev .next {
+  float: right;
+}
+#content .nextprev .next:after {
+  content: ' ❯';
+  font-size: 1.2em;
+}
+#content .nextprev .next:hover:after {
+  color: #f00;
+}
+#footer .title-block .title,
+#header .title-block .title {
+  text-transform: uppercase;
+  font-size: 3.4em;
+  padding-top: 0.5em;
+}
+#footer .title-block .vcard .photo,
+#header .title-block .vcard .photo {
+  float: right;
+  margin-top: -5.1em;
+  height: 13.9em;
+}
+#footer .title-block .vcard .fn,
+#header .title-block .vcard .fn {
+  margin-top: 0.8em;
+  font-weight: bold;
+}
+#footer .title-block .tabs,
+#header .title-block .tabs {
+  clear: both;
+  padding-left: 1px;
+  color: #fff;
+  background-color: #000;
+  font-size: 1.2em;
+  font-family: Vollkorn;
+  text-transform: uppercase;
+}
+#footer .title-block .tabs a,
+#header .title-block .tabs a,
+#footer .title-block .tabs a:hover,
+#header .title-block .tabs a:hover {
+  color: inherit;
+}
+#footer .title-block .tabs a:after,
+#header .title-block .tabs a:after {
+  content: ' ❯';
+  font-size: 1.2em;
+  color: transparent;
+}
+#footer .title-block .tabs a:hover:after,
+#header .title-block .tabs a:hover:after {
+  color: #f00;
+}
+#footer .title-block .tabs ul,
+#header .title-block .tabs ul {
+  margin-bottom: 0;
+  list-style-type: none;
+}
+#footer .title-block .tabs ul li,
+#header .title-block .tabs ul li {
+  display: inline-block;
+  margin-right: 2em;
+}
+#footer .page-title,
+#header .page-title {
+  margin-top: 0;
+  padding-top: 0.5em;
+  color: #fff;
+  background-color: #000;
+  font-size: 3em;
+}
+#footer .page-title:after,
+#header .page-title:after {
+  content: '⌄';
+  font-family: 'Deja Vu Sans', Helvetica, Arial, sans-serif;
+  font-size: 1.2em;
+}
+#footer .the-end,
+#header .the-end {
+  padding-left: 1px;
+  color: #fff;
+  background-color: #000;
+}
+a,
+a:hover {
+  text-decoration: none;
+  color: #000080;
+}
+ul,
+ol {
+  list-style-position: outside;
+  padding-left: 0;
+}
+ul p,
+ol p {
+  display: inline;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.title {
+  font-family: Vollkorn, Georgia, serif;
+  font-weight: normal;
+  padding-top: 1em;
+}
+h1 a,
+h2 a,
+h3 a,
+h4 a,
+h5 a,
+h6 a,
+.title a,
+h1 a:hover,
+h2 a:hover,
+h3 a:hover,
+h4 a:hover,
+h5 a:hover,
+h6 a:hover,
+.title a:hover {
+  color: #000;
+}
+h1 {
+  font-size: 1.6em;
+}
+h2 {
+  font-size: 1.4em;
+}
+h3 {
+  font-size: 1.2em;
+}
+h4 {
+  font-size: 1em;
+}

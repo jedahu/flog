@@ -3,7 +3,6 @@ from os.path import abspath, dirname, join, isdir, isfile, getmtime, normpath
 import sys
 import re
 from StringIO import StringIO
-from flog.asciidocapi import AsciiDocAPI
 from werkzeug.contrib.atom import AtomFeed
 import dateutil.parser
 import itertools
@@ -50,6 +49,8 @@ DEBUG = __name__ == '__main__' and 'nodebug' not in sys.argv
 app.static_folder = join(THEME_PATH, 'static')
 app.template_folder = THEME_PATH
 
+sys.path.append(join(THIS_DIR, 'asciidoc'))
+from asciidocapi import AsciiDocAPI
 
 # Config checks
 if not ROOT_URL:

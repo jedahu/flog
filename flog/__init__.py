@@ -7,7 +7,6 @@ from flog.asciidocapi import AsciiDocAPI
 from werkzeug.contrib.atom import AtomFeed
 import dateutil.parser
 import itertools
-import subprocess
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from flask import Flask, Markup, render_template, send_file, abort
@@ -32,7 +31,7 @@ for key in config_defaults:
     app.config[key] = config_defaults[key]
 
 THIS_DIR = app.config.root_path
-FLOG_CONF = os.environ.get('FLOG_CONF')
+FLOG_CONF = os.environ['FLOG_CONF']
 FLOG_DIR = dirname(FLOG_CONF)
 SRC_DIR = join(FLOG_DIR, app.config['SRC_DIR'])
 POSTS_PATH = app.config['POSTS']
@@ -62,21 +61,33 @@ if not isdir(THEME_PATH):
 
 
 # Cache
-cache_opts = {
-    'cache.type': 'file',
-    'cache.expire': '99999999999999999',
-    'cache.data_dir': '/tmp/flog-cache/data',
-    'cache.lock_dir': '/tmp/flog-cache/lock'
-    }
+CACHE_DIR = os.environ.get('FLOG_CACHE') or '/tmp/flog-cache'
 
-cm = CacheManager(**parse_cache_config_options(cache_opts))
+if CACHE_DIR != 'nocache':
+  cache_opts = {
+      'cache.type': 'file',
+      'cache.expire': '99999999999999999',
+      'cache.data_dir': join(CACHE_DIR, 'data'),
+      'cache.lock_dir': join(CACHE_DIR, 'lock')
+      }
+
+  cm = CacheManager(**parse_cache_config_options(cache_opts))
+
+  def cache():
+    return cm.cache()
+
+else:
+  def identity(x):
+    return x
+  def cache():
+    return identity
 
 
 # Routes
 @app.route('/')
 def root():
   '''Site index'''
-  @cm.cache()
+  @cache()
   def root_impl():
     posts = os.listdir(join(SRC_DIR, POSTS_PATH))
     posts.sort(key=int, reverse=True)
@@ -90,7 +101,7 @@ def root():
 @app.route(join('/', POSTS_PATH, '<int:n>') + '/')
 def post(n):
   '''Blog post'''
-  @cm.cache()
+  @cache()
   def post_impl(n):
     content, meta = parse_post(n, join('/', POSTS_PATH, str(n)))
     prev_meta = None
@@ -110,7 +121,7 @@ def post(n):
 @app.route(join('/', POSTS_PATH) + '/')
 def posts_index():
   '''Blog post index'''
-  @cm.cache()
+  @cache()
   def posts_index_impl():
     posts = os.listdir(join(SRC_DIR, POSTS_PATH))
     posts.sort(key=int, reverse=True)
@@ -152,7 +163,7 @@ def favicon():
 @app.route(join('/', POSTS_PATH, 'feed') + '/')
 def posts_feed():
   '''Blog posts atom feed'''
-  @cm.cache()
+  @cache()
   def posts_feed_impl():
     return generate_feed()
   return posts_feed_impl()
@@ -169,7 +180,7 @@ def media(fpath):
   '''Send file from filesystem'''
   return send_file(fpath)
 
-@cm.cache()
+@cache()
 def page(fpath, abs_url):
   '''Render page at fpath with a base-url of abs_url'''
   fp = join(fpath, 'index')
@@ -200,7 +211,7 @@ def post_exists(n):
   fpath = join(SRC_DIR, POSTS_PATH, str(n), 'index')
   return isfile(fpath)
 
-@cm.cache()
+@cache()
 def post_meta(n):
   '''Return meta information from post n with base-url of abs_url'''
   abs_url = join('/', POSTS_PATH, str(n))

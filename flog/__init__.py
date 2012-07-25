@@ -69,15 +69,14 @@ cache_opts = {
     'cache.lock_dir': '/tmp/flog-cache/lock'
     }
 
-cache_manager = CacheManager(**parse_cache_config_options(cache_opts))
-cache = cache_manager.cache()
+cm = CacheManager(**parse_cache_config_options(cache_opts))
 
 
 # Routes
 @app.route('/')
 def root():
   '''Site index'''
-  @cache
+  @cm.cache()
   def root_impl():
     posts = os.listdir(join(SRC_DIR, POSTS_PATH))
     posts.sort(key=int, reverse=True)
@@ -91,7 +90,7 @@ def root():
 @app.route(join('/', POSTS_PATH, '<int:n>') + '/')
 def post(n):
   '''Blog post'''
-  @cache
+  @cm.cache()
   def post_impl(n):
     content, meta = parse_post(n, join('/', POSTS_PATH, str(n)))
     prev_meta = None
@@ -111,7 +110,7 @@ def post(n):
 @app.route(join('/', POSTS_PATH) + '/')
 def posts_index():
   '''Blog post index'''
-  @cache
+  @cm.cache()
   def posts_index_impl():
     posts = os.listdir(join(SRC_DIR, POSTS_PATH))
     posts.sort(key=int, reverse=True)
@@ -153,7 +152,7 @@ def favicon():
 @app.route(join('/', POSTS_PATH, 'feed') + '/')
 def posts_feed():
   '''Blog posts atom feed'''
-  @cache
+  @cm.cache()
   def posts_feed_impl():
     return generate_feed()
   return posts_feed_impl()
@@ -170,7 +169,7 @@ def media(fpath):
   '''Send file from filesystem'''
   return send_file(fpath)
 
-@cache
+@cm.cache()
 def page(fpath, abs_url):
   '''Render page at fpath with a base-url of abs_url'''
   fp = join(fpath, 'index')
@@ -201,7 +200,7 @@ def post_exists(n):
   fpath = join(SRC_DIR, POSTS_PATH, str(n), 'index')
   return isfile(fpath)
 
-@cache
+@cm.cache()
 def post_meta(n):
   '''Return meta information from post n with base-url of abs_url'''
   abs_url = join('/', POSTS_PATH, str(n))

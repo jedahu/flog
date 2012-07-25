@@ -1,22 +1,29 @@
 @charset 'UTF-8'
 
-.content
+.content-trait
   margin-left 4em
   width 40em
 
-.smaller-block
+.smaller-block-trait
   font-size 0.8em
 
-.monospace
+.monospace-trait
   font-family Inconsolata, monospace
 
-html
+.sans-serif-trait
   font-family Nobile, Helvetica, Arial, sans-serif
+
+.serif-trait
+  font-family Vollkorn, Georgia, serif
+
+
+html
+  @extends .sans-serif-trait
   font-size 85%
   line-height 1.8em
 
 #content
-  @extends .content
+  @extends .content-trait
   margin-top 4em
   font-size 1em
 
@@ -34,17 +41,17 @@ html
         color #ff9999
 
     .meta
-      @extends .smaller-block
+      @extends .smaller-block-trait
 
     .attribution.ulist
-      @extends .smaller-block
+      @extends .smaller-block-trait
       margin-top 3em
 
       ul
         list-style-type none
 
     footer
-      @extends .smaller-block
+      @extends .smaller-block-trait
       margin-top 3em
 
   .nextprev
@@ -81,7 +88,7 @@ html
 
 #footer,
 #header
-  @extends .content
+  @extends .content-trait
 
   .title-block
 
@@ -91,7 +98,7 @@ html
       padding-top 0.5em
 
     .vcard
-      @extends .smaller-block
+      @extends .smaller-block-trait
 
       .photo
         float right
@@ -103,12 +110,12 @@ html
         font-weight bold
 
     .tabs
+      @extends .serif-trait
       clear both
       padding-left 1px
       color white
       background-color black
       font-size 1.2em
-      font-family Vollkorn
       text-transform uppercase
 
       a,
@@ -163,7 +170,7 @@ ol
     display inline
 
 h1, h2, h3, h4, h5, h6, .title
-  font-family Vollkorn, Georgia, serif
+  @extends .serif-trait
   font-weight normal
   padding-top 1em
 
@@ -186,7 +193,7 @@ h4
 .ctime,
 .mtime,
 .time
-  @extends .monospace
+  @extends .monospace-trait
 
 pre
-  @extends .monospace
+  @extends .monospace-trait

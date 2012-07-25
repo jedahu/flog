@@ -1,12 +1,12 @@
 @charset 'UTF-8';
-.content,
+.content-trait,
 #content,
 #footer,
 #header {
   margin-left: 4em;
   width: 40em;
 }
-.smaller-block,
+.smaller-block-trait,
 #content .hentry .meta,
 #content .hentry .attribution.ulist,
 #content .hentry footer,
@@ -14,15 +14,30 @@
 #header .title-block .vcard {
   font-size: 0.8em;
 }
-.monospace,
+.monospace-trait,
 .ctime,
 .mtime,
 .time,
 pre {
   font-family: Inconsolata, monospace;
 }
+.sans-serif-trait,
 html {
   font-family: Nobile, Helvetica, Arial, sans-serif;
+}
+.serif-trait,
+#footer .title-block .tabs,
+#header .title-block .tabs,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.title {
+  font-family: Vollkorn, Georgia, serif;
+}
+html {
   font-size: 85%;
   line-height: 1.8em;
 }
@@ -108,7 +123,6 @@ html {
   color: #fff;
   background-color: #000;
   font-size: 1.2em;
-  font-family: Vollkorn;
   text-transform: uppercase;
 }
 #footer .title-block .tabs a,
@@ -178,7 +192,6 @@ h4,
 h5,
 h6,
 .title {
-  font-family: Vollkorn, Georgia, serif;
   font-weight: normal;
   padding-top: 1em;
 }

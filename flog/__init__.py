@@ -8,7 +8,8 @@ from werkzeug.contrib.atom import AtomFeed
 import dateutil.parser
 import itertools
 import subprocess
-import wsgistate.file
+from beaker.cache import CacheManager
+from beaker.util import parse_cache_config_options
 from flask import Flask, Markup, render_template, send_file, abort
 from flask import redirect, url_for, make_response
 app = Flask(__name__, static_url_path='/never-used')
@@ -60,54 +61,75 @@ if not isdir(THEME_PATH):
   raise Exception('Theme not found: ' + THEME_PATH)
 
 
+# Cache
+cache_opts = {
+    'cache.type': 'file',
+    'cache.expire': '99999999999999999',
+    'cache.data_dir': '/tmp/flog-cache/data',
+    'cache.lock_dir': '/tmp/flog-cache/lock'
+    }
+
+cache_manager = CacheManager(**parse_cache_config_options(cache_opts))
+cache = cache_manager.cache()
+
+
 # Routes
 @app.route('/')
 def root():
   '''Site index'''
-  posts = os.listdir(join(SRC_DIR, POSTS_PATH))
-  posts.sort(key=int, reverse=True)
-  posts = [(n, post_meta(n)) for n in posts[:FEED_SIZE]]
-  content = asciidoc_html(join(SRC_DIR, PAGES_PATH, 'index'), '')
-  return render_template('index.html',
-      posts=posts,
-      content=content)
+  @cache
+  def root_impl():
+    posts = os.listdir(join(SRC_DIR, POSTS_PATH))
+    posts.sort(key=int, reverse=True)
+    posts = [(n, post_meta(n)) for n in posts[:FEED_SIZE]]
+    content = asciidoc_html(join(SRC_DIR, PAGES_PATH, 'index'), '')
+    return render_template('index.html',
+        posts=posts,
+        content=content)
+  return root_impl()
 
 @app.route(join('/', POSTS_PATH, '<int:n>') + '/')
 def post(n):
   '''Blog post'''
-  print 'post!'
-  content, meta = parse_post(n, join('/', POSTS_PATH, str(n)))
-  prev_meta = None
-  next_meta = None
-  if post_exists(n - 1):
-    prev_meta = post_meta(n - 1)
-  if post_exists(n + 1):
-    next_meta = post_meta(n + 1)
-  return render_template('post.html',
-      n=n,
-      meta=meta,
-      prev_meta=prev_meta,
-      next_meta=next_meta,
-      content=content)
+  @cache
+  def post_impl(n):
+    print 'post!'
+    content, meta = parse_post(n, join('/', POSTS_PATH, str(n)))
+    prev_meta = None
+    next_meta = None
+    if post_exists(n - 1):
+      prev_meta = post_meta(n - 1)
+    if post_exists(n + 1):
+      next_meta = post_meta(n + 1)
+    return render_template('post.html',
+        n=n,
+        meta=meta,
+        prev_meta=prev_meta,
+        next_meta=next_meta,
+        content=content)
+  return post_impl(n)
 
 @app.route(join('/', POSTS_PATH) + '/')
 def posts_index():
   '''Blog post index'''
-  posts = os.listdir(join(SRC_DIR, POSTS_PATH))
-  posts.sort(key=int, reverse=True)
-  def get_data(n):
-    n = int(n)
-    content, meta = parse_post(n, join('/', POSTS_PATH, str(n)))
-    return n, content, meta
-  posts = [get_data(n) for n in posts[:FEED_SIZE]]
-  last, _, _ = posts[-1]
-  prev_meta = None
-  if post_exists(last - 1):
-    prev_meta = post_meta(last - 1)
-  return render_template('posts_index.html',
-      posts=posts,
-      n=last,
-      prev_meta=prev_meta)
+  @cache
+  def posts_index_impl():
+    posts = os.listdir(join(SRC_DIR, POSTS_PATH))
+    posts.sort(key=int, reverse=True)
+    def get_data(n):
+      n = int(n)
+      content, meta = parse_post(n, join('/', POSTS_PATH, str(n)))
+      return n, content, meta
+    posts = [get_data(n) for n in posts[:FEED_SIZE]]
+    last, _, _ = posts[-1]
+    prev_meta = None
+    if post_exists(last - 1):
+      prev_meta = post_meta(last - 1)
+    return render_template('posts_index.html',
+        posts=posts,
+        n=last,
+        prev_meta=prev_meta)
+  return posts_index_impl()
 
 
 @app.route(normpath(join('/', PAGES_PATH) + '/<path:path>'))
@@ -121,7 +143,6 @@ def page_or_media(path):
       return media(fpath)
     elif isdir(fpath):
       return redirect(url_for('page_or_media', path = path + '/'))
-      #return page(fpath)
     else:
       abort(404)
 
@@ -133,7 +154,10 @@ def favicon():
 @app.route(join('/', POSTS_PATH, 'feed') + '/')
 def posts_feed():
   '''Blog posts atom feed'''
-  return generate_feed()
+  @cache
+  def posts_feed_impl():
+    return generate_feed()
+  return posts_feed_impl()
 
 @app.route('/css/<path:path>.css')
 def css(path):
@@ -167,8 +191,10 @@ def media(fpath):
   '''Send file from filesystem'''
   return send_file(fpath)
 
+@cache
 def page(fpath, abs_url):
   '''Render page at fpath with a base-url of abs_url'''
+  print 'page!'
   fp = join(fpath, 'index')
   if isfile(fp):
     content, meta = parse_page(fp, abs_url)
@@ -197,6 +223,7 @@ def post_exists(n):
   fpath = join(SRC_DIR, POSTS_PATH, str(n), 'index')
   return isfile(fpath)
 
+@cache
 def post_meta(n):
   '''Return meta information from post n with base-url of abs_url'''
   abs_url = join('/', POSTS_PATH, str(n))
@@ -315,5 +342,3 @@ def generate_feed():
 
 if __name__ == '__main__':
   app.run(debug=True)
-else:
-  app.wsgi_app = wsgistate.file.memoize('/tmp/flog-cache', timeout=99999999999999)(app.wsgi_app)

@@ -10,8 +10,10 @@ from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from flask import Flask, Markup, render_template, send_file, abort
 from flask import redirect, url_for, make_response
+
+FLOG_CONF = os.environ.get('FLOG_CONF') or join(os.getcwd(), 'flogrc')
 app = Flask(__name__, static_url_path='/never-used')
-app.config.from_envvar('FLOG_CONF')
+app.config.from_pyfile(FLOG_CONF)
 
 # Config defaults
 config_defaults = dict(
@@ -30,7 +32,6 @@ for key in config_defaults:
     app.config[key] = config_defaults[key]
 
 THIS_DIR = app.config.root_path
-FLOG_CONF = os.environ['FLOG_CONF']
 FLOG_DIR = dirname(FLOG_CONF)
 SRC_DIR = join(FLOG_DIR, app.config['SRC_DIR'])
 POSTS_PATH = app.config['POSTS']

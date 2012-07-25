@@ -51,6 +51,7 @@ app.template_folder = THEME_PATH
 
 sys.path.append(join(THIS_DIR, 'asciidoc'))
 from asciidocapi import AsciiDocAPI
+ASCIIDOC_PY = join(THIS_DIR, 'asciidoc', 'asciidoc.py')
 
 # Config checks
 if not ROOT_URL:
@@ -227,7 +228,7 @@ REV_RE = re.compile(r'^(?:(.+?),)? *(.+?): *(.+?)$')
 
 def asciidoc():
   '''Return AsciiDocAPI object configured for flog'''
-  ad = AsciiDocAPI()
+  ad = AsciiDocAPI(asciidoc_py=ASCIIDOC_PY)
   ad.options('--no-header-footer')
   ad.attributes['flog-posts-path'] = POSTS_PATH
   ad.attributes['flog-pages-path'] = PAGES_PATH

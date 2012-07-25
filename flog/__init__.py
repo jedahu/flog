@@ -52,6 +52,19 @@ app.template_folder = THEME_PATH
 sys.path.append(join(THIS_DIR, 'asciidoc'))
 from asciidocapi import AsciiDocAPI
 ASCIIDOC_PY = join(THIS_DIR, 'asciidoc', 'asciidoc.py')
+def asciidoc():
+  '''Return AsciiDocAPI object configured for flog'''
+  ad = AsciiDocAPI(asciidoc_py=ASCIIDOC_PY)
+  ad.options('--no-header-footer')
+  ad.attributes['flog-posts-path'] = POSTS_PATH
+  ad.attributes['flog-pages-path'] = PAGES_PATH
+  ad.attributes['pygments'] = 'pygments'
+  ad.attributes['conf-files'] = ASCIIDOC_CONF
+  if ASCIIDOC_USER_CONF and ASCIIDOC_USER_CONF.trim() != '':
+    ad.attributes['conf-files'] += '|' + ASCIIDOC_USER_CONF.trim()
+  return ad
+ASCIIDOC = asciidoc()
+
 
 # Config checks
 if not ROOT_URL:
@@ -226,21 +239,9 @@ META_RE = re.compile(r'^:(.+?): (.+)$')
 AUTHOR_RE = re.compile(r'^([^\s].+?) <([^\s]+?)>$')
 REV_RE = re.compile(r'^(?:(.+?),)? *(.+?): *(.+?)$')
 
-def asciidoc():
-  '''Return AsciiDocAPI object configured for flog'''
-  ad = AsciiDocAPI(asciidoc_py=ASCIIDOC_PY)
-  ad.options('--no-header-footer')
-  ad.attributes['flog-posts-path'] = POSTS_PATH
-  ad.attributes['flog-pages-path'] = PAGES_PATH
-  ad.attributes['pygments'] = 'pygments'
-  ad.attributes['conf-files'] = ASCIIDOC_CONF
-  if ASCIIDOC_USER_CONF and ASCIIDOC_USER_CONF.trim() != '':
-    ad.attributes['conf-files'] += '|' + ASCIIDOC_USER_CONF.trim()
-  return ad
-
 def asciidoc_html(fpath, abs_url):
   '''Generate html from asciidoc file at fpath, with a base-url of abs_url'''
-  ad = asciidoc()
+  ad = ASCIIDOC
   ad.attributes['base-url'] = abs_url
   with open(fpath) as f:
     buf = StringIO()
@@ -251,7 +252,7 @@ def asciidoc_html(fpath, abs_url):
 
 def asciidoc_html_from_string(s, abs_url):
   '''Generate html from asciidoc string, with a base-url of abs_url'''
-  ad = asciidoc()
+  ad = ASCIIDOC
   ad.attributes['base-url'] = abs_url
   in_buf = StringIO(s)
   out_buf = StringIO()

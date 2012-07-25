@@ -12,7 +12,7 @@ from flask import Flask, Markup, render_template, send_file, abort
 from flask import redirect, url_for, make_response
 
 FLOG_CONF = os.environ.get('FLOG_CONF') or join(os.getcwd(), 'flogrc')
-app = Flask(__name__, static_url_path='/never-used')
+app = Flask(__name__)
 app.config.from_pyfile(FLOG_CONF)
 
 # Config defaults

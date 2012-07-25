@@ -1,3 +1,0 @@
-[submodule "flog/asciidoc"]
-	path = flog/asciidoc
-	url = git://github.com/jedahu/asciidoc.git

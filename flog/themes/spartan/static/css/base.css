@@ -30,7 +30,7 @@ html{font-size:85%;line-height:1.8em}
 #content .nextprev .next:hover:after{color:#f00}
 #footer .title-block .title,#header .title-block .title{text-transform:uppercase;font-size:2em;padding-top:0;line-height:1.2em;float:left}
 #footer .title-block .vcard > *,#header .title-block .vcard > *{float:left;clear:left}
-#footer .title-block .vcard .photo,#header .title-block .vcard .photo{float:right;padding:0;margin:0;height:7em;margin-top:-7em}
+#footer .title-block .vcard .photo,#header .title-block .vcard .photo{float:right;padding:0;margin:0;height:6.5em;margin-top:-6.5em}
 #footer .title-block .vcard .fn,#header .title-block .vcard .fn{margin-top:0;font-weight:bold}
 #footer .title-block .tabs,#header .title-block .tabs{clear:both;padding-left:1px;color:#fff;background-color:#000;font-size:1.2em;text-transform:uppercase;}
 #footer .title-block .tabs ul,#header .title-block .tabs ul{margin:0;padding:0;list-style-type:none;}
@@ -48,7 +48,8 @@ html{font-size:85%;line-height:1.8em}
 #footer .page-header .page-meta,#header .page-header .page-meta{float:right;text-align:right;line-height:1.2em;color:#000;background-color:transparent}
 #footer .the-end,#header .the-end{padding-left:1px;color:#fff;background-color:#000}
 a,a:hover{text-decoration:none;color:#000080}
-ul,ol{list-style-position:outside;padding-left:0}
+ul,ol{list-style-position:outside;padding-left:0;}
+ul p,ol p{display:inline}
 h1,h2,h3,h4,h5,h6,.title{font-weight:normal;padding-top:2em;}
 h1 a,h2 a,h3 a,h4 a,h5 a,h6 a,.title a,h1 a:hover,h2 a:hover,h3 a:hover,h4 a:hover,h5 a:hover,h6 a:hover,.title a:hover{color:#000}
 h1{font-size:1.6em}

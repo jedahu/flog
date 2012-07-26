@@ -1,7 +1,7 @@
 <article class='hentry' role='main'>
   <hgroup>
     <h1 class='entry-title' role='header'>
-      <a href='{{ url_for('post', n=n) }}'><span class='n'>{{ n }}.</span> {{ meta.title }}</a>
+      <a href='{{ url_for('post', n=n) }}'><span class='n'>{{ n }} </span>{{ meta.title }}</a>
     </h1>
     <div class='meta'>
       <div class='ctime'>
@@ -14,6 +14,8 @@
       {% endif %}
     </div>
   </hgroup>
-  {{ content }}
+  <div class='article-content'>
+    {{ content }}
+  </div>
 </article>
 {# vim: set ft=jinja: #}

@@ -15,7 +15,9 @@
 {% endblock %}
 {% block header %}
   {% include 'title-block.html' %}
-  <h1 class='page-title'>Posts</h1>
+  <hgroup class='page-header'>
+    <h1 class='page-title'>Posts</h1>
+  </hgroup>
 {% endblock %}
 {% block content %}
   {% for n, content, meta in posts %}

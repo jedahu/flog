@@ -1,6 +1,4 @@
 <span class='latest-post-titles'>
   {% for n, meta in posts %}
-    <a href='/{{ POSTS_PATH }}/{{ n }}'>{{ meta.title }}</a>
-  {% endfor %}
-</span>
+    <a href='/{{ POSTS_PATH }}/{{ n }}'>{{ meta.title }}</a>{% endfor %}</span>
 {# vim: set ft=jinja: #}

@@ -1,0 +1,164 @@
+Introducing Flog
+================
+Jeremy Hughes <itsjdh@gmail.com>
+2012-07-26: Created.
+:summary: My new website engine.
+
+http://github.com/jedahu/flog[Flog] is website + blog engine that meets the
+following requirements:
+
+- uses http://www.methods.co.nz/asciidoc[AsciiDoc] for posts and pages,
+  including AsciiDoc meta data;
+- uses http://pygments.org[Pygments] for code highlighting;
+- creates post URLs by ordinal number, not date or title;
+- does not mix engine code and site content in the same project;
+- generates pages statically, but on-demand (to a cache) rather than ahead of
+  time;
+- is trivial to deploy to http://heroku.com[Heroku].
+
+
+Creating a Flog project
+-----------------------
+
+The following steps create a new flog project called `nonsense`:
+
+
+=== 1. Create a new git project
+
+[source,sh]
+mkdir nonsense
+cd nonsense
+git init
+
+
+=== 2. Add a `flogrc` configuration file
+
+This is a python file, the uppercase top-level variables of which are Flog
+options. The `TITLE`, `ROOT_URL`, and `TAG_URI` options are required.
+
+[source,python]
+--------------------------------------------------------------------------------
+TITLE = 'Nonsense poems'
+
+ROOT_URL = 'http://example.com/' # Trailing slash
+
+TAG_URI = 'tag:example.com,2012:{n}' # '{n}' will be replaced by the post number
+
+VCARD = dict(
+    name = 'Jeremy Hughes',
+    address = 'Wellington, New Zealand',
+    role = 'Purveyor of nonsense',
+    note = 'Strange yet harmless',
+    photo = '/wherever/it/is/stored/me.jpg'
+    )
+
+SRC_DIR = '.'           # Where to find content relative to this config file
+POSTS_PATH = 'posts'    # Appended to SRC_DIR to find posts
+PAGES_PATH = '.'        # Appended to SRC_DIR to find pages
+THEME_PATH = 'spartan'  # Path to a Flog theme; either one under SRC_DIR or
+                        #   in the installed 'flog' module.
+
+NAV = [
+    ('Posts', '/' + POSTS_PATH + '/'),
+    ('Historic poems', '/historic-poems/')
+    ]
+--------------------------------------------------------------------------------
+
+
+=== 3. Add vcard photo
+
+[source,sh]
+mkdir -p wherever/it/is/stored
+cp path/to/photo.jpg wherever/it/is/stored/me.jpg
+
+If `SRC_DIR` were `src` and `PAGES_PATH` was `pages`, then `me.jpg` would have
+to be placed in `src/pages/wherever/it/is/stored/`.
+
+
+=== 4. Add home page content
+[source,sh]
+vim index  # asciidoc
+
+This content is inserted into the home page template. It should not have a
+top-level title because it will not be rendered, instead the `TITLE` config
+option is used.
+
+
+=== 5. Add posts and pages
+
+Create posts in the `POSTS_PATH` directory. Each post has its own ordinal
+numbered directory. The content of the post resides in an `index` file inside
+that directory. This ensures that URLs are consistent and that media associated
+with a post is grouped together in one place.
+
+[source,sh]
+mkdir -p posts/1
+vim posts/1/index
+cp photo.jpg posts/1/
+
+The URL for this first post is `/posts/1/`.
+
+Pages are created similarly, but without the restriction that their enclosing
+directory have an ordinal name.
+
+[source,sh]
+--------------------------------------------------------------------------------
+mkdir historic-poems
+vim historic-poems/index
+
+mkdir historic-poems/jabberwock
+vim historic-poems/jabberwock/index
+--------------------------------------------------------------------------------
+
+These pages have URLS of `/historic-poems/` and `/historic-poems/jabberwock/`.
+
+
+=== 6. Add requirements.txt
+
+--------------------------------------------------------------------------------
+-e git://github.com/jedahu/flog.git#egg=Flog
+gunicorn
+gevent
+--------------------------------------------------------------------------------
+
+
+=== 7. Install dependencies
+
+[source,sh]
+virtualenv venv --distribute
+. venv/bin/activate
+pip install -r requirements.txt
+
+
+=== 8. Run!
+
+[source,sh]
+FLOG_CACHE=nocache python -m flog
+
+If the Flog config file is not named `flogrc`, the `FLOG_CONF` environment
+variable must be set to its location.
+
+
+=== 9. Add Procfile
+
+--------------------------------------------------------------------------------
+web: gunicorn -w 4 -b 0.0.0.0:$PORT -k gevent flog:app
+--------------------------------------------------------------------------------
+
+
+=== 10. Test with foreman
+
+[source,sh]
+foreman start
+
+The Flog cache defaults to `/tmp/flog-cache`, which is not deleted on program
+exit.
+
+
+=== 11. Deploy to Heroku
+
+[source,sh]
+heroku create --stack cedar
+git add flogrc requirements.txt Procfile posts historic-poems
+git commit -m'initial commit'
+git push heroku master

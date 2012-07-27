@@ -163,14 +163,19 @@ def asciidoc_meta(fpath, abs_url):
   authors = []
   revs = []
   with open(fpath) as f:
-    for line in f:
-      line = line.rstrip()
-      meta_match = META_RE.match(line)
-      author_match = AUTHOR_RE.match(line)
-      rev_match = REV_RE.match(line)
+    lines = f.readlines()
+    for idx, line in enumerate(lines):
+      line = line[:-1]
+      stripped = line.rstrip()
+      meta_match = META_RE.match(stripped)
+      author_match = AUTHOR_RE.match(stripped)
+      rev_match = REV_RE.match(stripped)
       if line.strip() != '' and title == None:
-        title = line
-        meta['title'] = title
+        if lines[idx + 1][:-1] == '=' * len(line):
+          title = line
+          meta['title'] = title
+        else: # No title
+          title = True
       elif line.strip() == '' and title != None:
         break
       elif meta_match:

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}{{ meta.title }}{% endblock %}
+{% block title %}{{ meta.title }} - {{ config.TITLE }}{% endblock %}
 {% block head %}
   {{ super() }}
   <link rel='canonical' href='{{ url_for('post', n = n) }}'>

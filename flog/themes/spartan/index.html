@@ -4,9 +4,14 @@
 {% endblock %}
 {% block header %}
   {% include 'title-block.html' %}
+  {% if meta.title %}
+    <hgroup class='page-header'>
+      <h1 class='page-title'>{{ meta.title }}</h1>
+    </hgroup>
+  {% endif %}
 {% endblock %}
 {% block content %}
-  <article>
+  <article role='main'>
     {{ content }}
   </article>
 {% endblock %}

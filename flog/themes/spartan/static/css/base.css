@@ -1,19 +1,19 @@
 @charset 'UTF-8';
 .content-trait,#content,#footer,#header{margin-left:4em;width:42em}
-.smaller-block-trait,#content article .sidebarblock,#content .hentry .sidebarblock,#content article .meta,#content .hentry .meta,#content article .attribution.ulist,#content .hentry .attribution.ulist,#content article footer,#content .hentry footer,#footer .title-block .vcard,#header .title-block .vcard{font-size:.8em}
-.monospace-trait,#content .monospaced,.ctime,.mtime,.time,pre{font-family:Inconsolata,monospace}
+.smaller-block-trait,#content article .sidebarblock,#content .hentry .sidebarblock,#content article .meta,#content .hentry .meta,#content article .attribution.ulist,#content .hentry .attribution.ulist,#content article footer,#content .hentry footer,#footer .title-block .vcard,#header .title-block .vcard,#footer .page-header .page-meta,#header .page-header .page-meta{font-size:.8em}
+.monospace-trait,#content .monospaced,pre{font-family:Inconsolata,monospace}
 .sans-serif-trait,html{font-family:Nobile,Helvetica,Arial,sans-serif}
 .serif-trait,#footer .title-block .tabs,#header .title-block .tabs,h1,h2,h3,h4,h5,h6,.title{font-family:Vollkorn,Georgia,serif}
 html{font-size:85%;line-height:1.8em}
 #content{margin-top:4em;font-size:1em;}
 #content article,#content .hentry{margin-top:4em;padding-bottom:4em;}
 #content article hgroup,#content .hentry hgroup{padding-top:1em;padding-bottom:2em}
-#content article .entry-title,#content .hentry .entry-title{float:left;padding-top:0;margin-top:0;}
+#content article .entry-title,#content .hentry .entry-title{padding-top:0;padding-bottom:0;margin-top:0;margin-bottom:0;}
 #content article .entry-title .n,#content .hentry .entry-title .n{display:block;width:4em;margin-left:-4.2em;padding-right:.2em;position:absolute;text-align:right;color:#f00}
 #content article .article-content,#content .hentry .article-content{clear:both}
 #content article .sidebarblock,#content .hentry .sidebarblock{background-color:#fff4f4;margin-top:3em;margin-bottom:3em}
 #content article .listingblock .content,#content .hentry .listingblock .content{background-color:#ffffe4}
-#content article .meta,#content .hentry .meta{text-align:right}
+#content article .meta,#content .hentry .meta{color:#808080;line-height:1.2em;text-align:right}
 #content article .attribution.ulist,#content .hentry .attribution.ulist{margin-top:3em;}
 #content article .attribution.ulist ul,#content .hentry .attribution.ulist ul{list-style-type:none}
 #content article footer,#content .hentry footer{margin-top:3em}
@@ -43,9 +43,9 @@ html{font-size:85%;line-height:1.8em}
 #footer .title-block .tabs ul li.home-tab a:before,#header .title-block .tabs ul li.home-tab a:before{content:'❮ ';font-size:1.2em;color:transparent}
 #footer .title-block .tabs ul li.home-tab a:hover:before,#header .title-block .tabs ul li.home-tab a:hover:before{color:#f00}
 #footer .page-header,#header .page-header{padding-top:1em;}
-#footer .page-header .page-title,#header .page-header .page-title{margin-top:0;padding-top:0;padding-bottom:0;margin-bottom:0;font-size:3em;line-height:1em;}
+#footer .page-header .page-title,#header .page-header .page-title{margin-top:0;padding-top:0;padding-bottom:0;margin-bottom:0;font-size:3em;line-height:.8em;}
 #footer .page-header .page-title:after,#header .page-header .page-title:after{content:'⌄';font-family:'Deja Vu Sans',Helvetica,Arial,sans-serif;font-size:1.2em;color:#f00}
-#footer .page-header .page-meta,#header .page-header .page-meta{float:right;text-align:right;line-height:1.2em;color:#000;background-color:transparent}
+#footer .page-header .page-meta,#header .page-header .page-meta{float:right;text-align:right;line-height:1.2em;color:#808080}
 #footer .the-end,#header .the-end{padding-left:1px;color:#fff;background-color:#000}
 a,a:hover{text-decoration:none;color:#000080}
 ul,ol{list-style-position:outside;padding-left:0;}

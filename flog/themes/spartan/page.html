@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}{{ meta['title'] }}{% endblock %}
+{% block title %}{{ meta.title }} - {{ config.TITLE }}{% endblock %}
 {% block head %}
   {{ super() }}
   <link rel='stylesheet' href='{{ url_for('static', filename='css/post.css') }}'>
@@ -7,7 +7,6 @@
 {% block header %}
   {% include 'title-block.html' %}
   <hgroup class='page-header'>
-    <h1 class='page-title decoration' style='display: none'>{{ meta.title }}</h1>
     <h1 class='page-title'>{{ meta.title }}</h1>
     <div class='page-meta'>
       <div class='ctime'>

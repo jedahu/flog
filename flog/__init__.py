@@ -262,10 +262,11 @@ def root():
     posts = os.listdir(join(SRC_DIR, POSTS_PATH))
     posts.sort(key=int, reverse=True)
     posts = [(n, post_meta(n)) for n in posts[:FEED_SIZE]]
-    content = asciidoc_html(join(SRC_DIR, PAGES_PATH, 'index'), '')
+    content, meta = parse_page(join(SRC_DIR, PAGES_PATH, 'index'), '/')
     return render_template('index.html',
         posts=posts,
-        content=content)
+        content=content,
+        meta=meta)
   return root_impl()
 
 @app.route(join('/', POSTS_PATH, '<int:n>') + '/')

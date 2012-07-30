@@ -11,5 +11,12 @@ setup(
     description='Simple blog engine.',
     long_description=open('README').read(),
     include_package_data=True,
-    install_requires=open('requirements.txt').readlines()
+    install_requires=[
+      'Flask==0.9',
+      'Pygments==1.5',
+      'python-dateutil==2.1',
+      'Beaker==1.6.3',
+      'AsciiDoc==8.6.8-jedahu'
+      ],
+    dependency_links=['https://github.com/jedahu/asciidoc/tarball/master#egg=AsciiDoc-8.6.8-jedahu']
     )

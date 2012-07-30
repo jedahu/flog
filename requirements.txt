@@ -1,4 +1,4 @@
-Flask==0.9
-Pygments==1.5
-python-dateutil==2.1
-Beaker==1.6.3
+Flask
+Pygments
+python-dateutil
+Beaker

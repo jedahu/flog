@@ -228,9 +228,9 @@ def generate_feed():
 
 
 # AsciiDocAPI
-sys.path.append(join(THIS_DIR, 'asciidoc'))
 from asciidocapi import AsciiDocAPI
-ASCIIDOC_PY = join(THIS_DIR, 'asciidoc', 'asciidoc.py')
+import asciidoc
+ASCIIDOC_PY = asciidoc.__file__
 def asciidoc():
   '''Return AsciiDocAPI object configured for flog'''
   def latest_post_titles():

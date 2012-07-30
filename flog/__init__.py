@@ -246,8 +246,8 @@ def asciidoc():
   ad.attributes['flog-latest-post-titles'] = latest_post_titles()
   ad.attributes['pygments'] = 'pygments'
   ad.attributes['conf-files'] = ASCIIDOC_CONF
-  if ASCIIDOC_USER_CONF and ASCIIDOC_USER_CONF.trim() != '':
-    ad.attributes['conf-files'] += '|' + ASCIIDOC_USER_CONF.trim()
+  if ASCIIDOC_USER_CONF and ASCIIDOC_USER_CONF.strip() != '':
+    ad.attributes['conf-files'] += '|' + ASCIIDOC_USER_CONF
   return ad
 
 ASCIIDOC = asciidoc()

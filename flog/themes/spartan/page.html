@@ -9,9 +9,11 @@
   <hgroup class='page-header'>
     <h1 class='page-title'>{{ meta.title }}</h1>
     <div class='page-meta'>
-      <div class='ctime'>
-        created <span class='time'>{{ meta.revisions[0].date }}</span>
-      </div>
+      {% if len(meta.revisions) > 1 %}
+        <div class='ctime'>
+          created <span class='time'>{{ meta.revisions[0].date }}</span>
+        </div>
+      {% endif %}
       {% if len(meta.revisions) > 1 %}
         <div class='mtime'>
           updated <span class='time'>{{ meta.revisions[-1].date }}</span>

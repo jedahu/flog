@@ -1,6 +1,6 @@
 @charset 'UTF-8';
 .content-trait,#content,#footer,#header{margin-left:4em;width:42em}
-.smaller-block-trait,#content article .sidebarblock,#content .hentry .sidebarblock,#content article .meta,#content .hentry .meta,#content article .attribution.ulist,#content .hentry .attribution.ulist,#content article footer,#content .hentry footer,#footer .title-block .vcard,#header .title-block .vcard,#footer .page-header .page-meta,#header .page-header .page-meta{font-size:.8em}
+.smaller-block-trait,#content article .sidebarblock,#content .hentry .sidebarblock,#content article .meta,#content .hentry .meta,#content article .attribution.ulist,#content .hentry .attribution.ulist,#content article footer,#content .hentry footer,#footer .title-block .vcard,#header .title-block .vcard,#footer .page-header .page-meta,#header .page-header .page-meta,.footnotes li{font-size:.8em}
 .monospace-trait,#content .monospaced,pre{font-family:Inconsolata,monospace}
 .sans-serif-trait,html{font-family:Nobile,Helvetica,Arial,sans-serif}
 .serif-trait,#footer .title-block .tabs,#header .title-block .tabs,h1,h2,h3,h4,h5,h6,.title{font-family:Vollkorn,Georgia,serif}
@@ -48,11 +48,12 @@ html{font-size:85%;line-height:1.8em}
 #footer .page-header .page-meta,#header .page-header .page-meta{float:right;text-align:right;line-height:1.2em;color:#808080}
 #footer .the-end,#header .the-end{padding-left:1px;color:#fff;background-color:#000}
 a,a:hover{text-decoration:none;color:#000080}
-ul,ol{list-style-position:outside;padding-left:0;}
-ul p,ol p{display:inline}
+ul,ol{list-style-position:outside;padding-left:0}
 h1,h2,h3,h4,h5,h6,.title{font-weight:normal;padding-top:2em;}
 h1 a,h2 a,h3 a,h4 a,h5 a,h6 a,.title a,h1 a:hover,h2 a:hover,h3 a:hover,h4 a:hover,h5 a:hover,h6 a:hover,.title a:hover{color:#000}
 h1{font-size:1.6em}
 h2{font-size:1.4em}
 h3{font-size:1.2em}
 h4{font-size:1em}
+a.fnote-ref{vertical-align:super;font-size:.7em}
+.footnotes li{padding:0;margin:0;width:200px;position:absolute;left:62em}

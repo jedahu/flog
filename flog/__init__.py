@@ -240,7 +240,7 @@ def asciidoc():
     return app.jinja_env.get_or_select_template('latest_post_titles.html')\
         .render(dict(POSTS_PATH=POSTS_PATH, posts=posts))
   ad = AsciiDocAPI(asciidoc_py=ASCIIDOC_PY)
-  ad.options('--no-header-footer')
+  #ad.options('--no-header-footer')
   ad.attributes['flog-posts-path'] = POSTS_PATH
   ad.attributes['flog-pages-path'] = PAGES_PATH
   ad.attributes['flog-latest-post-titles'] = latest_post_titles()

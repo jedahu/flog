@@ -1,25 +1,27 @@
 @charset 'UTF-8';
-.content-trait,#content,#footer,#header{margin-left:4em;width:42em}
-.smaller-block-trait,#content article .sidebarblock,#content .hentry .sidebarblock,#content article .meta,#content .hentry .meta,#content article .attribution.ulist,#content .hentry .attribution.ulist,#content article footer,#content .hentry footer,#footer .title-block .vcard,#header .title-block .vcard,#footer .page-header .page-meta,#header .page-header .page-meta,.footnotes li{font-size:.8em}
-.monospace-trait,#content .monospaced,pre{font-family:Inconsolata,monospace}
+.content-trait,#content,#footer,#header{margin-left:3em;width:42em}
+.smaller-trait,#content article .sidebarblock,#content .hentry .sidebarblock,#content article .attribution.ulist,#content .hentry .attribution.ulist,#content article footer,#content .hentry footer,#content .meta,#footer .title-block .vcard,#header .title-block .vcard,.sidenote{font-size:11px;line-height:25px}
+.monospace-trait,#content .monospaced,pre{font-family:Inconsolata,monospace;font-size:14px;line-height:25px}
 .sans-serif-trait,html{font-family:Nobile,Helvetica,Arial,sans-serif}
-.serif-trait,#footer .title-block .tabs,#header .title-block .tabs,h1,h2,h3,h4,h5,h6,.title{font-family:Vollkorn,Georgia,serif}
-html{font-size:85%;line-height:1.8em}
-#content{margin-top:4em;font-size:1em;}
-#content article,#content .hentry{margin-top:4em;padding-bottom:4em;}
-#content article hgroup,#content .hentry hgroup{padding-top:1em;padding-bottom:2em}
+.serif-trait,#footer .title-block .tabs,#header .title-block .tabs,h1,h2,h3,h4,h5,h6,.title-block .title{font-family:Vollkorn,Georgia,serif}
+html{font-size:14px;line-height:25px}
+#content p,#content .listingblock,#content blockquote,#content ul,#content ol{margin-top:25px;margin-bottom:25px}
+#content p,#content blockquote,#content ul,#content ol{text-align:justify}
+#content article,#content .hentry{padding-bottom:4em;}
+#content article hgroup,#content .hentry hgroup{padding-top:1em}
 #content article .entry-title,#content .hentry .entry-title{padding-top:0;padding-bottom:0;margin-top:0;margin-bottom:0;}
 #content article .entry-title .n,#content .hentry .entry-title .n{display:block;width:4em;margin-left:-4.2em;padding-right:.2em;position:absolute;text-align:right;color:#f00}
 #content article .article-content,#content .hentry .article-content{clear:both}
 #content article .sidebarblock,#content .hentry .sidebarblock{background-color:#fff4f4;margin-top:3em;margin-bottom:3em}
 #content article .listingblock .content,#content .hentry .listingblock .content{background-color:#ffffe4}
-#content article .meta,#content .hentry .meta{color:#808080;line-height:1.2em;text-align:right}
 #content article .attribution.ulist,#content .hentry .attribution.ulist{margin-top:3em;}
 #content article .attribution.ulist ul,#content .hentry .attribution.ulist ul{list-style-type:none}
 #content article footer,#content .hentry footer{margin-top:3em}
 #content .latest-post-titles{display:inline;}
 #content .latest-post-titles a:after{content:'; '}
 #content .latest-post-titles a:last-child:after{content:''}
+#content .meta{color:#808080;}
+#content .meta .time{margin-right:.5em}
 #content .nextprev{padding-left:1px;padding-right:1px;padding-bottom:3em;background-color:#000;color:#fff;height:2em;}
 #content .nextprev a,#content .nextprev a:hover{color:inherit}
 #content .nextprev .prev{float:left;}
@@ -28,7 +30,7 @@ html{font-size:85%;line-height:1.8em}
 #content .nextprev .next{float:right;}
 #content .nextprev .next:after{content:' ❯';font-size:1.2em}
 #content .nextprev .next:hover:after{color:#f00}
-#footer .title-block .title,#header .title-block .title{text-transform:uppercase;font-size:2em;padding-top:0;line-height:1.2em;float:left}
+#footer .title-block .title,#header .title-block .title{text-transform:uppercase;font-size:2em;padding-top:0}
 #footer .title-block .vcard > *,#header .title-block .vcard > *{float:left;clear:left}
 #footer .title-block .vcard .photo,#header .title-block .vcard .photo{float:right;padding:0;margin:0;height:6.5em;margin-top:-6.5em}
 #footer .title-block .vcard .fn,#header .title-block .vcard .fn{margin-top:0;font-weight:bold}
@@ -43,17 +45,16 @@ html{font-size:85%;line-height:1.8em}
 #footer .title-block .tabs ul li.home-tab a:before,#header .title-block .tabs ul li.home-tab a:before{content:'❮ ';font-size:1.2em;color:transparent}
 #footer .title-block .tabs ul li.home-tab a:hover:before,#header .title-block .tabs ul li.home-tab a:hover:before{color:#f00}
 #footer .page-header,#header .page-header{padding-top:1em;}
-#footer .page-header .page-title,#header .page-header .page-title{margin-top:0;padding-top:0;padding-bottom:0;margin-bottom:0;font-size:3em;line-height:.8em;}
+#footer .page-header .page-title,#header .page-header .page-title{margin-top:0;padding-top:0;padding-bottom:0;margin-bottom:0;font-size:3em;line-height:75px;}
 #footer .page-header .page-title:after,#header .page-header .page-title:after{content:'⌄';font-family:'Deja Vu Sans',Helvetica,Arial,sans-serif;font-size:1.2em;color:#f00}
-#footer .page-header .page-meta,#header .page-header .page-meta{float:right;text-align:right;line-height:1.2em;color:#808080}
 #footer .the-end,#header .the-end{padding-left:1px;color:#fff;background-color:#000}
 a,a:hover{text-decoration:none;color:#000080}
 ul,ol{list-style-position:outside;padding-left:0}
-h1,h2,h3,h4,h5,h6,.title{font-weight:normal;padding-top:2em;}
-h1 a,h2 a,h3 a,h4 a,h5 a,h6 a,.title a,h1 a:hover,h2 a:hover,h3 a:hover,h4 a:hover,h5 a:hover,h6 a:hover,.title a:hover{color:#000}
-h1{font-size:1.6em}
-h2{font-size:1.4em}
-h3{font-size:1.2em}
+h1,h2,h3,h4,h5,h6,.title-block .title{font-weight:normal;padding:0;margin:0;}
+h1 a,h2 a,h3 a,h4 a,h5 a,h6 a,.title-block .title a,h1 a:hover,h2 a:hover,h3 a:hover,h4 a:hover,h5 a:hover,h6 a:hover,.title-block .title a:hover{color:#000}
+h1{font-size:1.6em;line-height:50px}
+h2{font-size:20px;line-height:75px;margin-bottom:-25px}
+h3{font-size:16px;margin-top:25px;margin-bottom:-25px;font-style:italic}
 h4{font-size:1em}
-a.fnote-ref{vertical-align:super;font-size:.7em}
-.footnotes li{padding:0;margin:0;width:200px;position:absolute;left:62em}
+.sidenote .note{display:block;float:right;clear:right;width:14em;margin-right:-16em;margin-bottom:25px;text-align:justify;color:#808080;}
+.sidenote .note .title{font-style:italic;text-transform:uppercase}

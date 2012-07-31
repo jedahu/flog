@@ -1,14 +1,17 @@
 @charset 'UTF-8'
 
 .content-trait
-  margin-left 4em
+  margin-left 3em
   width 42em
 
-.smaller-block-trait
-  font-size 0.8em
+.smaller-trait
+  font-size 11px
+  line-height 25px
 
 .monospace-trait
   font-family Inconsolata, monospace
+  font-size 14px
+  line-height 25px
 
 .sans-serif-trait
   font-family Nobile, Helvetica, Arial, sans-serif
@@ -19,22 +22,32 @@
 
 html
   @extends .sans-serif-trait
-  font-size 85%
-  line-height 1.8em
+  font-size 14px
+  line-height 25px
 
 #content
   @extends .content-trait
-  margin-top 4em
-  font-size 1em
+
+  p,
+  .listingblock,
+  blockquote,
+  ul,
+  ol
+    margin-top 25px
+    margin-bottom 25px
+
+  p,
+  blockquote,
+  ul,
+  ol
+    text-align justify
 
   article,
   .hentry
-    margin-top 4em
     padding-bottom 4em
 
     hgroup
       padding-top 1em
-      padding-bottom 2em
 
     .entry-title
       padding-top 0
@@ -55,7 +68,7 @@ html
       clear both
 
     .sidebarblock
-      @extends .smaller-block-trait
+      @extends .smaller-trait
       background-color #fff4f4
       margin-top 3em
       margin-bottom 3em
@@ -65,21 +78,15 @@ html
       .content
         background-color #ffffe4
 
-    .meta
-      @extends .smaller-block-trait
-      color gray
-      line-height 1.2em
-      text-align right
-
     .attribution.ulist
-      @extends .smaller-block-trait
+      @extends .smaller-trait
       margin-top 3em
 
       ul
         list-style-type none
 
     footer
-      @extends .smaller-block-trait
+      @extends .smaller-trait
       margin-top 3em
 
   .monospaced
@@ -93,6 +100,13 @@ html
 
     a:last-child:after
       content ''
+
+  .meta
+    @extends .smaller-trait
+    color gray
+
+    .time
+      margin-right 0.5em
 
   .nextprev
     padding-left 1px
@@ -136,11 +150,9 @@ html
       text-transform uppercase
       font-size 2em
       padding-top 0
-      line-height 1.2em
-      float left
 
     .vcard
-      @extends .smaller-block-trait
+      @extends .smaller-trait
 
       & > *
         float left
@@ -213,20 +225,13 @@ html
       padding-bottom 0
       margin-bottom 0
       font-size 3em
-      line-height 0.8em
+      line-height 75px
 
       &:after
         content '⌄'
         font-family 'Deja Vu Sans', Helvetica, Arial, sans-serif
         font-size 1.2em
         color red
-
-    .page-meta
-      @extends .smaller-block-trait
-      float right
-      text-align right
-      line-height 1.2em
-      color gray
 
   .the-end
     padding-left 1px
@@ -244,10 +249,11 @@ ol
   list-style-position outside
   padding-left 0
 
-h1, h2, h3, h4, h5, h6, .title
+h1, h2, h3, h4, h5, h6, .title-block .title
   @extends .serif-trait
   font-weight normal
-  padding-top 2em
+  padding 0
+  margin 0
 
   & a,
   & a:hover
@@ -255,12 +261,18 @@ h1, h2, h3, h4, h5, h6, .title
 
 h1
   font-size 1.6em
+  line-height 50px
 
 h2
-  font-size 1.4em
+  font-size 20px
+  line-height 75px
+  margin-bottom -25px
 
 h3
-  font-size 1.2em
+  font-size 16px
+  margin-top 25px
+  margin-bottom -25px
+  font-style italic
 
 h4
   font-size 1em
@@ -269,14 +281,19 @@ pre
   @extends .monospace-trait
 
 
-a.fnote-ref
-  vertical-align super
-  font-size 0.7em
+.sidenote
+  @extends .smaller-trait
 
-.footnotes li
-  @extends .smaller-block-trait
-  padding 0
-  margin 0
-  width 200px
-  position absolute
-  left 62em
+  .note
+    display block
+    float right
+    clear right
+    width 14em
+    margin-right -16em
+    margin-bottom 25px
+    text-align justify
+    color gray
+
+    .title
+      font-style italic
+      text-transform uppercase

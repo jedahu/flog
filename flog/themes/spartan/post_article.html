@@ -3,21 +3,18 @@
     <h1 class='entry-title' role='header'>
       <a href='{{ url_for('post', n=n) }}'><span class='n'>{{ n }} </span>{{ meta.title }}</a>
     </h1>
-    <div class='meta'>
-      {% if len(meta.revisions) > 0 %}
-        <div class='ctime'>
-          created <span class='time'>{{ meta.revisions[0].date }}</span>
-        </div>
-      {% endif %}
-      {% if len(meta.revisions) > 1 %}
-        <div class='mtime'>
-          updated <span class='time'>{{ meta.revisions[-1].date }}</span>
-        </div>
-      {% endif %}
-    </div>
   </hgroup>
   <div class='article-content'>
     {{ content }}
+    <div class='meta'>
+      {% if len(meta.revisions) > 0 %}
+        {% for rev in meta.revisions %}
+          <div class='mtime'>
+            <span class='time'>{{ rev.date }}</span> {{ rev.remark }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
   </div>
 </article>
 {# vim: set ft=jinja: #}

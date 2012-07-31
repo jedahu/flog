@@ -8,23 +8,20 @@
   {% include 'title-block.html' %}
   <hgroup class='page-header'>
     <h1 class='page-title'>{{ meta.title }}</h1>
-    <div class='page-meta'>
-      {% if len(meta.revisions) > 1 %}
-        <div class='ctime'>
-          created <span class='time'>{{ meta.revisions[0].date }}</span>
-        </div>
-      {% endif %}
-      {% if len(meta.revisions) > 1 %}
-        <div class='mtime'>
-          updated <span class='time'>{{ meta.revisions[-1].date }}</span>
-        </div>
-      {% endif %}
-    </div>
   </hgroup>
 {% endblock %}
 {% block content %}
   <article role='main'>
     {{ content }}
+    <div class='meta'>
+      {% if len(meta.revisions) > 0 %}
+        {% for rev in meta.revisions %}
+          <div class='mtime'>
+            <span class='time'>{{ rev.date }}</span> {{ rev.remark }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
   </article>
 {% endblock %}
 {# vim: set ft=jinja: #}

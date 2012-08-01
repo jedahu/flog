@@ -31,6 +31,8 @@ html
   p,
   .listingblock,
   blockquote,
+  .quoteblock,
+  .verseblock,
   ul,
   ol
     margin-top 25px
@@ -38,9 +40,37 @@ html
 
   p,
   blockquote,
+  .quoteblock,
   ul,
   ol
     text-align justify
+
+  .quoteblock,
+  .verseblock
+    margin-left 3em
+
+  .verseblock
+
+    pre
+      font-family inherit
+
+  hr
+    border none
+    text-align center
+    font-size 150%
+
+  hr:after
+    content '\2766'
+
+  img
+    margin 1.2em
+    border none
+
+  .imageblock
+
+    .title
+      @extends .smaller-trait
+      text-align center
 
   article,
   .hentry

@@ -16,10 +16,10 @@
   </div> #}
   {% if config.VCARD %}
     <div class='vcard'>
-      <div class='fn' role='header'>{{ config.VCARD.name }}</div>
-      <div class='adr'>{{ config.VCARD.address }}</div>
-      <div class='role'>{{ config.VCARD.role }}</div>
-      <div class='note'>{{ config.VCARD.note }}</div>
+      <div class='fn' role='header'>{{ config.VCARD.name|safe }}</div>
+      <div class='adr'>{{ config.VCARD.address|safe }}</div>
+      <div class='role'>{{ config.VCARD.role|safe }}</div>
+      <div class='note'>{{ config.VCARD.note|safe }}</div>
       {% if config.VCARD.photo %}
         <img class='photo' src='{{ config.VCARD.photo }}'>
       {% endif %}

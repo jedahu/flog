@@ -2,4 +2,5 @@ Flask
 Pygments
 python-dateutil
 Beaker
+python-magic
 -e git+git://github.com/jedahu/asciidoc.git#egg=AsciiDoc-8.6.8-jedahu-beta

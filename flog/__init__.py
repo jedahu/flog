@@ -6,6 +6,9 @@ from StringIO import StringIO
 from werkzeug.contrib.atom import AtomFeed
 import dateutil.parser
 import itertools
+import mimetypes
+import magic
+import asciicode
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from flask import Flask, Markup, render_template, send_file, abort
@@ -45,6 +48,7 @@ FEED_SIZE = app.config['FEED_SIZE']
 ASCIIDOC_CONF = join(THIS_DIR, 'asciidoc-html5.conf')
 ASCIIDOC_USER_CONF = app.config['ASCIIDOC_CONF']
 STYLUS_PATH = app.config['STYLUS_PATH']
+ASCIICODE_ROOT = app.config.get('ASCIICODE_ROOT', 'docs')
 DEBUG = __name__ == '__main__' and 'nodebug' not in sys.argv
 
 app.static_folder = join(THEME_PATH, 'static')
@@ -97,6 +101,19 @@ def page(fpath, abs_url):
     return render_template('page.html', meta=meta, content=content)
   else:
     abort(404)
+
+def asciicode_or_media(fpath):
+  mime, _ = mimetypes.guess_type(fpath, strict=False)
+  if not mime:
+    mime = magic.Magic(mime=True).from_file(fpath)
+  if mime and mime.startswith('text'):
+    def asciidoc_fn(infile):
+      buf = StringIO()
+      ASCIICODE_ASCIIDOC.execute(infile, buf, 'html5')
+      return buf
+    return asciicode.process_path(asciidoc_fn, fpath).getvalue()
+  else:
+    return media(fpath)
 
 def parse_post(n, abs_url):
   '''Return html content and meta information from post n with base-url of
@@ -252,6 +269,14 @@ def asciidoc():
 
 ASCIIDOC = asciidoc()
 
+def asciicode_asciidoc():
+  ad = AsciiDocAPI(asciidoc_py=ASCIIDOC_PY)
+  ad.attributes['pygments'] = 'pygments'
+  ad.attributes['filter-modules'] = 'asciicode'
+  return ad
+
+ASCIICODE_ASCIIDOC = asciicode_asciidoc()
+
 
 # Routes
 @app.route('/')
@@ -311,9 +336,25 @@ def posts_index():
         prev_meta=prev_meta)
   return posts_index_impl()
 
+@app.route('/' + ASCIICODE_ROOT)
+def asciicode_root():
+  return redirect(url_for('asciicode_docs', path = '/'))
+
+@app.route(normpath(join('/' + ASCIICODE_ROOT, '<path:path>')))
+def asciicode_docs(path):
+  fpath = join(SRC_DIR, ASCIICODE_ROOT, path)
+  if path.endswith('/'):
+    return asciicode_or_media(join(fpath, 'README'))
+  else:
+    if isfile(fpath):
+      return asciicode_or_media(fpath)
+    elif isdir(fpath):
+      return redirect(url_for('asciicode_docs', path = path + '/'))
+    else:
+      abort(404)
 
 @app.route(normpath(join('/', PAGES_PATH) + '/<path:path>'))
-def page_or_media(path):
+def catchall(path):
   '''Asciidoc page or other (media) file'''
   fpath = join(SRC_DIR, PAGES_PATH, path)
   if path.endswith('/'):
@@ -322,7 +363,7 @@ def page_or_media(path):
     if isfile(fpath):
       return media(fpath)
     elif isdir(fpath):
-      return redirect(url_for('page_or_media', path = path + '/'))
+      return redirect(url_for('catchall', path = path + '/'))
     else:
       abort(404)
 

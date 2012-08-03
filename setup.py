@@ -16,6 +16,7 @@ setup(
       'Pygments==1.5',
       'python-dateutil==2.1',
       'Beaker==1.6.3',
+      'python-magic==0.4.2',
       'AsciiDoc==8.6.8-jedahu-beta'
       ],
     dependency_links=['https://github.com/jedahu/asciidoc/tarball/master#egg=AsciiDoc-8.6.8-jedahu-beta']

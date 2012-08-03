@@ -344,5 +344,7 @@ def posts_feed():
 def inject_template_vars():
   '''Make these vars available to all templates'''
   return dict(len=len)
+
+
 if __name__ == '__main__':
   app.run(debug=True)

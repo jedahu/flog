@@ -1,5 +1,5 @@
 import os
-from os.path import abspath, dirname, join, isdir, isfile, getmtime, normpath
+from os.path import abspath, dirname, join, isdir, isfile, getmtime, normpath, commonprefix
 import sys
 import re
 from StringIO import StringIO
@@ -103,13 +103,15 @@ def page(fpath, abs_url):
     abort(404)
 
 def asciicode_or_media(fpath):
+  asciicode_root = normpath(join(SRC_DIR, ASCIICODE_ROOT))
+  doc_root = commonprefix([normpath(fpath), asciicode_root])
   mime, _ = mimetypes.guess_type(fpath, strict=False)
   if not mime:
     mime = magic.Magic(mime=True).from_file(fpath)
   if mime and mime.startswith('text'):
     def asciidoc_fn(infile):
       buf = StringIO()
-      ASCIICODE_ASCIIDOC.execute(infile, buf, 'html5')
+      asciicode_asciidoc(doc_root).execute(infile, buf, 'html5')
       return buf
     return asciicode.process_path(asciidoc_fn, fpath).getvalue()
   else:
@@ -269,13 +271,28 @@ def asciidoc():
 
 ASCIIDOC = asciidoc()
 
-def asciicode_asciidoc():
+def asciicode_asciidoc(root):
+  conf_paths = [
+      join(root, 'asciidoc.conf'),
+      join(root, 'asciidoc-html5.conf'),
+      join(root, '.asciidoc.conf'),
+      join(root, '.asciidoc-html5.conf'),
+      join(root, 'asciidoc', 'asciidoc.conf'),
+      join(root, 'asciidoc', 'html5.conf'),
+      join(root, '.asciidoc', 'asciidoc.conf'),
+      join(root, '.asciidoc', 'html5.conf'),
+      join(root, '_asciidoc', 'asciidoc.conf'),
+      join(root, '_asciidoc', 'html5.conf')
+      ]
+  conf_files = []
+  for fpath in conf_paths:
+    if isfile(fpath):
+      conf_files.append(fpath)
   ad = AsciiDocAPI(asciidoc_py=ASCIIDOC_PY)
   ad.attributes['pygments'] = 'pygments'
   ad.attributes['filter-modules'] = 'asciicode'
+  ad.attributes['conf-files'] = '|'.join(conf_files)
   return ad
-
-ASCIICODE_ASCIIDOC = asciicode_asciidoc()
 
 
 # Routes

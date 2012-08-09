@@ -109,11 +109,7 @@ def asciicode_or_media(fpath):
   if not mime:
     mime = magic.Magic(mime=True).from_file(fpath)
   if mime and mime.startswith('text'):
-    def asciidoc_fn(infile):
-      buf = StringIO()
-      asciicode_asciidoc(doc_root).execute(infile, buf, 'html5')
-      return buf
-    return asciicode.process_path(asciidoc_fn, fpath).getvalue()
+    return asciicode.process_path(asciicode_asciidoc(doc_root), fpath).getvalue()
   else:
     return media(fpath)
 
@@ -153,22 +149,18 @@ REV_RE = re.compile(r'^(?:(.+?),)? *(.+?): *(.+?)$')
 
 def asciidoc_html(fpath, abs_url):
   '''Generate html from asciidoc file at fpath, with a base-url of abs_url'''
-  ad = ASCIIDOC
-  ad.attributes['base-url'] = abs_url
   with open(fpath) as f:
     buf = StringIO()
-    ad.execute(f, buf, 'html5')
+    asciidoc.execute(f, buf, **asciidoc_kwargs(attrs=[('base-url', abs_url)]))
     html = buf.getvalue()
     buf.close()
     return Markup(unicode(html, 'utf-8'))
 
 def asciidoc_html_from_string(s, abs_url):
   '''Generate html from asciidoc string, with a base-url of abs_url'''
-  ad = ASCIIDOC
-  ad.attributes['base-url'] = abs_url
   in_buf = StringIO(s)
   out_buf = StringIO()
-  ad.execute(in_buf, out_buf, 'html5')
+  asciidoc.execute(in_buf, out_buf, **asciidoc_kwargs(attrs=[('base-url', abs_url)]))
   html = out_buf.getvalue()
   in_buf.close()
   out_buf.close()
@@ -247,29 +239,35 @@ def generate_feed():
 
 
 # AsciiDocAPI
-from asciidocapi import AsciiDocAPI
 import asciidoc
-ASCIIDOC_PY = asciidoc.__file__
-def asciidoc():
-  '''Return AsciiDocAPI object configured for flog'''
+def asciidoc_kwargs(**args):
+  '''Return dict of default asciidoc.execute() keyword args'''
   def latest_post_titles():
     posts = os.listdir(join(SRC_DIR, POSTS_PATH))
     posts.sort(key=int, reverse=True)
     posts = [(n, post_meta(n)) for n in posts[:FEED_SIZE]]
     return app.jinja_env.get_or_select_template('latest_post_titles.html')\
         .render(dict(POSTS_PATH=POSTS_PATH, posts=posts))
-  ad = AsciiDocAPI(asciidoc_py=ASCIIDOC_PY)
-  #ad.options('--no-header-footer')
-  ad.attributes['flog-posts-path'] = POSTS_PATH
-  ad.attributes['flog-pages-path'] = PAGES_PATH
-  ad.attributes['flog-latest-post-titles'] = latest_post_titles()
-  ad.attributes['pygments'] = 'pygments'
-  ad.attributes['conf-files'] = ASCIIDOC_CONF
-  if ASCIIDOC_USER_CONF and ASCIIDOC_USER_CONF.strip() != '':
-    ad.attributes['conf-files'] += '|' + ASCIIDOC_USER_CONF
-  return ad
-
-ASCIIDOC = asciidoc()
+  kwargs = dict(
+      conf_files=[ASCIIDOC_CONF],
+      backend='html5',
+      attrs=[
+        ('flog-posts-path', POSTS_PATH),
+        ('flog-pages-path', PAGES_PATH),
+        ('flog-latest-post-titles', latest_post_titles()),
+        ('pygments', 'pygments')
+        ]
+      )
+  if ASCIIDOC_USER_CONF and ASCIIDOC_USER_CONF.strip():
+    kwargs['conf_files'].append(ASCIIDOC_USER_CONF)
+  for k, v in args.items():
+    if k in kwargs and type(kwargs[k]) is list:
+      kwargs[k].extend(v)
+    elif k in kwargs and type(kwargs[k]) is dict:
+      kwargs[k].update(v)
+    else:
+      kwargs[k] = v
+  return kwargs
 
 def asciicode_asciidoc(root):
   conf_paths = [
@@ -288,11 +286,18 @@ def asciicode_asciidoc(root):
   for fpath in conf_paths:
     if isfile(fpath):
       conf_files.append(fpath)
-  ad = AsciiDocAPI(asciidoc_py=ASCIIDOC_PY)
-  ad.attributes['pygments'] = 'pygments'
-  ad.attributes['filter-modules'] = 'asciicode'
-  ad.attributes['conf-files'] = '|'.join(conf_files)
-  return ad
+  def execute(infile, outfile, **kwargs):
+    if 'attrs' not in kwargs:
+      kwargs['attrs'] = []
+    if 'conf_files' not in kwargs:
+      kwargs['conf_files'] = []
+    kwargs['attrs'].extend([
+      ('pygments', 'pygments'),
+      ('filter-modules', 'asciicode')
+      ])
+    kwargs['conf_files'].extend(conf_files)
+    asciidoc.execute(infile, outfile, **kwargs)
+  return execute
 
 
 # Routes

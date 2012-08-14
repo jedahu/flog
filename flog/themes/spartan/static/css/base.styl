@@ -63,14 +63,25 @@ html
     content '\2766'
 
   img
-    margin 1.2em
+    margin 1.2em 0 1.2em 1.2em
     border none
 
   .imageblock
+    width 14em
+    float right
+
+    img
+      width 12.8em
+      float left
 
     .title
       @extends .smaller-trait
-      text-align center
+      float right
+      margin-right -17em
+      text-align left
+      width 14em
+      margin-top 1.2em
+      color grey
 
   article,
   .hentry
@@ -134,6 +145,7 @@ html
   .meta
     @extends .smaller-trait
     color gray
+    clear both
 
     .time
       margin-right 0.5em
@@ -311,19 +323,32 @@ pre
   @extends .monospace-trait
 
 
+//article
+//  counter-reset note
+
 .sidenote
   @extends .smaller-trait
 
-  .note
-    display block
-    float right
-    clear right
-    width 14em
-    margin-right -16em
-    margin-bottom 25px
-    text-align justify
-    color gray
+  //&:before
+  //  counter-increment note
+  //  content counter(note)
+  //  vertical-align super
+  //  font-size 0.8em
 
-    .title
-      font-style italic
-      text-transform uppercase
+.fnoteblock
+  @extends .smaller-trait
+  display block
+  float right
+  clear right
+  width 14em
+  margin-right -17em
+  margin-bottom 25px
+  padding-right 1em
+  color gray
+
+  //&:before
+  //  content counter(note) '. '
+
+  .title
+    font-style italic
+    color #444444

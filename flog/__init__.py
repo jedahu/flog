@@ -151,7 +151,7 @@ def asciidoc_html(fpath, abs_url):
   '''Generate html from asciidoc file at fpath, with a base-url of abs_url'''
   with open(fpath) as f:
     buf = StringIO()
-    asciidoc.execute(f, buf, **asciidoc_kwargs(attrs=[('base-url', abs_url)]))
+    asciidoc.execute(f, buf, **asciidoc_kwargs(attrs={'base-url': abs_url}))
     html = buf.getvalue()
     buf.close()
     return Markup(unicode(html, 'utf-8'))
@@ -160,7 +160,7 @@ def asciidoc_html_from_string(s, abs_url):
   '''Generate html from asciidoc string, with a base-url of abs_url'''
   in_buf = StringIO(s)
   out_buf = StringIO()
-  asciidoc.execute(in_buf, out_buf, **asciidoc_kwargs(attrs=[('base-url', abs_url)]))
+  asciidoc.execute(in_buf, out_buf, **asciidoc_kwargs(attrs={'base-url': abs_url}))
   html = out_buf.getvalue()
   in_buf.close()
   out_buf.close()
@@ -251,12 +251,12 @@ def asciidoc_kwargs(**args):
   kwargs = dict(
       conf_files=[ASCIIDOC_CONF],
       backend='html5',
-      attrs=[
-        ('flog-posts-path', POSTS_PATH),
-        ('flog-pages-path', PAGES_PATH),
-        ('flog-latest-post-titles', latest_post_titles()),
-        ('pygments', 'pygments')
-        ]
+      attrs={
+        'flog-posts-path': POSTS_PATH,
+        'flog-pages-path': PAGES_PATH,
+        'flog-latest-post-titles': latest_post_titles(),
+        'pygments': 'pygments'
+        }
       )
   if ASCIIDOC_USER_CONF and ASCIIDOC_USER_CONF.strip():
     kwargs['conf_files'].append(ASCIIDOC_USER_CONF)
@@ -288,13 +288,13 @@ def asciicode_asciidoc(root):
       conf_files.append(fpath)
   def execute(infile, outfile, **kwargs):
     if 'attrs' not in kwargs:
-      kwargs['attrs'] = []
+      kwargs['attrs'] = {}
     if 'conf_files' not in kwargs:
       kwargs['conf_files'] = []
-    kwargs['attrs'].extend([
-      ('pygments', 'pygments'),
-      ('filter-modules', 'asciicode')
-      ])
+    kwargs['attrs'].update({
+      'pygments': 'pygments',
+      'filter-modules': 'asciicode'
+      })
     kwargs['conf_files'].extend(conf_files)
     asciidoc.execute(infile, outfile, **kwargs)
   return execute

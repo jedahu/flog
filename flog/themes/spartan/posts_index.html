@@ -7,7 +7,7 @@
     jQuery.ias({
         container: '#content',
         item: '.hentry',
-        pagination: '#content .nextprev',
+        pagination: '.nextprev',
         next: '.nextprev .prev',
         loader: '...'
     });
@@ -23,6 +23,6 @@
   {% for n, content, meta in posts %}
     {% include 'post_article.html' %}
   {% endfor %}
-  {% include 'post_nextprev.html' %}
 {% endblock %}
+{% include 'post_nextprev.html' %}
 {# vim: set ft=jinja: #}

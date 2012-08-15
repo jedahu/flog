@@ -255,6 +255,7 @@ def asciidoc_kwargs(**args):
         'flog-posts-path': POSTS_PATH,
         'flog-pages-path': PAGES_PATH,
         'flog-latest-post-titles': latest_post_titles(),
+        'filter-modules': 'asciicode|asciidoc_aafigure_filter',
         'pygments': 'pygments'
         }
       )
@@ -293,7 +294,7 @@ def asciicode_asciidoc(root):
       kwargs['conf_files'] = []
     kwargs['attrs'].update({
       'pygments': 'pygments',
-      'filter-modules': 'asciicode'
+      'filter-modules': 'asciicode|asciidoc_aafigure_filter'
       })
     kwargs['conf_files'].extend(conf_files)
     asciidoc.execute(infile, outfile, **kwargs)

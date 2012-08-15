@@ -3,4 +3,6 @@ Pygments
 python-dateutil
 Beaker
 python-magic
--e git+git://github.com/jedahu/asciidoc.git#egg=AsciiDoc-8.6.8-jedahu-beta
+-e git+git://github.com/jedahu/asciidoc.git#egg=AsciiDoc
+-e git+git://github.com/jedahu/asciicode.git#egg=AsciiCode
+-e git+git://github.com/jedahu/asciidoc-aafigure-filter.git#egg=asciidoc-aafigure-filter

@@ -1,6 +1,6 @@
 @charset 'UTF-8';
 .content-trait,#content,#footer,#header{margin-left:3em;width:42em}
-.smaller-trait,#content .imageblock .title,#content article .sidebarblock,#content .hentry .sidebarblock,#content article .attribution.ulist,#content .hentry .attribution.ulist,#content article footer,#content .hentry footer,#content .meta,#footer .title-block .vcard,#header .title-block .vcard,.sidenote,.fnoteblock{font-size:11px;line-height:25px}
+.smaller-trait,#content .aafigureblock .title,#content .imageblock .title,#content article .sidebarblock,#content .hentry .sidebarblock,#content article .attribution.ulist,#content .hentry .attribution.ulist,#content article footer,#content .hentry footer,#content .meta,#footer .title-block .vcard,#header .title-block .vcard,.sidenote,.fnoteblock{font-size:11px;line-height:25px}
 .monospace-trait,#content .monospaced,pre{font-family:Inconsolata,monospace;font-size:14px;line-height:25px}
 .sans-serif-trait,html{font-family:Nobile,Helvetica,Arial,sans-serif}
 .serif-trait,#footer .title-block .tabs,#header .title-block .tabs,h1,h2,h3,h4,h5,h6,.title-block .title{font-family:Vollkorn,Georgia,serif}
@@ -12,6 +12,9 @@ html{font-size:14px;line-height:25px}
 #content hr{border:none;text-align:center;font-size:150%}
 #content hr:after{content:'\2766'}
 #content img{margin:1.2em 0 1.2em 1.2em;border:none}
+#content .aafigureblock{float:right;}
+#content .aafigureblock img{float:left}
+#content .aafigureblock .title{float:right;margin-right:-17em;text-align:left;width:14em;margin-top:1.2em;color:#808080}
 #content .imageblock{width:14em;float:right;}
 #content .imageblock img{width:12.8em;float:left}
 #content .imageblock .title{float:right;margin-right:-17em;text-align:left;width:14em;margin-top:1.2em;color:#808080}

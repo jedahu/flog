@@ -17,9 +17,25 @@
       <meta name='MSSmartTagsPreventParsing' content='true'>
       <meta name='generator' content='flog'>
       <meta name='blog name' content='{{ config.TITLE }}'>
+      {% if config.FACEBOOK %}
+        <meta property='fb:admins' content='{{ config.FACEBOOK.user_id }}'>
+        <meta property='fb:app_id' content='{{ config.FACEBOOK.app_id }}'>
+      {% endif %}
     {% endblock %}
   </head>
   <body>
+    {% if config.FACEBOOK %}
+      <div id='fb-root'></div>
+      <script>
+      (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&amp;appId={{ config.FACEBOOK.app_id }}";
+      fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+      </script>
+    {% endif %}
     <header id='header'>
       {% block header %}{% endblock %}
     </header>

@@ -15,6 +15,35 @@
         {% endfor %}
       {% endif %}
     </div>
+    <div class='respond'>
+      <div><b>What do you think?</b></div>
+      <div>Email me: <a href='mailto:{{ config.VCARD.email }}'>{{ config.VCARD.email }}</a></div>
+      {% if config.FACEBOOK and config.FACEBOOK.comments %}
+        <div>Or <span class='link comments-toggle'>toggle the comment box.</span></div>
+      {% endif %}
+      <div>
+        <a href='https://twitter.com/share'
+           class='twitter-share-button'
+           data-url='{{ config.ROOT_URL }}{{ url_for('post', n=n) }}'
+           data-text='{{ meta.title }}'
+           data-via='{{ config.TITLE }}'
+           data-count='none'>Tweet</a>
+      </div>
+      {% if config.FACEBOOK and config.FACEBOOK.like_button %}
+        <div class='fb-like'
+             data-href='{{ config.ROOT_URL }}{{ url_for('post', n=n) }}'
+             data-send='false'
+             data-layout='button_count'
+             data-show-faces='false'></div>
+      {% endif %}
+      {% if config.FACEBOOK and config.FACEBOOK.comments %}
+        <div class='comments'>
+          <div class='fb-comments'
+               data-href='{{ config.ROOT_URL }}{{ url_for('post', n=n) }}'
+               data-num-posts='10'></div>
+      {% endif %}
+      </div>
+    </div>
   </div>
 </article>
 {# vim: set ft=jinja: #}

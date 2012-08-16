@@ -4,12 +4,14 @@
   {{ super() }}
   <script src='{{ url_for('static', filename='css/jquery.ias.min.js') }}'></script>
   <script>
-    jQuery.ias({
-        container: '#content',
-        item: '.hentry',
-        pagination: '.nextprev',
-        next: '.nextprev .prev',
-        loader: '...'
+    jQuery(function($) {
+      jQuery.ias({
+          container: '#content',
+          item: '.hentry',
+          pagination: '.nextprev',
+          next: '.nextprev .prev',
+          loader: '...'
+      });
     });
   </script>
 {% endblock %}

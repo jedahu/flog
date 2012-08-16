@@ -218,11 +218,11 @@ def generate_feed():
       for n in posts
       )
   feed = AtomFeed('Recent posts',
-      feed_url=ROOT_URL + POSTS_PATH + '/feed/',
+      feed_url=ROOT_URL + '/' + POSTS_PATH + '/feed/',
       url=ROOT_URL,
       subtitle='...')
-  for n, meta in itertools.islice(metas, FEED_SIZE):
-    post_url = ROOT_URL + POSTS_PATH + '/' + n + '/'
+  for n, meta in islice(metas, FEED_SIZE):
+    post_url = ROOT_URL + '/' + POSTS_PATH + '/' + n + '/'
     post_id = TAG_URI.format(n=n) if TAG_URI else post_url
     feed.add(meta['title'],
         title_type='text',

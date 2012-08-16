@@ -5,10 +5,11 @@ import re
 from StringIO import StringIO
 from werkzeug.contrib.atom import AtomFeed
 import dateutil.parser
-import itertools
 import mimetypes
 import magic
 import asciicode
+import codecs
+from itertools import islice
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from flask import Flask, Markup, render_template, send_file, abort
@@ -173,16 +174,16 @@ def asciidoc_meta(fpath, abs_url):
   meta = {}
   authors = []
   revs = []
-  with open(fpath) as f:
-    lines = f.readlines()
-    for idx, line in enumerate(lines):
+  with codecs.open(fpath, encoding='utf-8') as f:
+    lines = list(islice(enumerate(f), 0, 20))
+    for idx, line in lines:
       line = line[:-1]
       stripped = line.rstrip()
       meta_match = META_RE.match(stripped)
       author_match = AUTHOR_RE.match(stripped)
       rev_match = REV_RE.match(stripped)
       if line.strip() != '' and title == None:
-        if lines[idx + 1][:-1] == '=' * len(line):
+        if lines[idx + 1][1][:-1] == '=' * len(line):
           title = line
           meta['title'] = title
         else: # No title

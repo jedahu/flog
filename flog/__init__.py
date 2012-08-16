@@ -151,7 +151,7 @@ def asciidoc_html(fpath, abs_url):
   '''Generate html from asciidoc file at fpath, with a base-url of abs_url'''
   with open(fpath) as f:
     buf = StringIO()
-    asciidoc.execute(f, buf, **asciidoc_kwargs(attrs={'base-url': abs_url}))
+    asciidoc.execute(f, buf, **asciidoc_kwargs(attrs={'base-url': abs_url}, inpath=fpath))
     html = buf.getvalue()
     buf.close()
     return Markup(unicode(html, 'utf-8'))

@@ -5,4 +5,4 @@ Beaker
 python-magic
 -e git+git://github.com/jedahu/asciidoc.git#egg=AsciiDoc
 -e git+git://github.com/jedahu/asciicode.git#egg=AsciiCode
--e git+git://github.com/jedahu/asciidoc-aafigure-filter.git#egg=asciidoc-aafigure-filter
+-e git+git://github.com/jedahu/asciidoc-ditaa-filter.git#egg=asciidoc-ditaa-filter

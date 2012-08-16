@@ -2,7 +2,7 @@
 
 .content-trait
   margin-left 3em
-  width 42em
+  width 40em
 
 .smaller-trait
   font-size 11px
@@ -49,15 +49,22 @@ html
   .verseblock
     margin-left 3em
 
+    &.epigraph
+
+      .content
+        font-style italic
+
   .verseblock
 
     pre
       font-family inherit
+      font-style italic
 
   hr
     border none
     text-align center
     font-size 150%
+    clear both
 
   hr:after
     content '\2766'
@@ -66,24 +73,18 @@ html
     margin 1.2em 0 1.2em 1.2em
     border none
 
-  .aafigureblock
-    float right
-
-    img
-      float left
-
-    .title
-      @extends .smaller-trait
-      float right
-      margin-right -17em
-      text-align left
-      width 14em
-      margin-top 1.2em
-      color grey
-
   .imageblock
     width 14em
     float right
+    clear right
+
+    &.ditaa
+      width auto
+      clear both
+
+      img
+        margin 0
+        width auto
 
     img
       width 12.8em
@@ -164,6 +165,9 @@ html
 
     .time
       margin-right 0.5em
+
+  .comments
+    display none
 
   .nextprev
     padding-left 1px
@@ -297,14 +301,22 @@ html
 
 
 a,
-a:hover
+a:hover,
+.link
   text-decoration none
   color navy
+  cursor pointer
 
 ul,
 ol
   list-style-position outside
   padding-left 0
+
+ol.loweralpha
+  list-style-type lower-alpha
+
+ol.upperalpha
+  list-style-type upper-alpha
 
 h1, h2, h3, h4, h5, h6, .title-block .title
   @extends .serif-trait

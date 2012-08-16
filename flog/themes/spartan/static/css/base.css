@@ -1,21 +1,21 @@
 @charset 'UTF-8';
-.content-trait,#content,#footer,#header{margin-left:3em;width:42em}
-.smaller-trait,#content .aafigureblock .title,#content .imageblock .title,#content article .sidebarblock,#content .hentry .sidebarblock,#content article .attribution.ulist,#content .hentry .attribution.ulist,#content article footer,#content .hentry footer,#content .meta,#footer .title-block .vcard,#header .title-block .vcard,.sidenote,.fnoteblock{font-size:11px;line-height:25px}
+.content-trait,#content,#footer,#header{margin-left:3em;width:40em}
+.smaller-trait,#content .imageblock .title,#content article .sidebarblock,#content .hentry .sidebarblock,#content article .attribution.ulist,#content .hentry .attribution.ulist,#content article footer,#content .hentry footer,#content .meta,#footer .title-block .vcard,#header .title-block .vcard,.sidenote,.fnoteblock{font-size:11px;line-height:25px}
 .monospace-trait,#content .monospaced,pre{font-family:Inconsolata,monospace;font-size:14px;line-height:25px}
 .sans-serif-trait,html{font-family:Nobile,Helvetica,Arial,sans-serif}
 .serif-trait,#footer .title-block .tabs,#header .title-block .tabs,h1,h2,h3,h4,h5,h6,.title-block .title{font-family:Vollkorn,Georgia,serif}
 html{font-size:14px;line-height:25px}
 #content p,#content .listingblock,#content blockquote,#content .quoteblock,#content .verseblock,#content ul,#content ol{margin-top:25px;margin-bottom:25px}
 #content p,#content blockquote,#content .quoteblock,#content ul,#content ol{text-align:justify}
-#content .quoteblock,#content .verseblock{margin-left:3em}
-#content .verseblock pre{font-family:inherit}
-#content hr{border:none;text-align:center;font-size:150%}
+#content .quoteblock,#content .verseblock{margin-left:3em;}
+#content .quoteblock.epigraph .content,#content .verseblock.epigraph .content{font-style:italic}
+#content .verseblock pre{font-family:inherit;font-style:italic}
+#content hr{border:none;text-align:center;font-size:150%;clear:both}
 #content hr:after{content:'\2766'}
 #content img{margin:1.2em 0 1.2em 1.2em;border:none}
-#content .aafigureblock{float:right;}
-#content .aafigureblock img{float:left}
-#content .aafigureblock .title{float:right;margin-right:-17em;text-align:left;width:14em;margin-top:1.2em;color:#808080}
-#content .imageblock{width:14em;float:right;}
+#content .imageblock{width:14em;float:right;clear:right;}
+#content .imageblock.ditaa{width:auto;clear:both;}
+#content .imageblock.ditaa img{margin:0;width:auto}
 #content .imageblock img{width:12.8em;float:left}
 #content .imageblock .title{float:right;margin-right:-17em;text-align:left;width:14em;margin-top:1.2em;color:#808080}
 #content article,#content .hentry{padding-bottom:4em;}
@@ -33,6 +33,7 @@ html{font-size:14px;line-height:25px}
 #content .latest-post-titles a:last-child:after{content:''}
 #content .meta{color:#808080;clear:both;}
 #content .meta .time{margin-right:.5em}
+#content .comments{display:none}
 #content .nextprev{padding-left:1px;padding-right:1px;padding-bottom:3em;background-color:#000;color:#fff;height:2em;}
 #content .nextprev a,#content .nextprev a:hover{color:inherit}
 #content .nextprev .prev{float:left;}
@@ -59,8 +60,10 @@ html{font-size:14px;line-height:25px}
 #footer .page-header .page-title,#header .page-header .page-title{margin-top:0;padding-top:0;padding-bottom:0;margin-bottom:0;font-size:3em;line-height:75px;}
 #footer .page-header .page-title:after,#header .page-header .page-title:after{content:'⌄';font-family:'Deja Vu Sans',Helvetica,Arial,sans-serif;font-size:1.2em;color:#f00}
 #footer .the-end,#header .the-end{padding-left:1px;color:#fff;background-color:#000}
-a,a:hover{text-decoration:none;color:#000080}
+a,a:hover,.link{text-decoration:none;color:#000080;cursor:pointer}
 ul,ol{list-style-position:outside;padding-left:0}
+ol.loweralpha{list-style-type:lower-alpha}
+ol.upperalpha{list-style-type:upper-alpha}
 h1,h2,h3,h4,h5,h6,.title-block .title{font-weight:normal;padding:0;margin:0;}
 h1 a,h2 a,h3 a,h4 a,h5 a,h6 a,.title-block .title a,h1 a:hover,h2 a:hover,h3 a:hover,h4 a:hover,h5 a:hover,h6 a:hover,.title-block .title a:hover{color:#000}
 h1{font-size:1.6em;line-height:50px}

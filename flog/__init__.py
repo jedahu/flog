@@ -37,8 +37,8 @@ for key in config_defaults:
 THIS_DIR = app.config.root_path
 FLOG_DIR = dirname(FLOG_CONF)
 SRC_DIR = join(FLOG_DIR, app.config['SRC_DIR'])
-POSTS_PATH = app.config['POSTS']
-PAGES_PATH = app.config['PAGES']
+POSTS_PATH = app.config['POSTS_PATH']
+PAGES_PATH = app.config['PAGES_PATH']
 ROOT_URL = app.config['ROOT_URL']
 TAG_URI = app.config['TAG_URI']
 THEME_PATH = join(FLOG_DIR, app.config['THEME_PATH'])

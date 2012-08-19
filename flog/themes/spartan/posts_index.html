@@ -10,7 +10,9 @@
           item: '.hentry',
           pagination: '.nextprev',
           next: '.nextprev .prev',
-          loader: '...'
+          loader: '...',
+          history: false,
+          onRenderComplete: window.onLoadNewPosts
       });
     });
   </script>

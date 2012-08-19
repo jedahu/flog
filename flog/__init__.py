@@ -10,8 +10,7 @@ import magic
 import asciicode
 import codecs
 from itertools import islice
-from beaker.cache import CacheManager
-from beaker.util import parse_cache_config_options
+from flog.cache import Cache
 from flask import Flask, Markup, render_template, send_file, abort
 from flask import redirect, url_for, make_response
 
@@ -29,6 +28,7 @@ config_defaults = dict(
     ASCIIDOC_CONF = None,
     TAG_URI = None,
     ROOT_URL = None,
+    SOURCE_URL = None,
     STYLUS_PATH = 'stylus')
 
 for key in config_defaults:
@@ -41,6 +41,7 @@ SRC_DIR = join(FLOG_DIR, app.config['SRC_DIR'])
 POSTS_PATH = app.config['POSTS_PATH']
 PAGES_PATH = app.config['PAGES_PATH']
 ROOT_URL = app.config['ROOT_URL']
+SOURCE_URL = app.config['SOURCE_URL']
 TAG_URI = app.config['TAG_URI']
 THEME_PATH = join(FLOG_DIR, app.config['THEME_PATH'])
 if not isdir(THEME_PATH):
@@ -67,25 +68,13 @@ if not isdir(THEME_PATH):
 # Cache
 CACHE_DIR = os.environ.get('FLOG_CACHE') or '/tmp/flog-cache'
 
-if CACHE_DIR != 'nocache':
-  cache_opts = {
-      'cache.type': 'file',
-      'cache.expire': '99999999999999999',
-      'cache.data_dir': join(CACHE_DIR, 'data'),
-      'cache.lock_dir': join(CACHE_DIR, 'lock')
-      }
+c = Cache(
+    cache_dir=CACHE_DIR,
+    source_url=SOURCE_URL,
+    on=CACHE_DIR != 'nocache')
 
-  cm = CacheManager(**parse_cache_config_options(cache_opts))
-
-  def cache():
-    return cm.cache()
-
-else:
-  def identity(x):
-    return x
-  def cache():
-    return identity
-
+def cache(path, mimetype=None):
+  return c.cache(path, mimetype=mimetype)
 
 
 # Helper functions
@@ -93,15 +82,18 @@ def media(fpath):
   '''Send file from filesystem'''
   return send_file(fpath)
 
-@cache()
-def page(fpath, abs_url):
+def page(url_path, abs_url):
   '''Render page at fpath with a base-url of abs_url'''
-  fp = join(fpath, 'index')
-  if isfile(fp):
-    content, meta = parse_page(fp, abs_url)
-    return render_template('page.html', meta=meta, content=content)
-  else:
-    abort(404)
+  @cache(url_path)
+  def page_impl():
+    fpath = join(SRC_DIR, url_path)
+    fp = join(fpath, 'index')
+    if isfile(fp):
+      content, meta = parse_page(fp, abs_url)
+      return render_template('page.html', meta=meta, content=content)
+    else:
+      return abort(404)
+  return page_impl()
 
 def asciicode_or_media(fpath):
   asciicode_root = normpath(join(SRC_DIR, ASCIICODE_ROOT))
@@ -382,7 +374,8 @@ def catchall(path):
   '''Asciidoc page or other (media) file'''
   fpath = join(SRC_DIR, PAGES_PATH, path)
   if path.endswith('/'):
-    return page(fpath, '/' + path[:-1])
+    url_path = join(PAGES_PATH, path)
+    return page(url_path, '/' + path[:-1])
   else:
     if isfile(fpath):
       return media(fpath)

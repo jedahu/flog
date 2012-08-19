@@ -261,7 +261,9 @@ def asciidoc_kwargs(**args):
         }
       )
   if ASCIIDOC_USER_CONF and ASCIIDOC_USER_CONF.strip():
-    kwargs['conf_files'].append(ASCIIDOC_USER_CONF)
+    conf_path = join(FLOG_DIR, ASCIIDOC_USER_CONF)
+    print 'Using asciidoc conf at:', conf_path
+    kwargs['conf_files'].append(conf_path)
   for k, v in args.items():
     if k in kwargs and type(kwargs[k]) is list:
       kwargs[k].extend(v)

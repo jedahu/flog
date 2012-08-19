@@ -29,6 +29,7 @@ config_defaults = dict(
     ASCIIDOC_CONF = None,
     TAG_URI = None,
     ROOT_URL = None,
+    FEED_URL = None,
     STYLUS_PATH = 'stylus')
 
 for key in config_defaults:
@@ -46,6 +47,9 @@ THEME_PATH = join(FLOG_DIR, app.config['THEME_PATH'])
 if not isdir(THEME_PATH):
   THEME_PATH = join(THIS_DIR, 'themes', app.config['THEME_PATH'])
 FEED_SIZE = app.config['FEED_SIZE']
+FEED_URL = app.config['FEED_URL']
+if not FEED_URL:
+  FEED_URL = ROOT_URL + '/' + POSTS_PATH + '/feed/'
 ASCIIDOC_CONF = join(THIS_DIR, 'asciidoc-html5.conf')
 ASCIIDOC_USER_CONF = app.config['ASCIIDOC_CONF']
 STYLUS_PATH = app.config['STYLUS_PATH']
@@ -219,7 +223,7 @@ def generate_feed():
       for n in posts
       )
   feed = AtomFeed('Recent posts',
-      feed_url=ROOT_URL + '/' + POSTS_PATH + '/feed/',
+      feed_url=FEED_URL,
       url=ROOT_URL,
       subtitle='...')
   for n, meta in islice(metas, FEED_SIZE):

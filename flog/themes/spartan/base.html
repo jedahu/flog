@@ -11,7 +11,7 @@
           rel='alternate'
           type='application/atom+xml'
           title='{{ config.TITLE }}
-          href='{{ url_for('posts_feed') }}'>
+          href='{{ config.FEED_URL }}'>
       <script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
       <script src='{{ url_for('static', filename='js/base.js') }}'></script>
       <meta name='MSSmartTagsPreventParsing' content='true'>

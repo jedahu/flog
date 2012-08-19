@@ -14,8 +14,8 @@ html{font-size:12px;line-height:21px}
 #content hr:after{content:'\2766'}
 #content img{margin:1.2em 0 1.2em 1.2em;border:none}
 #content .imageblock{width:14em;float:right;clear:right;}
-#content .imageblock.unscaled{width:auto;clear:both;}
-#content .imageblock.unscaled img{width:auto}
+#content .imageblock.unscaled{width:auto;max-width:100%;clear:both;}
+#content .imageblock.unscaled img{width:auto;max-width:100%}
 #content .imageblock img{width:12.8em;float:left}
 #content .imageblock .title{float:right;margin-right:-17em;text-align:left;width:14em;margin-top:1.2em;color:#808080}
 #content article,#content .hentry{padding-bottom:4em;}

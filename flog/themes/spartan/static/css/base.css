@@ -1,10 +1,10 @@
 @charset 'UTF-8';
 .content-trait,#content,#footer,#header{margin-left:3em;width:40em}
-.smaller-trait,#content .imageblock .title,#content article .sidebarblock,#content .hentry .sidebarblock,#content article .attribution.ulist,#content .hentry .attribution.ulist,#content article footer,#content .hentry footer,#content .meta,#footer .title-block .vcard,#header .title-block .vcard,.sidenote,.fnoteblock{font-size:11px;line-height:25px}
-.monospace-trait,#content .monospaced,pre{font-family:Inconsolata,monospace;font-size:14px;line-height:25px}
+.smaller-trait,#content .imageblock .title,#content article .sidebarblock,#content .hentry .sidebarblock,#content article .attribution.ulist,#content .hentry .attribution.ulist,#content article footer,#content .hentry footer,#content .meta,#footer .title-block .vcard,#header .title-block .vcard,.sidenote,.fnoteblock{font-size:10px;line-height:21px}
+.monospace-trait,#content .monospaced,pre{font-family:Inconsolata,monospace}
 .sans-serif-trait,html{font-family:Nobile,Helvetica,Arial,sans-serif}
 .serif-trait,#footer .title-block .tabs,#header .title-block .tabs,h1,h2,h3,h4,h5,h6,.title-block .title{font-family:Vollkorn,Georgia,serif}
-html{font-size:14px;line-height:25px}
+html{font-size:12px;line-height:21px}
 #content p,#content .listingblock,#content blockquote,#content .quoteblock,#content .verseblock,#content ul,#content ol{margin-top:25px;margin-bottom:25px}
 #content p,#content blockquote,#content .quoteblock,#content ul,#content ol{text-align:justify}
 #content .quoteblock,#content .verseblock{margin-left:3em;}
@@ -66,9 +66,9 @@ ol.loweralpha{list-style-type:lower-alpha}
 ol.upperalpha{list-style-type:upper-alpha}
 h1,h2,h3,h4,h5,h6,.title-block .title{font-weight:normal;padding:0;margin:0;}
 h1 a,h2 a,h3 a,h4 a,h5 a,h6 a,.title-block .title a,h1 a:hover,h2 a:hover,h3 a:hover,h4 a:hover,h5 a:hover,h6 a:hover,.title-block .title a:hover{color:#000}
-h1{font-size:1.6em;line-height:50px}
-h2{font-size:20px;line-height:75px;margin-bottom:-25px}
-h3{font-size:16px;margin-top:25px;margin-bottom:-25px;font-style:italic}
+h1{font-size:1.8em;line-height:50px}
+h2{font-size:18px;line-height:63px;margin-bottom:-21px}
+h3{font-size:14px;margin-top:21px;margin-bottom:-21px;font-style:italic}
 h4{font-size:1em}
 .fnoteblock{display:block;float:right;clear:right;width:14em;margin-right:-17em;margin-bottom:25px;padding-right:1em;color:#808080;}
 .fnoteblock .title{font-style:italic;color:#444}

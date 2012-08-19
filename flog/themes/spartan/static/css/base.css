@@ -44,7 +44,7 @@ html{font-size:12px;line-height:21px}
 #content .nextprev .next:hover:after{color:#f00}
 #footer .title-block .title,#header .title-block .title{text-transform:uppercase;font-size:2em;padding-top:0}
 #footer .title-block .vcard > *,#header .title-block .vcard > *{float:left;clear:left}
-#footer .title-block .vcard .photo,#header .title-block .vcard .photo{float:right;padding:0;margin:0;height:6.5em;margin-top:-6.5em}
+#footer .title-block .vcard .photo,#header .title-block .vcard .photo{float:right;padding:0;margin:0;height:6.5em;margin-top:-6.2em}
 #footer .title-block .vcard .fn,#header .title-block .vcard .fn{margin-top:0;font-weight:bold}
 #footer .title-block .tabs,#header .title-block .tabs{clear:both;padding-left:1px;color:#fff;background-color:#000;font-size:1.2em;text-transform:uppercase;}
 #footer .title-block .tabs ul,#header .title-block .tabs ul{margin:0;padding:0;list-style-type:none;}

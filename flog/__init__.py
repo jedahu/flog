@@ -13,6 +13,7 @@ from itertools import islice
 from flog.cache import Cache
 from flask import Flask, Markup, render_template, send_file, abort
 from flask import redirect, url_for, make_response
+from mime import mimetype
 
 FLOG_CONF = os.environ.get('FLOG_CONF') or join(os.getcwd(), 'flogrc')
 app = Flask(__name__)
@@ -86,6 +87,7 @@ def media(fpath):
   '''Send file from filesystem'''
   return send_file(fpath)
 
+@mimetype('text/html')
 def page(url_path, abs_url):
   '''Render page at fpath with a base-url of abs_url'''
   @cache(url_path)
@@ -151,7 +153,7 @@ def asciidoc_html(fpath, abs_url):
     asciidoc.execute(f, buf, **asciidoc_kwargs(attrs={'base-url': abs_url}, inpath=fpath))
     html = buf.getvalue()
     buf.close()
-    return Markup(unicode(html, 'utf-8'))
+    return Markup(html)
 
 def asciidoc_html_from_string(s, abs_url):
   '''Generate html from asciidoc string, with a base-url of abs_url'''
@@ -319,6 +321,7 @@ def root():
 @app.route(join('/', POSTS_PATH, '<int:n>') + '/')
 def post(n):
   '''Blog post'''
+  @mimetype('text/html')
   @cache()
   def post_impl(n):
     content, meta = parse_post(n, join('/', POSTS_PATH, str(n)))
@@ -339,6 +342,7 @@ def post(n):
 @app.route(join('/', POSTS_PATH) + '/')
 def posts_index():
   '''Blog post index'''
+  @mimetype('text/html')
   @cache()
   def posts_index_impl():
     posts = os.listdir(join(SRC_DIR, POSTS_PATH))

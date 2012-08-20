@@ -43,7 +43,7 @@ class Cache:
         tmp_ef.flush()
         os.rename(tmp_ef.name, etag_path)
 
-  def cache(self, path, mimetype='text/html'):
+  def cache(self, path):
     full_url = os.path.join(self.source_url, path)
     paths = self.cache_paths(path)
     data_path, etag_path, lock_path = paths
@@ -74,17 +74,14 @@ class Cache:
         if self.ison and (use_cache or not error_code):
           if error_code:
             if os.path.isfile(data_path):
-              return flask.send_file(data_path, mimetype=mimetype)
+              return flask.send_file(data_path)
             else:
               return flask.abort(error_code)
           else:
-            return flask.send_file(data_path, mimetype=mimetype)
+            return flask.send_file(data_path)
         elif self.ison:
           return flask.abort(error_code)
         else:
-          data = fn(*args, **kwargs)
-          resp = flask.make_response(data)
-          resp.mimetype=mimetype
-          return resp
+          return fn(*args, **kwargs)
       return wrapper
     return decorate

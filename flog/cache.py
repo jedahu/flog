@@ -2,23 +2,6 @@ import urllib2
 import os
 import hashlib
 import flask
-from contextlib import contextmanager
-
-class Locked(Exception):
-  def __init__(self, lock_file):
-    self.lock_file = lock_file
-
-@contextmanager
-def file_lock(lock_file):
-  if os.path.exists(lock_file):
-    raise Locked(lock_file)
-  else:
-    open(lock_file, 'w').write('1')
-    try:
-      yield
-    finally:
-      os.remove(lock_file)
-
 
 class Cache:
   def __init__(self, cache_dir=None, source_url=None, on=True):
@@ -50,19 +33,15 @@ class Cache:
 
   def write_cache_files(self, paths, data, etag):
     data_path, etag_path, lock_path = paths
-    try:
-      with file_lock(lock_path):
-        with NamedTemporaryFile(mode='w', dir=self.cache_dir) as tmp_df:
-          tmp_df.write(data)
-          tmp_df.flush()
-          os.rename(tmp_df.name, data_path)
-        if etag:
-          with NamedTemporaryFile(mode='w', dir=self.cache_dir) as tmp_ef:
-            tmp_ef.write(etag)
-            tmp_ef.flush()
-            os.rename(tmp_ef.name, etag_path)
-    except Locked, e:
-      print 'File locked:', e.lock_file
+    with NamedTemporaryFile(mode='w', dir=self.cache_dir) as tmp_df:
+      tmp_df.write(data)
+      tmp_df.flush()
+      os.rename(tmp_df.name, data_path)
+    if etag:
+      with NamedTemporaryFile(mode='w', dir=self.cache_dir) as tmp_ef:
+        tmp_ef.write(etag)
+        tmp_ef.flush()
+        os.rename(tmp_ef.name, etag_path)
 
   def cache(self, path, mimetype='text/html'):
     full_url = os.path.join(self.source_url, path)

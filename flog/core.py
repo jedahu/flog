@@ -7,7 +7,6 @@ from StringIO import StringIO
 from werkzeug.contrib.atom import AtomFeed
 import dateutil.parser
 import mimetypes
-import magic
 import asciicode
 import codecs
 from itertools import islice
@@ -17,6 +16,7 @@ from flask import Flask, Markup, render_template, send_file, abort
 from flask import redirect, url_for, make_response
 from flog.source import Source
 import flog.config as config
+from flog.mime import mimetype
 
 FLOG_CONF = config.file_path()
 
@@ -86,6 +86,7 @@ def cache():
 
 
 # Helper functions
+@mimetype('text/html')
 def page(url_path):
   '''Render page from path'''
   @source(url_path)
@@ -97,6 +98,7 @@ def page(url_path):
 def asciicode_or_redirect(url_path, project=None):
   full_url = join(project['source'], url_path)
   index = project['index'] or 'README' if url_path.endswith('/') else None
+  @mimetype('text/html')
   @source(url_path, root=project['source'], index=index)
   def asciicode_impl(src):
     asciidoc_fn = asciicode_asciidoc(project)
@@ -223,7 +225,7 @@ def generate_feed():
       url=ROOT_URL,
       subtitle='...')
   for n, meta in post_metas(FEED_SIZE):
-    post_url = ROOT_URL + '/' + POSTS_PATH + '/' + n + '/'
+    post_url = ROOT_URL + '/' + POSTS_PATH + '/' + str(n) + '/'
     post_id = TAG_URI.format(n=n) if TAG_URI else post_url
     feed.add(meta['title'],
         title_type='text',
@@ -286,6 +288,7 @@ def asciicode_asciidoc(project):
 
 # Routes
 @app.route('/')
+@mimetype('text/html')
 def root():
   '''Site index'''
   @source('')
@@ -302,6 +305,7 @@ def post_redirect(n):
   return redirect(url_for('post', n=n))
 
 @app.route(join('/', POSTS_PATH, '<int:n>') + '/')
+@mimetype('text/html')
 def post(n):
   '''Blog post'''
   url_path = join(POSTS_PATH, str(n))
@@ -323,6 +327,7 @@ def post(n):
   return post_impl()
 
 @app.route(join('/', POSTS_PATH) + '/')
+@mimetype('text/html')
 def posts_index():
   '''Blog post index'''
   @cache()
@@ -356,24 +361,26 @@ def asciicode_docs(path):
   else:
     return abort(404)
 
-@app.route('/<path:path>')
-def catchall(path):
-  if path.endswith('/'):
-    return page(path)
-  return redirect(url_for('catchall', path=path + '/'))
-
 @app.route('/favicon.ico')
 @app.route('/favicon.ico/')
+@mimetype('image/x-icon')
 def favicon():
   return abort(404)
 
 @app.route(join('/', POSTS_PATH, 'feed') + '/')
+@mimetype('application/atom+xml')
 def posts_feed():
   '''Blog posts atom feed'''
   @cache()
   def posts_feed_impl():
     return generate_feed()
   return posts_feed_impl()
+
+@app.route('/<path:path>')
+def catchall(path):
+  if path.endswith('/'):
+    return page(path)
+  return redirect(url_for('catchall', path=path + '/'))
 
 
 @app.context_processor

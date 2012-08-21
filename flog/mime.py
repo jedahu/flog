@@ -9,5 +9,6 @@ def mimetype(mime):
         response = flask.make_response(ret)
       response.mimetype = mime
       return response
+    wrapper.__name__ = fn.__name__
     return wrapper
   return decorate

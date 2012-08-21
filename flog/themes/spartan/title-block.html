@@ -21,7 +21,7 @@
       <div class='role'>{{ config.VCARD.role|safe }}</div>
       <div class='note'>{{ config.VCARD.note|safe }}</div>
       {% if config.VCARD.photo %}
-        <img class='photo' src='{{ config.VCARD.photo }}'>
+        <img class='photo' src='{{ config.SOURCE_URL }}/{{ config.VCARD.photo }}'>
       {% endif %}
     </div>
   {% endif %}

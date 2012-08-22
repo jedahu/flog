@@ -66,10 +66,9 @@ CACHE_DIR = os.environ.get('FLOG_CACHE') or '/tmp/flog-cache'
 CACHE_EXPIRE = os.environ.get('FLOG_CACHE_EXPIRE') or 300
 
 CACHE_OPTS = {
-    'cache.type': 'file',
-    'cache.expire': CACHE_EXPIRE,
-    'cache.data_dir': join(CACHE_DIR, 'data'),
-    'cache.lock_dir': join(CACHE_DIR, 'lock')
+    'cache.type': 'dbm',
+    'cache.data_dir': CACHE_DIR,
+    'cache.expire': CACHE_EXPIRE
     }
 
 CACHE_MANAGER = CacheManager(**parse_cache_config_options(CACHE_OPTS))

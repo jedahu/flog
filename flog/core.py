@@ -334,11 +334,13 @@ def posts_index():
 
 @app.route('/' + PROJECTS_ROOT)
 def asciicode_root():
-  return redirect(url_for('asciicode_docs', path=''))
+  return redirect(url_for('asciicode_docs', path=''), code=301)
 
 # FIX
 @app.route(normpath(join('/' + PROJECTS_ROOT, '<path:path>')))
 def asciicode_docs(path):
+  if not path:
+    return catchall(PROJECTS_ROOT + '/')
   name_matches = [x for x in PROJECTS if path.startswith(x)]
   if not name_matches:
     return abort(404)

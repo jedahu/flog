@@ -97,7 +97,9 @@ def page(url_path):
 
 def asciicode_or_redirect(url_path, project=None):
   full_url = join(project['source'], url_path)
-  index = project['index'] or 'README' if url_path.endswith('/') else None
+  index = None
+  if url_path == '' or url_path.endswith('/'):
+    index = project['index'] or 'README'
   @mimetype('text/html')
   @source(url_path, root=project['source'], index=index)
   def asciicode_impl(src):

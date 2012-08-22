@@ -32,9 +32,15 @@ class Source:
   def raw_cache_get_or_raise(self, cache, key, error):
     val = cache._get_value(key)
     if val.has_value():
-      ret = val._get_value()
-      if ret:
-        return ret
+      val.namespace.acquire_read_lock()
+      try:
+        _stored, _expired, ret = val._get_value()
+        if ret:
+          return ret
+      except Exception:
+        raise error
+      finally:
+        val.namespace.release_read_lock()
     raise error
 
   def source(self, source_url, path):

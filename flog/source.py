@@ -82,7 +82,7 @@ class Source:
             return fn(*args, **kwargs)
 
         try:
-          return self.cache.get(key=fn.__name__+str(path), createfunc=create_cache_value)
+          return self.cache.get(key=fn.__name__+full_url, createfunc=create_cache_value)
         except SourceError, e:
           return flask.abort(e.code)
 

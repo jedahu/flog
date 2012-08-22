@@ -75,7 +75,7 @@ class Source:
           return response.read()
 
         def create_cache_value():
-          if path:
+          if path is not None:
             val = raw_cache.get(key=str(path), createfunc=create_raw_cache_value)
             return fn(val, *args, **kwargs)
           else:

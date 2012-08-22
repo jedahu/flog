@@ -347,7 +347,7 @@ def posts_index():
 
 @app.route('/' + PROJECTS_ROOT)
 def asciicode_root():
-  return redirect(url_for('asciicode_docs', path = '/'))
+  return redirect(url_for('asciicode_docs', path=''))
 
 # FIX
 @app.route(normpath(join('/' + PROJECTS_ROOT, '<path:path>')))

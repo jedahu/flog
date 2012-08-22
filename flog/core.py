@@ -294,7 +294,7 @@ def root():
 
 @app.route(join('/', POSTS_PATH, '<int:n>'))
 def post_redirect(n):
-  return redirect(url_for('post', n=n))
+  return redirect(url_for('post', n=n), code=301)
 
 @app.route(join('/', POSTS_PATH, '<int:n>') + '/')
 @mimetype('text/html')
@@ -369,7 +369,7 @@ def posts_feed():
 def catchall(path):
   if path.endswith('/'):
     return page(path)
-  return redirect(url_for('catchall', path=path + '/'))
+  return redirect(url_for('catchall', path=path + '/'), code=301)
 
 
 @app.context_processor

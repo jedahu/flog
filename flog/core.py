@@ -222,7 +222,8 @@ def parse_posts(count):
   posts = (get_data(n) for n in range(latest_post_n(), 0, -1))
   return islice(posts, 0, count)
 
-def generate_feed():
+@cache()
+def generate_feed(_latest): # phantom argument for caching purposes
   '''Generate an atom feed from latests posts'''
   feed = AtomFeed('Recent posts',
       feed_url=FEED_URL,
@@ -375,10 +376,7 @@ def favicon():
 @mimetype('application/atom+xml')
 def posts_feed():
   '''Blog posts atom feed'''
-  @cache()
-  def posts_feed_impl():
-    return generate_feed()
-  return posts_feed_impl()
+  return generate_feed(latest_postn())
 
 @app.route('/<path:path>')
 def catchall(path):

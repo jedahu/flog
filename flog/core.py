@@ -75,10 +75,13 @@ CACHE_MANAGER = CacheManager(**parse_cache_config_options(CACHE_OPTS))
 
 SOURCE = Source(cache_manager=CACHE_MANAGER)
 
-def source(path, root=SOURCE_URL, index='index'):
+def source_url(url, index=None):
   if index is None:
-    return SOURCE.source(root, path)
-  return SOURCE.source(root, join(path, index))
+    return SOURCE.source(url)
+  return SOURCE.source(join(url, index))
+
+def source(path, index='index'):
+  return source_url(join(SOURCE_URL, path), index=index)
 
 def cache():
   return CACHE_MANAGER.cache()
@@ -100,7 +103,7 @@ def asciicode_or_redirect(url_path, project=None):
   if url_path == '' or url_path.endswith('/'):
     index = project['index'] or 'README'
   @mimetype('text/html')
-  @source(url_path, root=project['source'], index=index)
+  @source_url(full_url, index=index)
   def asciicode_impl(src):
     asciidoc_fn = asciicode_asciidoc(project)
     args = dict(inpath=full_url)

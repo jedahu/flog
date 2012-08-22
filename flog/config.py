@@ -10,6 +10,8 @@ CONFIG_DEFAULTS = dict(
     ROOT_URL = None,
     SOURCE_URL = None,
     FEED_URL = None,
+    PROJECTS_ROOT = 'docs',
+    PROJECTS = {},
     STYLUS_PATH = 'stylus')
 
 def file_path():

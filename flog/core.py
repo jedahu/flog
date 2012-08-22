@@ -43,8 +43,8 @@ if not FEED_URL:
 ASCIIDOC_CONF = join(THIS_DIR, 'asciidoc-html5.conf')
 ASCIIDOC_USER_CONF = app.config['ASCIIDOC_CONF']
 STYLUS_PATH = app.config['STYLUS_PATH']
-PROJECTS_ROOT = app.config.get('PROJECTS_ROOT', 'docs')
-PROJECTS = app.config.get('PROJECTS', {})
+PROJECTS_ROOT = app.config['PROJECTS_ROOT']
+PROJECTS = app.config['PROJECTS']
 DEBUG = __name__ == '__main__' and 'nodebug' not in sys.argv
 
 app.static_folder = join(THEME_PATH, 'static')

@@ -10,8 +10,6 @@ import mimetypes
 import asciicode
 import codecs
 from itertools import islice
-from beaker.cache import CacheManager
-from beaker.util import parse_cache_config_options
 from flask import Flask, Markup, render_template, send_file, abort
 from flask import redirect, url_for, make_response
 from flog.source import Source
@@ -61,19 +59,8 @@ if not isdir(THEME_PATH):
   raise Exception('Theme not found: ' + THEME_PATH)
 
 
-# Cache
-CACHE_DIR = os.environ.get('FLOG_CACHE') or '/tmp/flog-cache'
-CACHE_EXPIRE = os.environ.get('FLOG_CACHE_EXPIRE') or 300
-
-CACHE_OPTS = {
-    'cache.type': 'dbm',
-    'cache.data_dir': CACHE_DIR,
-    'cache.expire': CACHE_EXPIRE
-    }
-
-CACHE_MANAGER = CacheManager(**parse_cache_config_options(CACHE_OPTS))
-
-SOURCE = Source(cache_manager=CACHE_MANAGER)
+# Source and cache
+SOURCE = Source()
 
 def source_url(url, index=None):
   if index is None:
@@ -84,7 +71,7 @@ def source(path, index='index'):
   return source_url(join(SOURCE_URL, path), index=index)
 
 def cache():
-  return CACHE_MANAGER.cache()
+  return SOURCE.cache()
 
 
 # Helper functions

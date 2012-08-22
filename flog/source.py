@@ -1,19 +1,24 @@
 import urllib2
 import time
 import flask
-import beaker.cache
-import beaker.util
 import os
+from beaker.cache import CacheManager
+from beaker.util import parse_cache_config_options
 
 class SourceError(Exception):
   def __init__(self, code):
     self.code = code
 
 class Source:
-  def __init__(self, cache_manager=None):
-    if not cache_manager:
-      raise Exception, 'No cache_manager.'
-    self.cache_manager = cache_manager
+  def __init__(self):
+    cache_dir = os.environ.get('FLOG_CACHE') or '/tmp/flog-cache'
+    cache_expire = os.environ.get('FLOG_CACHE_EXPIRE') or 300
+    cache_opts = {
+        'cache.type': 'dbm',
+        'cache.data_dir': cache_dir,
+        'cache.expire': cache_expire
+        }
+    self.cache_manager = CacheManager(**parse_cache_config_options(cache_opts))
     self.etag_cache = self.cache_manager.get_cache('etags', expire=365*24*60*60)
     self.fn_cache = self.cache_manager.get_cache('processed')
     self.url_cache = self.cache_manager.get_cache('urls')
@@ -42,6 +47,9 @@ class Source:
       finally:
         val.namespace.release_read_lock()
     raise error
+
+  def cache(self, *args, **kwargs):
+    return self.cache_manager.cache(*args, **kwargs)
 
   def source(self, url):
     def decorate(fn):

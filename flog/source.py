@@ -13,8 +13,8 @@ class Source:
   def __init__(self, cache_manager=None):
     if not cache_manager:
       raise Exception, 'No cache_manager.'
-    self.etags = {}
     self.cache_manager = cache_manager
+    self.etag_cache = self.cache_manager.get_cache('etags', expire=365*24*60*60)
     self.cache = self.cache_manager.get_cache('processed')
     self.raw_caches = {}
 
@@ -50,7 +50,7 @@ class Source:
       def wrapper(*args, **kwargs):
         def create_raw_cache_value():
           headers = {}
-          stored_etag = self.etags.get(full_url)
+          stored_etag = self.etag_cache.get(key=full_url, createfunc=lambda:None)
           if stored_etag:
             headers = {'If-None-Match': stored_etag}
           request = urllib2.Request(full_url, headers=headers)
@@ -71,7 +71,7 @@ class Source:
             return self.raw_cache_get_or_raise(raw_cache, path, error)
           etag = response.info().getheader('ETag', None)
           if etag:
-            self.etags[full_url] = etag
+            self.etag_cache.put(key=full_url, value=etag)
           return response.read()
 
         def create_cache_value():

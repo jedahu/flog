@@ -348,7 +348,7 @@ def asciicode_docs(path):
   name_slash = name + '/'
   proj = PROJECTS[name]
   if path == name:
-    return redirect(url_for('asciicode_docs', path=path + '/'))
+    return redirect(url_for('asciicode_docs', path=path + '/'), code=301)
   elif path.startswith(name_slash):
     url_path = path[len(name_slash):]
     return asciicode_or_redirect(url_path, project=proj)

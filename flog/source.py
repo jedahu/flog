@@ -60,7 +60,6 @@ class Source:
           stored_etag = self.etag_cache.get(key=url, createfunc=lambda:None)
           if stored_etag:
             headers = {'If-None-Match': stored_etag}
-          print url
           request = urllib2.Request(url, headers=headers)
           error = None
           error_code = None

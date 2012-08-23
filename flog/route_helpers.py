@@ -9,7 +9,6 @@ from flog.mime import mimetype
 def source_index(app, url, index=None):
   if index is None:
     index = app.config.INDEX_NAME
-  print os.path.join(url, index)
   return app.config.SOURCE.source(os.path.join(url, index))
 
 def source(app, url):

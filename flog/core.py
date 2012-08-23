@@ -122,30 +122,6 @@ def posts_index():
         prev_meta=prev_meta)
   return posts_index_impl()
 
-@app.route(join('/', c.JS_APPS_ROOT, '<path:path>'))
-def js_apps(path):
-  if not path:
-    return catchall(c.JS_APPS_ROOT + '/')
-  name_matches = [x for x in c.JS_APPS if path.startswith(x)]
-  if not name_matches:
-    return abort(404)
-  name = max(name_matches, key=len)
-  name_slash = name + '/'
-  url = c.JS_APPS[name]
-  @helper.source(app, url)
-  def js_apps_impl(src):
-    return src
-  if path == name:
-    return redirect(url_for('js_apps', path=path + '/'), code=301)
-  if path not in (name, name_slash):
-    src_url = join(split(url)[0], path[len(name_slash):])
-    try:
-      urllib2.urlopen(src_url)
-      return redirect(src_url)
-    except urllib2.URLError:
-      return js_apps_impl()
-  return js_apps_impl()
-
 @app.route('/favicon.ico/')
 @mimetype('image/x-icon')
 def favicon():

@@ -297,10 +297,6 @@ def root():
         meta=meta)
   return root_impl()
 
-@app.route(join('/', POSTS_PATH, '<int:n>'))
-def post_redirect(n):
-  return redirect(url_for('post', n=n), code=301)
-
 @app.route(join('/', POSTS_PATH, '<int:n>') + '/')
 @mimetype('text/html')
 def post(n):
@@ -337,11 +333,6 @@ def posts_index():
         prev_meta=prev_meta)
   return posts_index_impl()
 
-@app.route('/' + PROJECTS_ROOT)
-def asciicode_root():
-  return redirect(url_for('asciicode_docs', path=''), code=301)
-
-# FIX
 @app.route(normpath(join('/' + PROJECTS_ROOT, '<path:path>')))
 def asciicode_docs(path):
   if not path:
@@ -359,10 +350,6 @@ def asciicode_docs(path):
     return asciicode_or_redirect(url_path, project=proj)
   else:
     return abort(404)
-
-@app.route('/' + JS_APPS_ROOT)
-def js_apps_root():
-  return redirect(url_for('js_apps', path=''), code=301)
 
 @app.route(join('/', JS_APPS_ROOT, '<path:path>'))
 def js_apps(path):
@@ -388,7 +375,6 @@ def js_apps(path):
       return js_apps_impl()
   return js_apps_impl()
 
-@app.route('/favicon.ico')
 @app.route('/favicon.ico/')
 @mimetype('image/x-icon')
 def favicon():

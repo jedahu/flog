@@ -17,7 +17,7 @@
         {% for p in paths %}
         <li><a
           {% if p == current_path %}class='current'{% endif %}
-          href='{{ source }}/{{ p }}'>{{ source }}/{{ p }}</a></li>
+          href='{{ prefix }}/{{ p }}'>{{ p }}</a></li>
         {% endfor %}
       </ul>
     </nav>

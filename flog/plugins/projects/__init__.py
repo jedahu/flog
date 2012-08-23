@@ -7,6 +7,10 @@ import os
 from StringIO import StringIO
 from flog.mime import mimetype
 
+TEXT_MIMES = set([
+  'application/javascript'
+  ])
+
 def asciicode_or_redirect(app, url_path, project=None, name=None):
   full_url = os.path.join(project['source'], url_path)
   index = None
@@ -31,16 +35,19 @@ def asciicode_or_redirect(app, url_path, project=None, name=None):
     if url_path == '' or url_path.endswith('/'):
       current_path = os.path.join(url_path, index)
     return flask.render_template('project.html',
-        source=project['source'],
+        prefix=os.path.join('/', project['root'], name),
         title=project.get('title', name),
         current_path=current_path,
         content=flask.Markup(html),
         paths=paths)
 
   mime, _ = mimetypes.guess_type(url_path, strict=False)
-  if (mime and mime.startswith('text')) or not os.path.splitext(url_path)[1]:
+  if ((mime and mime.startswith('text'))
+      or not os.path.splitext(url_path)[1]
+      or mime in TEXT_MIMES
+      or mime in project['text_mimes']):
     return asciicode_impl()
-  return redirect(full_url)
+  return flask.redirect(full_url)
 
 def asciicode_asciidoc(app):
   c = app.config
@@ -78,8 +85,8 @@ def asciicode_docs(app, plug_conf, path):
     return flask.abort(404)
 
 def manifest_list(app, project, name):
-  manifest = project.get('manifest') or 'doc_manifest'
-  manifest_url = os.path.join(project['source'], name, project['manifest'])
+  manifest = project['manifest']
+  manifest_url = os.path.join(project['source'], project['manifest'])
   @helper.source(app, manifest_url)
   def manifest_list_impl(src):
     return src.splitlines()
@@ -91,7 +98,9 @@ def init_for_flog(app, plug_conf):
     if type(val) in (str, unicode):
       projects[name] = val = dict(source=val)
     val['index'] = val.get('index', 'README')
-    val['manifest'] = val.get('manifest', 'DOC_MANIFEST')
+    val['manifest'] = val.get('manifest', 'doc_manifest')
+    val['root'] = plug_conf['root']
+    val['text_mimes'] = plug_conf['text_mimes']
   app.add_url_rule(
       os.path.join('/' + plug_conf['root'], '<path:path>'),
       'asciicode_docs',

@@ -1,13 +1,9 @@
-import codecs
 import dateutil.parser
 import flog.config
 import flog.route_helpers as helper
 import importlib
 import mimetypes
 import os
-import re
-import sys
-import urllib2
 from StringIO import StringIO
 from flask import Flask, Markup, render_template, send_file, abort
 from flask import redirect, url_for, make_response

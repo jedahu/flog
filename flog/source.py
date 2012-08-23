@@ -13,13 +13,11 @@ class NotTextError(Exception):
   pass
 
 class Source:
-  def __init__(self):
-    cache_dir = os.environ.get('FLOG_CACHE') or '/tmp/flog-cache'
-    cache_expire = os.environ.get('FLOG_CACHE_EXPIRE') or 300
+  def __init__(self, path, expire):
     cache_opts = {
         'cache.type': 'dbm',
-        'cache.data_dir': cache_dir,
-        'cache.expire': cache_expire
+        'cache.data_dir': path,
+        'cache.expire': expire
         }
     self.cache_manager = CacheManager(**parse_cache_config_options(cache_opts))
     self.etag_cache = self.cache_manager.get_cache('etags', expire=365*24*60*60)

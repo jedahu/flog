@@ -12,69 +12,39 @@ import codecs
 from itertools import islice
 from flask import Flask, Markup, render_template, send_file, abort
 from flask import redirect, url_for, make_response
-from flog.source import Source
-import flog.config as config
+import flog.config
 from flog.mime import mimetype
 import urllib2
 
-FLOG_CONF = config.file_path()
-
 app = Flask(__name__)
-app.config.from_pyfile(FLOG_CONF)
+c = flog.config.Config(app.config)
+app.config = c
 
-config.apply_defaults(app)
-
-THIS_DIR = app.config.root_path
-FLOG_DIR = dirname(FLOG_CONF)
-SRC_DIR = join(FLOG_DIR, app.config['SRC_DIR'])
-POSTS_PATH = app.config['POSTS_PATH']
-ROOT_URL = app.config['ROOT_URL']
-SOURCE_URL = os.environ.get('SOURCE_URL') or app.config['SOURCE_URL']
-app.config['SOURCE_URL'] = SOURCE_URL
-TAG_URI = app.config['TAG_URI']
-THEME_PATH = join(FLOG_DIR, app.config['THEME_PATH'])
-if not isdir(THEME_PATH):
-  THEME_PATH = join(THIS_DIR, 'themes', app.config['THEME_PATH'])
-FEED_SIZE = app.config['FEED_SIZE']
-FEED_URL = app.config['FEED_URL']
-if not FEED_URL:
-  FEED_URL = ROOT_URL + '/' + POSTS_PATH + '/feed/'
-ASCIIDOC_CONF = join(THIS_DIR, 'asciidoc-html5.conf')
-ASCIIDOC_USER_CONF = app.config['ASCIIDOC_CONF']
-STYLUS_PATH = app.config['STYLUS_PATH']
-PROJECTS_ROOT = app.config['PROJECTS_ROOT']
-PROJECTS = app.config['PROJECTS']
-JS_APPS_ROOT = app.config['JS_APPS_ROOT']
-JS_APPS = app.config['JS_APPS']
-DEBUG = __name__ == '__main__' and 'nodebug' not in sys.argv
-
-app.static_folder = join(THEME_PATH, 'static')
-app.template_folder = THEME_PATH
+app.static_folder = join(c.THEME_PATH, 'static')
+app.template_folder = c.THEME_PATH
 
 # Config checks
-if not ROOT_URL:
+if not c.ROOT_URL:
   raise Exception('ROOT_URL not set')
-if not SOURCE_URL:
+if not c.SOURCE_URL:
   raise Exception('SOURCE_URL not set')
-if not isfile(FLOG_CONF):
-  raise Exception('FLOG_CONF not found: ' + FLOG_CONF)
-if not isdir(THEME_PATH):
-  raise Exception('Theme not found: ' + THEME_PATH)
+if not isfile(c.FLOG_CONF):
+  raise Exception('FLOG_CONF not found: ' + c.FLOG_CONF)
+if not isdir(c.THEME_PATH):
+  raise Exception('Theme not found: ' + c.THEME_PATH)
 
 
 # Source and cache
-SOURCE = Source()
-
 def source_url(url, index=None):
   if index is None:
-    return SOURCE.source(url)
-  return SOURCE.source(join(url, index))
+    return c.SOURCE.source(url)
+  return c.SOURCE.source(join(url, index))
 
 def source(path, index='index'):
-  return source_url(join(SOURCE_URL, path), index=index)
+  return source_url(join(c.SOURCE_URL, path), index=index)
 
 def cache():
-  return SOURCE.cache()
+  return c.SOURCE.cache()
 
 
 # Helper functions
@@ -112,12 +82,12 @@ def parse_page(url_path):
   return content, meta
 
 def parse_post(n):
-  url_path = join(POSTS_PATH, str(n))
+  url_path = join(c.POSTS_PATH, str(n))
   return parse_page(url_path)
 
 def post_exists(n):
   '''Check if post n exists in filesystem'''
-  url_path = join(POSTS_PATH, str(n))
+  url_path = join(c.POSTS_PATH, str(n))
   @source(url_path)
   def post_exists_impl(src):
     return True
@@ -126,7 +96,7 @@ def post_exists(n):
 
 def post_meta(n):
   '''Return meta information from post n'''
-  url_path = join(POSTS_PATH, str(n))
+  url_path = join(c.POSTS_PATH, str(n))
   return asciidoc_meta(url_path)
 
 
@@ -196,7 +166,7 @@ def asciidoc_meta(url_path):
     return meta
   return asciidoc_meta_impl()
 
-@source(join(POSTS_PATH, 'latest'), index=None)
+@source(join(c.POSTS_PATH, 'latest'), index=None)
 def latest_post_n(src):
   return int(src)
 
@@ -218,12 +188,12 @@ def parse_posts(count):
 def generate_feed(_latest): # phantom argument for caching purposes
   '''Generate an atom feed from latests posts'''
   feed = AtomFeed('Recent posts',
-      feed_url=FEED_URL,
-      url=ROOT_URL,
+      feed_url=c.FEED_URL,
+      url=c.ROOT_URL,
       subtitle='...')
-  for n, meta in post_metas(FEED_SIZE):
-    post_url = ROOT_URL + '/' + POSTS_PATH + '/' + str(n) + '/'
-    post_id = TAG_URI.format(n=n) if TAG_URI else post_url
+  for n, meta in post_metas(c.FEED_SIZE):
+    post_url = c.ROOT_URL + '/' + c.POSTS_PATH + '/' + str(n) + '/'
+    post_id = c.TAG_URI.format(n=n) if c.TAG_URI else post_url
     feed.add(meta['title'],
         title_type='text',
         summary=meta.get('summary'),
@@ -244,9 +214,9 @@ def asciidoc_kwargs(**args):
   '''Return dict of default asciidoc.execute() keyword args'''
   def latest_post_titles():
     return app.jinja_env.get_or_select_template('latest_post_titles.html')\
-        .render(dict(posts=post_metas(FEED_SIZE), config=app.config))
+        .render(dict(posts=post_metas(c.FEED_SIZE), config=app.config))
   kwargs = dict(
-      conf_files=[ASCIIDOC_CONF],
+      conf_files=[c.ASCIIDOC_FLOG_CONF],
       backend='html5',
       attrs={
         'flog_latest_post_titles': latest_post_titles(),
@@ -256,8 +226,8 @@ def asciidoc_kwargs(**args):
       )
   for k, v in app.config.items():
     kwargs['attrs']['flog_' + k] = v
-  if ASCIIDOC_USER_CONF and ASCIIDOC_USER_CONF.strip():
-    conf_path = join(FLOG_DIR, ASCIIDOC_USER_CONF)
+  if c.ASCIIDOC_CONF and c.ASCIIDOC_CONF.strip():
+    conf_path = join(c.FLOG_DIR, c.ASCIIDOC_CONF)
     kwargs['conf_files'].append(conf_path)
   for k, v in args.items():
     if k in kwargs and type(kwargs[k]) is list:
@@ -292,16 +262,16 @@ def root():
   def root_impl(src):
     content, meta = parse_page('')
     return render_template('index.html',
-        posts=post_metas(FEED_SIZE),
+        posts=post_metas(c.FEED_SIZE),
         content=content,
         meta=meta)
   return root_impl()
 
-@app.route(join('/', POSTS_PATH, '<int:n>') + '/')
+@app.route(join('/', c.POSTS_PATH, '<int:n>') + '/')
 @mimetype('text/html')
 def post(n):
   '''Blog post'''
-  url_path = join(POSTS_PATH, str(n))
+  url_path = join(c.POSTS_PATH, str(n))
   @source(url_path)
   def post_impl(src):
     content, meta = parse_page(url_path)
@@ -319,30 +289,30 @@ def post(n):
         content=content)
   return post_impl()
 
-@app.route(join('/', POSTS_PATH) + '/')
+@app.route(join('/', c.POSTS_PATH) + '/')
 @mimetype('text/html')
 def posts_index():
   '''Blog post index'''
   @cache()
   def posts_index_impl():
-    prev_meta = latest_post_n() - FEED_SIZE
+    prev_meta = latest_post_n() - c.FEED_SIZE
     if prev_meta <= 0:
       prev_meta = None
     return render_template('posts_index.html',
-        posts=parse_posts(FEED_SIZE),
+        posts=parse_posts(c.FEED_SIZE),
         prev_meta=prev_meta)
   return posts_index_impl()
 
-@app.route(normpath(join('/' + PROJECTS_ROOT, '<path:path>')))
+@app.route(normpath(join('/' + c.PROJECTS_ROOT, '<path:path>')))
 def asciicode_docs(path):
   if not path:
-    return catchall(PROJECTS_ROOT + '/')
-  name_matches = [x for x in PROJECTS if path.startswith(x)]
+    return catchall(c.PROJECTS_ROOT + '/')
+  name_matches = [x for x in c.PROJECTS if path.startswith(x)]
   if not name_matches:
     return abort(404)
   name = max(name_matches, key=len)
   name_slash = name + '/'
-  proj = PROJECTS[name]
+  proj = c.PROJECTS[name]
   if path == name:
     return redirect(url_for('asciicode_docs', path=path + '/'), code=301)
   elif path.startswith(name_slash):
@@ -351,16 +321,16 @@ def asciicode_docs(path):
   else:
     return abort(404)
 
-@app.route(join('/', JS_APPS_ROOT, '<path:path>'))
+@app.route(join('/', c.JS_APPS_ROOT, '<path:path>'))
 def js_apps(path):
   if not path:
-    return catchall(JS_APPS_ROOT + '/')
-  name_matches = [x for x in JS_APPS if path.startswith(x)]
+    return catchall(c.JS_APPS_ROOT + '/')
+  name_matches = [x for x in c.JS_APPS if path.startswith(x)]
   if not name_matches:
     return abort(404)
   name = max(name_matches, key=len)
   name_slash = name + '/'
-  url = JS_APPS[name]
+  url = c.JS_APPS[name]
   @source_url(url)
   def js_apps_impl(src):
     return src
@@ -380,7 +350,7 @@ def js_apps(path):
 def favicon():
   return abort(404)
 
-@app.route(join('/', POSTS_PATH, 'feed') + '/')
+@app.route(join('/', c.POSTS_PATH, 'feed') + '/')
 @mimetype('application/atom+xml')
 def posts_feed():
   '''Blog posts atom feed'''

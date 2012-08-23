@@ -12,13 +12,13 @@ CONFIG_DEFAULTS = dict(
     ROOT_URL = None,
     SOURCE_URL = None,
     FEED_URL = None,
-    PROJECTS_ROOT = 'docs',
-    PROJECTS = {},
     JS_APPS_ROOT = 'apps',
     JS_APPS = {},
     STYLUS_PATH = 'stylus',
     CACHE_PATH = '/tmp/flog-cache',
-    CACHE_EXPIRE = 300
+    CACHE_EXPIRE = 300,
+    INDEX_NAME = 'index',
+    PLUGINS = {}
     )
 
 class Config(flask.config.Config):

@@ -1,20 +1,20 @@
-import os
-from os.path import abspath, dirname, join, isdir, isfile, getmtime
-from os.path import normpath, commonprefix, splitext, split
-import sys
-import re
-from StringIO import StringIO
-from werkzeug.contrib.atom import AtomFeed
-import dateutil.parser
-import mimetypes
-import asciicode
 import codecs
-from itertools import islice
+import dateutil.parser
+import flog.config
+import flog.route_helpers as helper
+import importlib
+import mimetypes
+import os
+import re
+import sys
+import urllib2
+from StringIO import StringIO
 from flask import Flask, Markup, render_template, send_file, abort
 from flask import redirect, url_for, make_response
-import flog.config
 from flog.mime import mimetype
-import urllib2
+from os.path import abspath, dirname, join, isdir, isfile, getmtime
+from os.path import normpath, commonprefix, splitext, split
+from werkzeug.contrib.atom import AtomFeed
 
 app = Flask(__name__)
 c = flog.config.Config(app.config)
@@ -47,151 +47,14 @@ def cache():
   return c.SOURCE.cache()
 
 
-# Helper functions
-@mimetype('text/html')
-def page(url_path):
-  '''Render page from path'''
-  @source(url_path)
-  def page_impl(src):
-    content, meta = parse_page(url_path)
-    return render_template('page.html', meta=meta, content=content)
-  return page_impl()
-
-def asciicode_or_redirect(url_path, project=None):
-  if type(project) in (str, unicode):
-    project = dict(source=project)
-  full_url = join(project['source'], url_path)
-  index = None
-  if url_path == '' or url_path.endswith('/'):
-    index = project.get('index') or 'README'
-  @mimetype('text/html')
-  @source_url(full_url, index=index)
-  def asciicode_impl(src):
-    asciidoc_fn = asciicode_asciidoc(project)
-    args = dict(inpath=full_url)
-    return asciicode.process_string(asciidoc_fn, StringIO(src), asciidoc_args=args).getvalue()
-  mime, _ = mimetypes.guess_type(url_path, strict=False)
-  if (mime and mime.startswith('text')) or not splitext(url_path)[1]:
-    return asciicode_impl()
-  return redirect(full_url)
-
-def parse_page(url_path):
-  '''Return html content and meta information from src from url_path'''
-  content = asciidoc_html(url_path)
-  meta = asciidoc_meta(url_path)
-  return content, meta
-
-def parse_post(n):
-  url_path = join(c.POSTS_PATH, str(n))
-  return parse_page(url_path)
-
-def post_exists(n):
-  '''Check if post n exists in filesystem'''
-  url_path = join(c.POSTS_PATH, str(n))
-  @source(url_path)
-  def post_exists_impl(src):
-    return True
-  ret = post_exists_impl()
-  return ret is True
-
-def post_meta(n):
-  '''Return meta information from post n'''
-  url_path = join(c.POSTS_PATH, str(n))
-  return asciidoc_meta(url_path)
-
-
-# Regexps for parsing asciidoc meta information
-META_RE = re.compile(r'^:(.+?): (.+)$')
-AUTHOR_RE = re.compile(r'^([^\s].+?) <([^\s]+?)>$')
-REV_RE = re.compile(r'^(?:(.+?),)? *(.+?): *(.+?)$')
-
-def asciidoc_html(url_path):
-  '''Generate html from asciidoc file at url_path/index'''
-  @source(url_path)
-  def asciidoc_html_impl(src):
-    buf = StringIO()
-    asciidoc.execute(
-        StringIO(src),
-        buf,
-        **asciidoc_kwargs(attrs={'flog_url_path': url_path})) #, inpath=fpath))
-    html = buf.getvalue()
-    buf.close()
-    out = html
-    if type(html) is str:
-      out = unicode(html, 'utf-8')
-    return Markup(out)
-  return asciidoc_html_impl()
-
-def asciidoc_meta(url_path):
-  '''Parse meta information from asciidoc file at url_path/index'''
-  @source(url_path)
-  def asciidoc_meta_impl(src):
-    title = None
-    meta = {}
-    authors = []
-    revs = []
-    lines = list(islice(enumerate(StringIO(src)), 0, 20))
-    for idx, line in lines:
-      line = unicode(line[:-1], 'utf-8')
-      stripped = line.rstrip()
-      meta_match = META_RE.match(stripped)
-      author_match = AUTHOR_RE.match(stripped)
-      rev_match = REV_RE.match(stripped)
-      if line.strip() != '' and title is None:
-        if lines[idx + 1][1][:-1] == '=' * len(line):
-          title = line
-          meta['title'] = title
-        else: # No title
-          title = True
-      elif line.strip() == '' and title != None:
-        break
-      elif meta_match:
-        name = meta_match.group(1).lower()
-        value = meta_match.group(2)
-        meta[name] = value
-      elif author_match:
-        author = author_match.group(1)
-        email = author_match.group(2)
-        url = None
-        authors.append({'name':author, 'email':email, 'url':url})
-      elif rev_match:
-        rev = rev_match.group(1)
-        date = rev_match.group(2)
-        remark = rev_match.group(3)
-        revs.append({'rev':rev, 'date':date, 'remark':remark})
-      else:
-        continue
-    meta['authors'] = authors
-    meta['revisions'] = revs
-    return meta
-  return asciidoc_meta_impl()
-
-@source(join(c.POSTS_PATH, 'latest'), index=None)
-def latest_post_n(src):
-  return int(src)
-
-def post_metas(count):
-  metas = (
-      (n, post_meta(n))
-      for n in range(latest_post_n(), 0, -1)
-      )
-  return islice(metas, 0, count)
-
-def parse_posts(count):
-  def get_data(n):
-    content, meta = parse_post(n)
-    return n, content, meta
-  posts = (get_data(n) for n in range(latest_post_n(), 0, -1))
-  return islice(posts, 0, count)
-
-@cache()
+@helper.cache(app)
 def generate_feed(_latest): # phantom argument for caching purposes
   '''Generate an atom feed from latests posts'''
   feed = AtomFeed('Recent posts',
       feed_url=c.FEED_URL,
       url=c.ROOT_URL,
       subtitle='...')
-  for n, meta in post_metas(c.FEED_SIZE):
+  for n, meta in helper.post_metas(app, c.FEED_SIZE):
     post_url = c.ROOT_URL + '/' + c.POSTS_PATH + '/' + str(n) + '/'
     post_id = c.TAG_URI.format(n=n) if c.TAG_URI else post_url
     feed.add(meta['title'],
@@ -208,61 +71,17 @@ def generate_feed(_latest): # phantom argument for caching purposes
 
 
 
-# AsciiDocAPI
-import asciidoc
-def asciidoc_kwargs(**args):
-  '''Return dict of default asciidoc.execute() keyword args'''
-  def latest_post_titles():
-    return app.jinja_env.get_or_select_template('latest_post_titles.html')\
-        .render(dict(posts=post_metas(c.FEED_SIZE), config=app.config))
-  kwargs = dict(
-      conf_files=[c.ASCIIDOC_FLOG_CONF],
-      backend='html5',
-      attrs={
-        'flog_latest_post_titles': latest_post_titles(),
-        'filter-modules': 'asciicode',
-        'pygments': 'pygments'
-        }
-      )
-  for k, v in app.config.items():
-    kwargs['attrs']['flog_' + k] = v
-  if c.ASCIIDOC_CONF and c.ASCIIDOC_CONF.strip():
-    conf_path = join(c.FLOG_DIR, c.ASCIIDOC_CONF)
-    kwargs['conf_files'].append(conf_path)
-  for k, v in args.items():
-    if k in kwargs and type(kwargs[k]) is list:
-      kwargs[k].extend(v)
-    elif k in kwargs and type(kwargs[k]) is dict:
-      kwargs[k].update(v)
-    else:
-      kwargs[k] = v
-  return kwargs
-
-# FIX
-def asciicode_asciidoc(project):
-  def execute(infile, outfile, **kwargs):
-    if 'attrs' not in kwargs:
-      kwargs['attrs'] = {}
-    if 'conf_files' not in kwargs:
-      kwargs['conf_files'] = []
-    kwargs['attrs'].update({
-      'pygments': 'pygments',
-      'filter-modules': 'asciicode'
-      })
-    asciidoc.execute(infile, outfile, **kwargs)
-  return execute
-
 
 # Routes
 @app.route('/')
 @mimetype('text/html')
 def root():
   '''Site index'''
-  @source('')
+  @helper.source_index(app, join(c.SOURCE_URL, ''))
   def root_impl(src):
-    content, meta = parse_page('')
+    content, meta = helper.parse_page(app, '')
     return render_template('index.html',
-        posts=post_metas(c.FEED_SIZE),
+        posts=helper.post_metas(app, c.FEED_SIZE),
         content=content,
         meta=meta)
   return root_impl()
@@ -272,15 +91,15 @@ def root():
 def post(n):
   '''Blog post'''
   url_path = join(c.POSTS_PATH, str(n))
-  @source(url_path)
+  @helper.source_index(app, join(c.SOURCE_URL, url_path))
   def post_impl(src):
-    content, meta = parse_page(url_path)
+    content, meta = helper.parse_page(app, url_path)
     prev_meta = None
     next_meta = None
     if n > 1:
-      prev_meta = post_meta(n - 1)
-    if n < latest_post_n():
-      next_meta = post_meta(n + 1)
+      prev_meta = post_meta(app, n - 1)
+    if n < latest_post_n(app):
+      next_meta = post_meta(app, n + 1)
     return render_template('post.html',
         n=n,
         meta=meta,
@@ -293,33 +112,15 @@ def post(n):
 @mimetype('text/html')
 def posts_index():
   '''Blog post index'''
-  @cache()
+  @helper.cache(app)
   def posts_index_impl():
-    prev_meta = latest_post_n() - c.FEED_SIZE
+    prev_meta = helper.latest_post_n(app) - c.FEED_SIZE
     if prev_meta <= 0:
       prev_meta = None
     return render_template('posts_index.html',
-        posts=parse_posts(c.FEED_SIZE),
+        posts=helper.parse_posts(app, c.FEED_SIZE),
         prev_meta=prev_meta)
   return posts_index_impl()
-
-@app.route(normpath(join('/' + c.PROJECTS_ROOT, '<path:path>')))
-def asciicode_docs(path):
-  if not path:
-    return catchall(c.PROJECTS_ROOT + '/')
-  name_matches = [x for x in c.PROJECTS if path.startswith(x)]
-  if not name_matches:
-    return abort(404)
-  name = max(name_matches, key=len)
-  name_slash = name + '/'
-  proj = c.PROJECTS[name]
-  if path == name:
-    return redirect(url_for('asciicode_docs', path=path + '/'), code=301)
-  elif path.startswith(name_slash):
-    url_path = path[len(name_slash):]
-    return asciicode_or_redirect(url_path, project=proj)
-  else:
-    return abort(404)
 
 @app.route(join('/', c.JS_APPS_ROOT, '<path:path>'))
 def js_apps(path):
@@ -331,7 +132,7 @@ def js_apps(path):
   name = max(name_matches, key=len)
   name_slash = name + '/'
   url = c.JS_APPS[name]
-  @source_url(url)
+  @helper.source(app, url)
   def js_apps_impl(src):
     return src
   if path == name:
@@ -354,12 +155,12 @@ def favicon():
 @mimetype('application/atom+xml')
 def posts_feed():
   '''Blog posts atom feed'''
-  return generate_feed(latest_postn())
+  return generate_feed(latest_postn(app))
 
 @app.route('/<path:path>')
 def catchall(path):
   if path.endswith('/'):
-    return page(path)
+    return helper.page(app, path)
   return redirect(url_for('catchall', path=path + '/'), code=301)
 
 
@@ -367,3 +168,8 @@ def catchall(path):
 def inject_template_vars():
   '''Make these vars available to all templates'''
   return dict(len=len)
+
+
+for mod_name, plug_conf in c.PLUGINS.items():
+  module = importlib.import_module(mod_name)
+  module.init_for_flog(app, plug_conf)

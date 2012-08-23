@@ -1,6 +1,6 @@
 import os
 from os.path import abspath, dirname, join, isdir, isfile, getmtime
-from os.path import normpath, commonprefix, splitext
+from os.path import normpath, commonprefix, splitext, split
 import sys
 import re
 from StringIO import StringIO
@@ -15,6 +15,7 @@ from flask import redirect, url_for, make_response
 from flog.source import Source
 import flog.config as config
 from flog.mime import mimetype
+import urllib2
 
 FLOG_CONF = config.file_path()
 
@@ -43,6 +44,8 @@ ASCIIDOC_USER_CONF = app.config['ASCIIDOC_CONF']
 STYLUS_PATH = app.config['STYLUS_PATH']
 PROJECTS_ROOT = app.config['PROJECTS_ROOT']
 PROJECTS = app.config['PROJECTS']
+JS_APPS_ROOT = app.config['JS_APPS_ROOT']
+JS_APPS = app.config['JS_APPS']
 DEBUG = __name__ == '__main__' and 'nodebug' not in sys.argv
 
 app.static_folder = join(THEME_PATH, 'static')
@@ -85,6 +88,8 @@ def page(url_path):
   return page_impl()
 
 def asciicode_or_redirect(url_path, project=None):
+  if type(project) in (str, unicode):
+    project = dict(source=project)
   full_url = join(project['source'], url_path)
   index = None
   if url_path == '' or url_path.endswith('/'):
@@ -354,6 +359,34 @@ def asciicode_docs(path):
     return asciicode_or_redirect(url_path, project=proj)
   else:
     return abort(404)
+
+@app.route('/' + JS_APPS_ROOT)
+def js_apps_root():
+  return redirect(url_for('js_apps', path=''), code=301)
+
+@app.route(join('/', JS_APPS_ROOT, '<path:path>'))
+def js_apps(path):
+  if not path:
+    return catchall(JS_APPS_ROOT + '/')
+  name_matches = [x for x in JS_APPS if path.startswith(x)]
+  if not name_matches:
+    return abort(404)
+  name = max(name_matches, key=len)
+  name_slash = name + '/'
+  url = JS_APPS[name]
+  @source_url(url)
+  def js_apps_impl(src):
+    return src
+  if path == name:
+    return redirect(url_for('js_apps', path=path + '/'), code=301)
+  if path not in (name, name_slash):
+    src_url = join(split(url)[0], path[len(name_slash):])
+    try:
+      urllib2.urlopen(src_url)
+      return redirect(src_url)
+    except urllib2.URLError:
+      return js_apps_impl()
+  return js_apps_impl()
 
 @app.route('/favicon.ico')
 @app.route('/favicon.ico/')

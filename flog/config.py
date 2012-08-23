@@ -12,6 +12,8 @@ CONFIG_DEFAULTS = dict(
     FEED_URL = None,
     PROJECTS_ROOT = 'docs',
     PROJECTS = {},
+    JS_APPS_ROOT = 'apps',
+    JS_APPS = {},
     STYLUS_PATH = 'stylus')
 
 def file_path():

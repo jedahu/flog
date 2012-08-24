@@ -100,7 +100,7 @@ def init_for_flog(app, plug_conf):
     val['index'] = val.get('index', 'README')
     val['manifest'] = val.get('manifest', 'doc_manifest')
     val['root'] = plug_conf['root']
-    val['text_mimes'] = plug_conf['text_mimes']
+    val['text_mimes'] = set(plug_conf.get('text_mimes', []))
   app.add_url_rule(
       os.path.join('/' + plug_conf['root'], '<path:path>'),
       'asciicode_docs',

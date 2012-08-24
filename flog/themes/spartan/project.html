@@ -8,7 +8,6 @@
       <link rel='stylesheet' href='{{ url_for('static', filename='css/pygment.css') }}'>
       <link rel='stylesheet' href='{{ url_for('static', filename='css/project.css') }}'>
       <script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
-      <script src='{{ url_for('static', filename='js/project.js') }}'></script>
       <meta name='MSSmartTagsPreventParsing' content='true'>
     {% endblock %}
   </head>
@@ -24,27 +23,29 @@
         {% endfor %}
       </ul>
     </nav>
-    <ul id='flog-names'>
-      {% for n in names|sort %}
-        <li><a href='#{{ n }}'>{{ n }}</a></li>
-      {% endfor %}
-    </ul>
+    {% if headings %}
+      <div id='flog-headings'>
+        {% if names %}
+          <div class='toggle'>show toc</div>
+        {% endif %}
+        <ul {% if names %}style='visibility:hidden;opacity:0'{% endif %}>
+          {% for h in headings %}
+          <li class='level{{ h.level }}'>
+            <a href='#{{ h.id }}'>{{ h.text }}</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+    {% if names %}
+      <ul id='flog-names'>
+        {% for n in names|sort %}
+          <li><a href='#{{ n }}'>{{ n }}</a></li>
+        {% endfor %}
+      </ul>
+    {% endif %}
     <div id='flog-file'>
       <div id='flog-content'>
-        {% if headings %}
-          <div id='flog-headings'>
-            <div class='toggle'>
-              <div class='tab'>toc</div>
-              <ul>
-                {% for h in headings %}
-                <li class='level{{ h.level }}'>
-                  <a href='#{{ h.id }}'>{{ h.text }}</a>
-                </li>
-                {% endfor %}
-              </ul>
-            </div>
-          </div>
-        {% endif %}
         <article>{{ content }}</article>
       </div>
     </div>

@@ -1,17 +1,27 @@
+@import 'nib'
+
+content-width = 40em
+manifest-width = 12em
+content-padding = 1em
+
 body
   margin 0
-  background-color #1c4e63
+  background-color #e7eff3
 
 ul
   list-style-position inside
 
 #flog-file
-  background-color white
-  margin-left 15em
-  padding-top 1.2em
+  background-color #fafafa
+  margin-left manifest-width + 2em
+  box-shadow 0 0 1em 0
 
 #flog-content
-  margin-left 1em
+  margin 0
+  padding: 1.2em content-padding 3em content-padding
+  box-shadow 0.5em -0.5em 1em -0.5em
+  width content-width
+  background-color white
 
   .paragraph
 
@@ -21,95 +31,88 @@ ul
       .name
         color black
 
+  .listingblock
+    padding-left content-padding
+    padding-right content-padding
+    margin-left 0 - content-padding
+    margin-right 0 - content-padding
+
 #flog-manifest
   position fixed
   left 0
-  width 13em
+  width manifest-width
   padding 1.2em
-  color #98dbcc
+  color grey
+
+  a,
+  a:link,
+  a:hover
+    color inherit
 
   h1
     color white
-    font-size
-
-    a,
-    a:link,
-    a:hover
-      color white
+    text-shadow -0.1em 0.1em 0.3em black
 
   ul
     list-style-type none
+    margin 0
+    padding 0
+
+    li
+      clear both
+
+    a
+      display block
+      margin-left 1em
+      text-indent -1em
+      width manifest-width - 1.8em
+      float left
 
   li.current:after
-    color white
+    color red
     float right
     font-weight bold
     content '>'
 
-  a,
-  a:link,
-  a:hover
-    color #98dbcc
-
-#flog-names
-  position fixed
-  list-style-type none
-  left 57em
-  top 2em
-
-  a,
-  a:link,
-  a:hover
-    color grey
-
+#flog-names,
 #flog-headings
   position fixed
-  width 40em
-  top 0
+  left 57em
+  top 3.6em
+  color grey
 
-  .toggle,
-  .toggle a,
-  .toggle a:link,
-  .toggle a:hover
-    display block
-    background-color #1c4e63
-    color #98dbcc
+  a,
+  a:link,
+  a:hover
+    color inherit
 
-  .toggle:hover ul
-    display block
+#flog-headings .toggle
+  position fixed
+  margin-top -1.8em
+  font-style italic
 
-  .tab
-    display inline-block
-    text-align right
-    float right
-    position relative
-    z-index 2
-    padding-top 0.1em
-    padding-bottom 0.1em
-    padding-left 0.2em
-    padding-right 0.2em
-    line-height 1em
-    cursor pointer
-    color white
-    background-color inherit
+#flog-names,
+#flog-headings ul
+  list-style-type none
+  padding 0
+  margin 0
+  transition opacity 0.5s
+
+#flog-headings li
+  &.level1
+    padding-left 0
+
+  &.level2
+    padding-left 1em
+
+  &.level3
+    padding-left 2em
+
+#flog-headings:hover
 
   ul
-    display none
-    list-style-type none
-    float right
-    clear right
-    background-color inherit
-    padding 1em
-    padding-top 2em
-    margin-top -1.2em
-
-  li
-
-    &.level1
-      padding-left 0
-
-    &.level2
-      padding-left 1em
-
-    &.level3
-      padding-left 2em
+    opacity 1 !important
+    visibility visible !important
+    background-color #fafafa
+    height 100em
+    width 100em

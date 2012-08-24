@@ -1,4 +1,9 @@
 body{margin:0;background-color:#1c4e63}
-#file{background-color:#fff;margin-left:17em}
-#manifest{float:left;width:14em;padding:.8em;color:#98dbcc;}
-#manifest h1{color:#fff}
+#file{background-color:#fff;margin-left:15em;padding-top:1.2em}
+#current-path{color:#808080}
+#manifest{float:left;width:13em;padding:1.2em;color:#98dbcc;}
+#manifest h1{color:#fff;}
+#manifest h1 font-size,#manifest h1 a,#manifest h1 a:link,#manifest h1 a:hover{color:#fff}
+#manifest ul{list-style-type:none}
+#manifest li.current:after{color:#fff;float:right;font-weight:bold;content:'>'}
+#manifest a,#manifest a:link,#manifest a:hover{color:#98dbcc}

@@ -4,13 +4,37 @@ body
 
 #file
   background-color white
-  margin-left 17em
+  margin-left 15em
+  padding-top 1.2em
+
+#current-path
+  color grey
 
 #manifest
   float left
-  width 14em
-  padding 0.8em
+  width 13em
+  padding 1.2em
   color #98dbcc
 
   h1
     color white
+    font-size
+
+    a,
+    a:link,
+    a:hover
+      color white
+
+  ul
+    list-style-type none
+
+  li.current:after
+    color white
+    float right
+    font-weight bold
+    content '>'
+
+  a,
+  a:link,
+  a:hover
+    color #98dbcc

@@ -27,19 +27,24 @@ def asciicode_or_redirect(app, url_path, project=None, name=None):
     except Exception, e:
       print e
     asciidoc_fn = asciicode_asciidoc(app)
-    args = dict(inpath=full_url)
+    log = []
+    args = dict(inpath=full_url, log_names=['name', 'section'], log=log)
     html = asciicode.process_string(asciidoc_fn, StringIO(src), asciidoc_args=args).getvalue()
     if type(html) is not unicode:
       html = unicode(html, 'utf-8')
     current_path = url_path
     if url_path == '' or url_path.endswith('/'):
       current_path = os.path.join(url_path, index)
+    names = [x[1]['target'] for x in log if x[0] == 'name']
+    headings = [x[1] for x in log if x[0] == 'section' and x[1]['level'] > 0]
     return flask.render_template('project.html',
         prefix=os.path.join('/', project['root'], name),
         title=project.get('title', name),
         current_path=current_path,
         content=flask.Markup(html),
-        paths=paths)
+        paths=paths,
+        headings=headings,
+        names=names)
 
   mime, _ = mimetypes.guess_type(url_path, strict=False)
   if ((mime and mime.startswith('text'))

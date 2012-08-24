@@ -7,11 +7,13 @@
       <link rel='stylesheet' href='{{ url_for('static', filename='css/base.css') }}'>
       <link rel='stylesheet' href='{{ url_for('static', filename='css/pygment.css') }}'>
       <link rel='stylesheet' href='{{ url_for('static', filename='css/project.css') }}'>
+      <script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
+      <script src='{{ url_for('static', filename='js/project.js') }}'></script>
       <meta name='MSSmartTagsPreventParsing' content='true'>
     {% endblock %}
   </head>
   <body>
-    <nav id='manifest'>
+    <nav id='flog-manifest'>
       <h1><a href='{{ prefix }}/'>{{ title }}</a></h1>
       <ul class='paths'>
         {% for p in paths %}
@@ -22,8 +24,27 @@
         {% endfor %}
       </ul>
     </nav>
-    <div id='file'>
-      <div id='content'>
+    <ul id='flog-names'>
+      {% for n in names|sort %}
+        <li><a href='#{{ n }}'>{{ n }}</a></li>
+      {% endfor %}
+    </ul>
+    <div id='flog-file'>
+      <div id='flog-content'>
+        {% if headings %}
+          <div id='flog-headings'>
+            <div class='toggle'>
+              <div class='tab'>toc</div>
+              <ul>
+                {% for h in headings %}
+                <li class='level{{ h.level }}'>
+                  <a href='#{{ h.id }}'>{{ h.text }}</a>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        {% endif %}
         <article>{{ content }}</article>
       </div>
     </div>

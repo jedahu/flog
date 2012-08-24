@@ -2,16 +2,28 @@ body
   margin 0
   background-color #1c4e63
 
-#file
+ul
+  list-style-position inside
+
+#flog-file
   background-color white
   margin-left 15em
   padding-top 1.2em
 
-#current-path
-  color grey
+#flog-content
+  margin-left 1em
 
-#manifest
-  float left
+  .paragraph
+
+    .title
+      color grey
+
+      .name
+        color black
+
+#flog-manifest
+  position fixed
+  left 0
   width 13em
   padding 1.2em
   color #98dbcc
@@ -38,3 +50,66 @@ body
   a:link,
   a:hover
     color #98dbcc
+
+#flog-names
+  position fixed
+  list-style-type none
+  left 57em
+  top 2em
+
+  a,
+  a:link,
+  a:hover
+    color grey
+
+#flog-headings
+  position fixed
+  width 40em
+  top 0
+
+  .toggle,
+  .toggle a,
+  .toggle a:link,
+  .toggle a:hover
+    display block
+    background-color #1c4e63
+    color #98dbcc
+
+  .toggle:hover ul
+    display block
+
+  .tab
+    display inline-block
+    text-align right
+    float right
+    position relative
+    z-index 2
+    padding-top 0.1em
+    padding-bottom 0.1em
+    padding-left 0.2em
+    padding-right 0.2em
+    line-height 1em
+    cursor pointer
+    color white
+    background-color inherit
+
+  ul
+    display none
+    list-style-type none
+    float right
+    clear right
+    background-color inherit
+    padding 1em
+    padding-top 2em
+    margin-top -1.2em
+
+  li
+
+    &.level1
+      padding-left 0
+
+    &.level2
+      padding-left 1em
+
+    &.level3
+      padding-left 2em

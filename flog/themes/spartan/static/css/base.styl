@@ -23,7 +23,7 @@ html
   font-size 12px
   line-height 21px
 
-#content
+#flog-content
   @extends .content-trait
 
   p,
@@ -31,10 +31,14 @@ html
   blockquote,
   .quoteblock,
   .verseblock,
+  .paragraph,
   ul,
   ol
-    margin-top 25px
+    margin-top 0
     margin-bottom 25px
+
+    .title
+      font-weight bold
 
   p,
   blockquote,
@@ -200,8 +204,8 @@ html
       &:hover:after
         color red
 
-#footer,
-#header
+#flog-footer,
+#flog-header
   @extends .content-trait
 
   .title-block
@@ -334,12 +338,10 @@ h1
 h2
   font-size 18px
   line-height 63px
-  margin-bottom -21px
 
 h3
   font-size 14px
   margin-top 21px
-  margin-bottom -21px
   font-style italic
 
 h4

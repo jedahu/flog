@@ -3,11 +3,9 @@
   <head>
     {% block head %}
       <title>{{ title }}</title>
-      <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Vollkorn:r,i|Lato:r,i,b|Inconsolata|Nobile:r,i,b'>
       <link rel='stylesheet' href='{{ url_for('static', filename='css/base.css') }}'>
       <link rel='stylesheet' href='{{ url_for('static', filename='css/pygment.css') }}'>
       <link rel='stylesheet' href='{{ url_for('static', filename='css/project.css') }}'>
-      <script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
       <meta name='MSSmartTagsPreventParsing' content='true'>
     {% endblock %}
   </head>

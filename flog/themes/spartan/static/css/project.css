@@ -12,11 +12,13 @@ ul{list-style-position:inside}
 #flog-manifest ul li{clear:both}
 #flog-manifest ul a{display:block;margin-left:1em;text-indent:-1em;width:10.2em;float:left}
 #flog-manifest li.current:after{color:#f00;float:right;font-weight:bold;content:'>'}
-#flog-names,#flog-headings{position:fixed;left:57em;top:3.6em;color:#808080;height:100em;width:100em;}
+#flog-names{height:100em;width:100em}
+#flog-names,#flog-headings{position:fixed;left:57em;top:3.6em;color:#808080;}
 #flog-names a,#flog-headings a,#flog-names a:link,#flog-headings a:link,#flog-names a:hover,#flog-headings a:hover{color:inherit}
+#flog-headings{z-index:10;height:0}
 #flog-headings .toggle{position:fixed;margin-top:-1.8em;font-style:italic}
-#flog-names,#flog-headings ul{list-style-type:none;padding:0;margin:0;-webkit-transition:opacity .5s;-moz-transition:opacity .5s;-o-transition:opacity .5s;-ms-transition:opacity .5s;transition:opacity .5s}
+#flog-names,#flog-headings ul{list-style-type:none;padding:0;margin:0}
 #flog-headings li.level1{padding-left:0}
 #flog-headings li.level2{padding-left:1em}
 #flog-headings li.level3{padding-left:2em}
-#flog-headings:hover ul{opacity:1 !important;-ms-filter:none;filter:none;visibility:visible !important;background-color:#fafafa}
+#flog-headings:hover ul{height:100em;width:100em;opacity:1 !important;-ms-filter:none;filter:none;visibility:visible !important;background-color:#fafafa;-webkit-transition:opacity 1s;-moz-transition:opacity 1s;-o-transition:opacity 1s;-ms-transition:opacity 1s;transition:opacity 1s;position:fixed}

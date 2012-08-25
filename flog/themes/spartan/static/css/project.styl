@@ -74,19 +74,25 @@ ul
     font-weight bold
     content '>'
 
+#flog-names
+  height 100em
+  width 100em
+
 #flog-names,
 #flog-headings
   position fixed
   left 57em
   top 3.6em
   color grey
-  height 100em
-  width 100em
 
   a,
   a:link,
   a:hover
     color inherit
+
+#flog-headings
+  z-index 10
+  height 0
 
 #flog-headings .toggle
   position fixed
@@ -98,7 +104,6 @@ ul
   list-style-type none
   padding 0
   margin 0
-  transition opacity 0.5s
 
 #flog-headings li
   &.level1
@@ -113,6 +118,10 @@ ul
 #flog-headings:hover
 
   ul
+    height 100em
+    width 100em
     opacity 1 !important
     visibility visible !important
     background-color #fafafa
+    transition opacity 1s
+    position fixed

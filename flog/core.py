@@ -1,6 +1,5 @@
 import dateutil.parser
-import flog.config
-import flog.route_helpers as helper
+import flog.app
 import importlib
 import mimetypes
 import os
@@ -12,45 +11,16 @@ from os.path import abspath, dirname, join, isdir, isfile, getmtime
 from os.path import normpath, commonprefix, splitext, split
 from werkzeug.contrib.atom import AtomFeed
 
-app = Flask(__name__)
-c = flog.config.Config(app.config)
-app.config = c
+app = flog.app.Flog(__name__)
 
-app.static_folder = join(c.THEME_PATH, 'static')
-app.template_folder = c.THEME_PATH
-
-# Config checks
-if not c.ROOT_URL:
-  raise Exception('ROOT_URL not set')
-if not c.SOURCE_URL:
-  raise Exception('SOURCE_URL not set')
-if not isfile(c.FLOG_CONF):
-  raise Exception('FLOG_CONF not found: ' + c.FLOG_CONF)
-if not isdir(c.THEME_PATH):
-  raise Exception('Theme not found: ' + c.THEME_PATH)
-
-
-# Source and cache
-def source_url(url, index=None):
-  if index is None:
-    return c.SOURCE.source(url)
-  return c.SOURCE.source(join(url, index))
-
-def source(path, index='index'):
-  return source_url(join(c.SOURCE_URL, path), index=index)
-
-def cache():
-  return c.SOURCE.cache()
-
-
-@helper.cache(app)
+@app.cache()
 def generate_feed(_latest): # phantom argument for caching purposes
   '''Generate an atom feed from latests posts'''
   feed = AtomFeed('Recent posts',
       feed_url=c.FEED_URL,
       url=c.ROOT_URL,
       subtitle='...')
-  for n, meta in helper.post_metas(app, c.FEED_SIZE):
+  for n, meta in app.post_metas(c.FEED_SIZE):
     post_url = c.ROOT_URL + '/' + c.POSTS_PATH + '/' + str(n) + '/'
     post_id = c.TAG_URI.format(n=n) if c.TAG_URI else post_url
     feed.add(meta['title'],
@@ -64,20 +34,16 @@ def generate_feed(_latest): # phantom argument for caching purposes
         updated=dateutil.parser.parse(meta['revisions'][-1]['date']))
   return feed.get_response()
 
-
-
-
-
 # Routes
 @app.route('/')
 @mimetype('text/html')
 def root():
   '''Site index'''
-  @helper.source_index(app, join(c.SOURCE_URL, ''))
+  @app.source_index(app, join(c.SOURCE_URL, ''))
   def root_impl(src):
-    content, meta = helper.parse_page(app, '')
+    content, meta = app.parse_page('')
     return render_template('index.html',
-        posts=helper.post_metas(app, c.FEED_SIZE),
+        posts=app.post_metas(c.FEED_SIZE),
         content=content,
         meta=meta)
   return root_impl()
@@ -87,9 +53,9 @@ def root():
 def post(n):
   '''Blog post'''
   url_path = join(c.POSTS_PATH, str(n))
-  @helper.source_index(app, join(c.SOURCE_URL, url_path))
+  @app.source_index(app, join(c.SOURCE_URL, url_path))
   def post_impl(src):
-    content, meta = helper.parse_page(app, url_path)
+    content, meta = app.parse_page(url_path)
     prev_meta = None
     next_meta = None
     if n > 1:
@@ -108,13 +74,13 @@ def post(n):
 @mimetype('text/html')
 def posts_index():
   '''Blog post index'''
-  @helper.cache(app)
+  @app.cache()
   def posts_index_impl():
-    prev_meta = helper.latest_post_n(app) - c.FEED_SIZE
+    prev_meta = app.latest_post_n() - c.FEED_SIZE
     if prev_meta <= 0:
       prev_meta = None
     return render_template('posts_index.html',
-        posts=helper.parse_posts(app, c.FEED_SIZE),
+        posts=app.parse_posts(c.FEED_SIZE),
         prev_meta=prev_meta)
   return posts_index_impl()
 
@@ -132,7 +98,7 @@ def posts_feed():
 @app.route('/<path:path>')
 def catchall(path):
   if path.endswith('/'):
-    return helper.page(app, path)
+    return app.page(path)
   return redirect(url_for('catchall', path=path + '/'), code=301)
 
 

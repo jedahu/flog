@@ -150,25 +150,44 @@ jQuery(function($) {
           current_path = meta_val('current_path');
       window.location = prefix + '/' + commit + '/' + current_path;
     });
+    form.find('.ui-combobox-input').keypress(function(evt) {
+      evt.stopPropagation();
+    });
   }
 });
 
 jQuery(function($) {
-  $('.listingblock').dblclick(function() {
+  var lblocks = $('.listingblock');
+
+  lblocks.each(function(_i, b) {
+    $(b).attr('data-height', $(b).css('height'));
+  });
+
+  lblocks.dblclick(function() {
     var block = $(this);
-    if (!block.hasClass('collapsed')) {
-      block.attr('data-height', block.css('height'));
-    }
     if (block.hasClass('collapsed')) {
       block.animate({height: block.attr('data-height')}, function() {
-      block.removeClass('collapsed');
+        block.css('height', '');
+        block.removeClass('collapsed');
       });
     }
     else {
       block.animate({height: '1em'}, function() {
-      block.addClass('collapsed');
+        block.css('height', '');
+        block.addClass('collapsed');
       });
     }
     rangy.getSelection().removeAllRanges();
+  });
+
+  $(document).keypress(function(evt) {
+    if (evt.which === 99) {
+      if (lblocks.first().hasClass('collapsed')) {
+        lblocks.removeClass('collapsed');
+      }
+      else {
+        lblocks.addClass('collapsed');
+      }
+    }
   });
 });

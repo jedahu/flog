@@ -123,13 +123,6 @@ jQuery(function( $ ) {
 });
 
 jQuery(function($) {
-  $( "#combobox" ).combobox();
-  $( "#toggle" ).click(function() {
-    $( "#combobox" ).toggle();
-  });
-});
-
-jQuery(function($) {
   var github_user = meta_val('github_user')
       github_repo = meta_val('github_repo'),
       form = $('#flog-commit'),
@@ -157,5 +150,32 @@ jQuery(function($) {
       form.find('.ui-combobox-input').val(ui.item.value);
       form.trigger('submit');
     });
+    form.css('display', '');
+    form.bind('submit', function() {
+      var commit = $('#flog-commit .ui-combobox-input').val(),
+          prefix = meta_val('prefix'),
+          current_path = meta_val('current_path');
+      window.location = prefix + '/' + commit + '/' + current_path;
+    });
   }
+});
+
+jQuery(function($) {
+  $('.listingblock').dblclick(function() {
+    var block = $(this);
+    if (!block.hasClass('collapsed')) {
+      block.attr('data-height', block.css('height'));
+    }
+    if (block.hasClass('collapsed')) {
+      block.animate({height: block.attr('data-height')}, function() {
+      block.removeClass('collapsed');
+      });
+    }
+    else {
+      block.animate({height: '1em'}, function() {
+      block.addClass('collapsed');
+      });
+    }
+    rangy.getSelection().removeAllRanges();
+  });
 });

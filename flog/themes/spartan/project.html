@@ -6,17 +6,35 @@
       <link rel='stylesheet' href='{{ url_for('static', filename='css/base.css') }}'>
       <link rel='stylesheet' href='{{ url_for('static', filename='css/pygment.css') }}'>
       <link rel='stylesheet' href='{{ url_for('static', filename='css/project.css') }}'>
+      <link rel='stylesheet' href='http://code.jquery.com/ui/1.8.23/themes/flick/jquery-ui.css'>
+      <script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
+      <script src='http://code.jquery.com/ui/1.8.23/jquery-ui.min.js'></script>
+      <script src='{{ url_for('static', filename='js/project.js') }}'></script>
       <meta name='MSSmartTagsPreventParsing' content='true'>
+      <meta name='commit' content='{{ commit }}'>
+      <meta name='prefix' content='{{ prefix }}'>
+      <meta name='current_path' content='{{ current_path }}'>
+      <meta name='github_user' content='{{ github_info.user }}'>
+      <meta name='github_repo' content='{{ github_info.repo }}'>
     {% endblock %}
   </head>
   <body>
     <nav id='flog-manifest'>
       <h1><a href='{{ prefix }}/'>{{ title }}</a></h1>
+      {% if github_info %}
+        <form id='flog-commit' style='display:none' onsubmit='return false'>
+          Change branch (or paste commit id)
+          <select>
+            <option value='{{ commit }}'>{{ commit }}</option>
+          </select>
+          <!--input type='text' value='{{ commit }}'-->
+        </form>
+      {% endif %}
       <ul class='paths'>
         {% for p in paths %}
           <li
             {% if p == current_path %}class='current'{% endif %}>
-            <a href='{{ prefix }}/{{ p }}'>{{ p }}</a>
+            <a href='{{ prefix }}/{{ commit }}/{{ p }}'>{{ p }}</a>
           </li>
         {% endfor %}
       </ul>

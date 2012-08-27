@@ -4,10 +4,11 @@
 content-width = 40em
 manifest-width = 12em
 content-padding = 1em
+manifest-bg = #e7eff3
 
 body
   margin 0
-  background-color #e7eff3
+  background-color manifest-bg
 
 ul
   list-style-position inside
@@ -20,9 +21,10 @@ ul
 #flog-content
   margin 0
   padding: 1.2em content-padding 3em content-padding
-  box-shadow 0.5em -0.5em 1em -0.5em
+  box-shadow 0.5em 0 1em -0.5em
   width content-width
   background-color white
+  position relative
 
   .paragraph
 
@@ -58,6 +60,11 @@ ul
       position relative
       z-index 20
 
+#flog-content:after
+  content: ''
+  display table
+  clear both
+
 #flog-manifest
   position fixed
   left 0
@@ -83,18 +90,19 @@ ul
     li
       clear both
 
+      &.current
+        background-color white
+        color crimson
+        box-shadow 0 0.5em 1em -0.5em black
+        margin-left -2em
+        padding-left 2em
+        width 14em
+
     a
       display block
       margin-left 1em
       text-indent -1em
       width manifest-width - 1.8em
-      float left
-
-  li.current:after
-    color red
-    float right
-    font-weight bold
-    content '>'
 
 #flog-names
   height 100em

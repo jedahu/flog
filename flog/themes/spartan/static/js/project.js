@@ -157,7 +157,7 @@ jQuery(function($) {
 });
 
 jQuery(function($) {
-  var lblocks = $('.listingblock');
+  var lblocks = $('.listingblock .content');
 
   lblocks.each(function(_i, b) {
     $(b).attr('data-height', $(b).css('height'));

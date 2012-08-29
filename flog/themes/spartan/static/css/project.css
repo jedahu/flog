@@ -5,14 +5,14 @@ body{margin:0;background-color:#e7eff3}
 ul{list-style-position:inside}
 #flog-file{background-color:#fafafa;margin-left:14em;-webkit-box-shadow:0 0 1em 0;box-shadow:0 0 1em 0}
 #flog-content{margin:0;padding:1.2em 1em 3em 1em;-webkit-box-shadow:.5em 0 1em -.5em;box-shadow:.5em 0 1em -.5em;width:40em;background-color:#fff;position:relative;}
-#flog-content .paragraph .title{color:#808080;}
-#flog-content .paragraph .title .name{color:#000}
-#flog-content .listingblock{float:left;width:40em;padding-left:1em;padding-right:1em;margin-left:-1em;margin-right:-1em;overflow-x:hidden;}
-#flog-content .listingblock:hover{width:auto;min-width:40em;overflow-x:visible;-webkit-box-shadow:.5em 0 1em -.5em;box-shadow:.5em 0 1em -.5em;position:relative;z-index:20}
-#flog-content .listingblock:before{font-size:.8em;line-height:.8em;color:#808080;position:absolute;padding:0;margin:0}
-#flog-content .listingblock.collapsed,#flog-content .listingblock.collapsed:hover{height:1em;overflow:hidden;width:40em;position:normal;}
-#flog-content .listingblock.collapsed:hover:before,#flog-content .listingblock.collapsed:hover:hover:before{content:'double click to expand'}
-#flog-content .listingblock:hover:before{content:'double click to collapse'}
+#flog-content .paragraph .title,#flog-content .listingblock .title{color:#808080;}
+#flog-content .paragraph .title .name,#flog-content .listingblock .title .name{color:#000}
+#flog-content .listingblock .content{float:left;width:40em;padding-left:1em;padding-right:1em;margin-left:-1em;margin-right:-1em;overflow-x:hidden;margin-bottom:25px;}
+#flog-content .listingblock .content:hover{width:auto;min-width:40em;overflow-x:visible;-webkit-box-shadow:.5em 0 1em -.5em;box-shadow:.5em 0 1em -.5em;position:relative;z-index:20}
+#flog-content .listingblock .content:before{font-size:.8em;line-height:.8em;color:#808080;position:absolute;padding:0;margin:0}
+#flog-content .listingblock .content.collapsed,#flog-content .listingblock .content.collapsed:hover{height:1em;overflow:hidden;width:40em;position:normal;}
+#flog-content .listingblock .content.collapsed:hover:before,#flog-content .listingblock .content.collapsed:hover:hover:before{content:'double click to expand'}
+#flog-content .listingblock .content:hover:before{content:'double click to collapse'}
 #flog-content:after{content:'';display:table;clear:both}
 #flog-manifest{position:fixed;left:0;width:12em;padding:1.2em;color:#808080;}
 #flog-manifest a,#flog-manifest a:link,#flog-manifest a:hover{color:inherit}

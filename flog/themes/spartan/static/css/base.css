@@ -25,7 +25,7 @@ html{font-size:12px;line-height:21px}
 #flog-content article .entry-title .n,#flog-content .hentry .entry-title .n{display:block;width:4em;margin-left:-4.2em;padding-right:.2em;position:absolute;text-align:right;color:#f00}
 #flog-content article .article-content,#flog-content .hentry .article-content{clear:both}
 #flog-content article .sidebarblock,#flog-content .hentry .sidebarblock{background-color:#fff4f4;margin-top:3em;margin-bottom:3em}
-#flog-content article .listingblock,#flog-content .hentry .listingblock{background-color:#ffffe4}
+#flog-content article .listingblock .content,#flog-content .hentry .listingblock .content{background-color:#ffffe4}
 #flog-content article .attribution.ulist,#flog-content .hentry .attribution.ulist{margin-top:3em;}
 #flog-content article .attribution.ulist ul,#flog-content .hentry .attribution.ulist ul{list-style-type:none}
 #flog-content article footer,#flog-content .hentry footer{margin-top:3em}

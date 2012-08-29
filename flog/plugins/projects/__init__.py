@@ -44,7 +44,12 @@ class Plugin:
       asciidoc_fn = self.asciicode_asciidoc()
       log = []
       args = dict(inpath=full_url, log_names=['name', 'section'], log=log)
-      html = asciicode.process_string(asciidoc_fn, StringIO(src), asciidoc_args=args).getvalue()
+      f = StringIO(src)
+      pos = f.tell()
+      first = unicode(f.read(3), 'utf-8')
+      if u'\ufeff' != first:
+        f.seek(pos)
+      html = asciicode.process_string(asciidoc_fn, f, asciidoc_args=args).getvalue()
       if type(html) is not unicode:
         html = unicode(html, 'utf-8')
       current_path = url_path

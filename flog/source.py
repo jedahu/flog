@@ -9,9 +9,6 @@ class SourceError(Exception):
   def __init__(self, code):
     self.code = code
 
-class NotTextError(Exception):
-  pass
-
 class Source:
   def __init__(self, path, expire):
     cache_opts = {
@@ -76,14 +73,10 @@ class Source:
             return flask.abort(e.code)
           if error:
             return self.url_cache_get_or_raise(url, error)
-          content_type = response.info().getheader('Content-Type', None)
-          if content_type and content_type.startswith('text'):
-            etag = response.info().getheader('ETag', None)
-            if etag:
-              self.etag_cache.put(key=url, value=etag)
-            return response.read()
-          else:
-            raise NotTextError
+          etag = response.info().getheader('ETag', None)
+          if etag:
+            self.etag_cache.put(key=url, value=etag)
+          return response.read()
 
         def create_fn_cache_value():
           if url:
@@ -96,8 +89,6 @@ class Source:
           return self.fn_cache.get(key=fn.__name__+url, createfunc=create_fn_cache_value)
         except SourceError, e:
           return flask.abort(e.code)
-        except NotTextError:
-          return flask.redirect(url)
 
       return wrapper
 

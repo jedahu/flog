@@ -12,6 +12,7 @@ from os.path import normpath, commonprefix, splitext, split
 from werkzeug.contrib.atom import AtomFeed
 
 app = flog.app.Flog(__name__)
+c = app.config
 
 @app.cache()
 def generate_feed(_latest): # phantom argument for caching purposes

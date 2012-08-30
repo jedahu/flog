@@ -190,7 +190,7 @@ class Flog(flask.Flask):
     .'''
     def latest_post_titles():
       return self.jinja_env.get_or_select_template('latest_post_titles.html')\
-          .render(dict(posts=post_metas(c.FEED_SIZE), config=c))
+          .render(dict(posts=self.post_metas(c.FEED_SIZE), config=c))
     kwargs = dict(
         conf_files=[c.ASCIIDOC_FLOG_CONF],
         backend='html5',
@@ -278,9 +278,9 @@ class Flog(flask.Flask):
       for line in f:
         line = unicode(line[:-1], 'utf-8')
         stripped = line.rstrip()
-        meta_match = META_RE.match(stripped)
-        author_match = AUTHOR_RE.match(stripped)
-        rev_match = REV_RE.match(stripped)
+        meta_match = self.META_RE.match(stripped)
+        author_match = self.AUTHOR_RE.match(stripped)
+        rev_match = self.REV_RE.match(stripped)
         if line.strip() != '' and title is None:
           pos = f.tell()
           next_line = f.readline()

@@ -33,6 +33,8 @@ class Plugin:
       url_path = os.path.join(url_path, index)
     full_url = os.path.join(project['source'].format(commit=commit), url_path)
 
+    base_url = '/' + os.path.join(self.root, name, commit)
+
     paths = []
     try:
       paths = self.manifest_list(project, name, commit)
@@ -44,7 +46,12 @@ class Plugin:
     def asciicode_impl(src):
       asciidoc_fn = self.asciicode_asciidoc()
       log = []
-      args = dict(inpath=full_url, log_names=['name', 'section'], log=log)
+      args = dict(
+          inpath=full_url,
+          attrs=dict(flog_source_url_path=os.path.split(
+            os.path.join(base_url, url_path))[0].encode('utf-8')),
+          log_names=['name', 'section'],
+          log=log)
       f = StringIO(src)
       pos = f.tell()
       first = unicode(f.read(3), 'utf-8')

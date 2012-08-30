@@ -1,0 +1,144 @@
+'''.
+Sample flogrc
+=============
+Jeremy Hughes <jed@jedatwork.com>
+2012-08-30: Created.
+:asciicode_language: python
+
+A comprehensive listing of Flog options.
+
+
+
+Required options
+----------------
+
+.+name:TITLE[] string+
+A plain text string.
+.'''
+TITLE = 'Diary of a programmer'
+
+'''.
+.+name:SOURCE_URL[] URL string+
+A URL pointing to an online repository of AsciiDoc files and associated media.
+The +FLOG_SOURCE_URL+ environment variable will override the value in this file.
+This URL should not have a trailing slash.
+.'''
+SOURCE_URL = 'https://raw.github.com/fredlisp/fredlisp.com/master'
+
+'''.
+.+name:ROOT_URL[] URL string+
+A URL pointing to the location from which the Flog site is served. This URL
+should not have a trailing slash.
+.'''
+ROOT_URL = 'http://fredlisp.com'
+
+'''.
+.+name:TAG_URI[] URI string+
+A URI template in which the string `{n}` will be replaced with the number of the
+post it identifies.
+.'''
+TAG_URI = 'tag:fredlisp.com,2012:{n}'
+
+
+
+'''.
+Optional options
+----------------
+
+.+name:VCARD[] dict of strings+
+Details of the site author. Default: `{}`.
+.'''
+VCARD = dict(
+    name = '<a href="http://twitter.com/fredlisp">Fred Lisp</a>',
+    address = u'Mother’s basement',
+    role = 'Smug lisp weenie',
+    photo = 'images/me.jpg')
+
+'''.
+.+name:POSTS_PATH[] string+
+The path under which posts are to be fetched under +<<SOURCE_URL>>+ and served
+under +<<ROOT_URL>>+. Default: `posts`.
+.'''
+POSTS_PATH = 'blog/posts'
+
+'''.
+.+name:THEME_PATH[] string+
+The path to a Flog theme. Searches first in the directory of this flogrc and
+then in the Flog installation. Default: `spartan`.
+.'''
+THEME_PATH = 'my/custom/theme'
+
+'''.
+.+name:NAV[] list of pairs+
+An ordered map of names to absolute (but domainless) paths. This option is used
+by themes to create site-wide navigation. Default: `[]`.
+.'''
+NAV = [
+    ('posts', '/' + POSTS_PATH + '/'),
+    ('projects', '/p/')
+    ]
+
+'''.
+.+name:ASCIIDOC_CONF[] string+
+A relative path to an AsciiDoc conf file to append to the list of files loaded
+by AsciiDoc. For reasons internal to AsciiDoc this file cannot be called
+`asciidoc.conf`. Default: `None`.
+.'''
+ASCIIDOC_CONF = 'asciidocrc'
+
+'''.
+.+name:FEED_URL[] URL string+
+A URL of the site’s Atom feed. Flog generates the feed at +/POSTS_PATH/feed/+,
+which is the default value of this option. Modify this option for FeedBurner or
+other feed services.
+.'''
+FEED_URL = 'http://feeds.feedburner.com/fredlispblog'
+
+'''.
+.+name:FEED_SIZE[] integer+
+The number of posts to include in the generated feed. Depending on the theme
+this value may also be used to limit the number of posts on the blog’s index
+page at +/POSTS_PATH/+. Default: `5`.
+.'''
+FEED_SIZE = 10
+
+'''.
+.+name:INDEX_NAME[] string+
+The name of the AsciiDoc files to fetch from +SOURCE_URL+. For URL consistency
+and ease of storing media alongside the posts/pages they belong with, Flog
+runs AsciiDoc on index files only. Default: `index`.
+.'''
+INDEX_NAME = 'index.txt'
+
+'''.
+.+name:CACHE_PATH[] string+
+The directory under which to store the cache files. The +FLOG_CACHE_PATH+
+environment variable will override the value in this file. Default:
+`/tmp/flog-cache`.
+.'''
+CACHE_PATH = '/var/cache/fredlisp-cache'
+
+'''.
+.+name:CACHE_EXPIRE[] integer+
+The number of seconds after which a cache access will trigger a refresh of the
+stored value. The +FLOG_CACHE_EXPIRE+ environment variable will override the
+value in this file. Default: `300`.
+.'''
+CACHE_EXPIRE = 1800
+
+
+
+'''.
+Plugins
+-------
+
+.+name:PLUGINS[] dict+
+A map from module name to plugin configuration. Plugin configs are specific to
+each plugin and are therefore documented in their respective modules. A
+non-functional example is shown below.
+.'''
+PLUGINS = {}
+PLUGINS['a.plugin.module'] = {
+    'some': 'plugin',
+    'config': 'options'
+    }

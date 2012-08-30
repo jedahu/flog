@@ -81,7 +81,7 @@ def posts_index():
     if prev_meta <= 0:
       prev_meta = None
     return render_template('posts_index.html',
-        posts=app.parse_posts(c.FEED_SIZE),
+        posts=list(app.parse_posts(c.FEED_SIZE)),
         prev_meta=prev_meta)
   return posts_index_impl()
 

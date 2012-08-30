@@ -6,7 +6,7 @@
   <script>
     jQuery(function($) {
       jQuery.ias({
-          container: '#content',
+          container: '#flog-content',
           item: '.hentry',
           pagination: '.nextprev',
           next: '.nextprev .prev',
@@ -28,5 +28,6 @@
     {% include 'post_article.html' %}
   {% endfor %}
 {% endblock %}
+{% set n = posts[-1][0] %}
 {% include 'post_nextprev.html' %}
 {# vim: set ft=jinja: #}

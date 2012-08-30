@@ -60,9 +60,9 @@ def post(n):
     prev_meta = None
     next_meta = None
     if n > 1:
-      prev_meta = post_meta(app, n - 1)
-    if n < latest_post_n(app):
-      next_meta = post_meta(app, n + 1)
+      prev_meta = app.post_meta(n - 1)
+    if n < app.latest_post_n():
+      next_meta = app.post_meta(n + 1)
     return render_template('post.html',
         n=n,
         meta=meta,
@@ -94,7 +94,7 @@ def favicon():
 @mimetype('application/atom+xml')
 def posts_feed():
   '''Blog posts atom feed'''
-  return generate_feed(latest_postn(app))
+  return generate_feed(app.latest_postn())
 
 @app.route('/<path:path>')
 def catchall(path):

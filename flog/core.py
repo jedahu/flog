@@ -40,7 +40,7 @@ def generate_feed(_latest): # phantom argument for caching purposes
 @mimetype('text/html')
 def root():
   '''Site index'''
-  @app.source_index(app, join(c.SOURCE_URL, ''))
+  @app.source_index(join(c.SOURCE_URL, ''))
   def root_impl(src):
     content, meta = app.parse_page('')
     return render_template('index.html',
@@ -54,7 +54,7 @@ def root():
 def post(n):
   '''Blog post'''
   url_path = join(c.POSTS_PATH, str(n))
-  @app.source_index(app, join(c.SOURCE_URL, url_path))
+  @app.source_index(join(c.SOURCE_URL, url_path))
   def post_impl(src):
     content, meta = app.parse_page(url_path)
     prev_meta = None

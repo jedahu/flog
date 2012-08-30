@@ -75,9 +75,9 @@ class Plugin:
 
     mime, _ = mimetypes.guess_type(url_path, strict=False)
     if ((mime and mime.startswith('text'))
-        or not os.path.splitext(url_path)[1]
         or mime in self.text_mimes
-        or mime in project['text_mimes']):
+        or mime in project['text_mimes']
+        or url_path in paths):
       return asciicode_impl()
     return flask.redirect(full_url)
 

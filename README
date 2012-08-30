@@ -2,19 +2,47 @@ Introducing Flog
 ================
 Jeremy Hughes <itsjdh@gmail.com>
 2012-07-26: Created.
-:summary: My new website engine.
+:summary: A website engine.
 
-http://github.com/jedahu/flog[Flog] is website + blog engine that meets the
-following requirements:
+http://github.com/jedahu/flog[Flog] is website + blog engine that transforms
+http://methods.co.nz/asciidoc/[AsciiDoc] articles into posts and pages. I
+creates post URLs by ordinal number, not date or title. It uses
+http://pygments.org[Pygments] for code highlighting. It is trivial to deploy to
+http://heroku.com[Heroku].
 
-- uses http://www.methods.co.nz/asciidoc[AsciiDoc] for posts and pages,
-  including AsciiDoc meta data;
-- uses http://pygments.org[Pygments] for code highlighting;
-- creates post URLs by ordinal number, not date or title;
-- does not mix engine code and site content in the same project;
-- generates pages statically, but on-demand (to a cache) rather than ahead of
-  time;
-- is trivial to deploy to http://heroku.com[Heroku].
+Check out http://jedatwork.com for a working example.
+
+
+
+Synopsis
+--------
+
+The basic idea behind Flog is that raw AsciiDoc content and associated media
+files are stored in a repository with HTTP access (the source), and a Flog
+configuration is run on a Heroku dyno (or a VPS). A HTTP request to the Flog
+server causes it to fetch raw content from the source (over HTTP), which it
+transforms to HTML, caches, and returns to the client.
+
+This means that:
+
+- Content and configuration can be versioned and updated separately (e.g. no
+  need to restart Heroku dynos to push new content and no need to regenerate all
+  posts after a theme change).
+- Content deployment consists of pushing to a public repository.
+- Content is statically generated, but on-demand (to a cache) rather than ahead
+  of time.
+
+Local AsciiDoc links are transformed to point to the source which means that
+media files are served directly from the source without going through the Flog
+server. To enable this an link:flog/asciidoc-html5.conf[AsciiDoc configuration]
+is loaded which defines a few extra linking macros among other (minor)
+modifications.
+
+Plugins allow subpaths to point to extra sources, such as the
+link:flog/plugins/projects/__init__.py[projects plugin] which fetches code
+annotated with AsciiDoc comments and transforms it into hyperlinked
+documentation.
+
 
 
 Creating a Flog project
@@ -29,34 +57,87 @@ The following steps create a new flog project called `nonsense`:
 mkdir nonsense
 cd nonsense
 git init
+git checkout -b heroku
+
+The simplest way to organize a Flog project is to have two branches. One for the
+configuration that is pushed to Heroku (or other server environment), and
+another for actual content. To make local testing easy the configuration branch
+is merged into the content one.
+
+In this case the configuration branch is `heroku` and the content branch is
+`master`. Both branches will be pushed to Github but only `heroku` will be
+pushed to Heroku. As previously mentioned this means that the content can be
+updated independent of a dyno restart and will not be constrained by Heroku’s
+repository size maximum.
 
 
-=== 2. Add a `flogrc` configuration file
+=== 2. Add configuration files
+
+
+==== requirements.txt
+
+--------------------------------------------------------------------------------
+-e git+git://github.com/jedahu/flog.git@master#egg=Flog
+-e git+git://github.com/jedahu/asciidoc.git@master#egg=AsciiDoc
+-e git+git://github.com/jedahu/asciicode.git@master#egg=AsciiCode
+gunicorn
+gevent
+--------------------------------------------------------------------------------
+
+Once you have a working configuration, to ensure repeatable deployment, replace
+`master` with a commit ID and use specific versions of gunicorn and gevent and
+all other packages that show up in `pip freeze`.
+
+It is important that the jedahu version of AsciiDoc is used because it contains
+modifications to make AsciiDoc reentrant and able to use in-process filters.
+
+
+==== Procfile
+
+--------------------------------------------------------------------------------
+web: gunicorn -w 4 -b 0.0.0.0:$PORT -k gevent flog.core:app
+--------------------------------------------------------------------------------
+
+
+==== asciidocrc
+
+An optional AsciiDoc conf file with whatever definitions and overrides your site
+needs.
+
+
+==== flogrc
 
 This is a python file, the uppercase top-level variables of which are Flog
-options. The `TITLE`, `ROOT_URL`, and `TAG_URI` options are required.
+options. The `TITLE`, `ROOT_URL`, `SOURCE_URL`, and `TAG_URI` options are
+required. There is more comprehensive information in the
+link:flogrc.sample[sample flogrc file].
 
 [source,python]
 --------------------------------------------------------------------------------
 TITLE = 'Nonsense poems'
 
-ROOT_URL = 'http://example.com/' # Trailing slash
+ROOT_URL = 'http://example.com'       # No trailing slash
 
-TAG_URI = 'tag:example.com,2012:{n}' # '{n}' will be replaced by the post number
+TAG_URI = 'tag:example.com,2012:{n}'  # {n} will be replaced by the post number
 
 VCARD = dict(
-    name = 'Jeremy Hughes',
-    address = 'Wellington, New Zealand',
+    name = 'Dorothy Gale',
+    address = 'Kansas',
     role = 'Purveyor of nonsense',
     note = 'Strange yet harmless',
-    photo = '/wherever/it/is/stored/me.jpg'
+    photo = 'wherever/it/is/stored/me.jpg'
     )
 
-SRC_DIR = '.'           # Where to find content relative to this config file
-POSTS_PATH = 'posts'    # Appended to SRC_DIR to find posts
-PAGES_PATH = '.'        # Appended to SRC_DIR to find pages
-THEME_PATH = 'spartan'  # Path to a Flog theme; either one under SRC_DIR or
-                        #   in the installed 'flog' module.
+SOURCE_URL = 'https://raw.github.com/me/example.com/master'
+
+POSTS_PATH = 'posts'    # Appended to SOURCE_URL to find posts
+
+THEME_PATH = 'spartan'  # Path to a Flog theme; either one under the flogrc
+                        #   directory or in the installed 'flog' module.
+
+INDEX_NAME = 'index.txt'
+
+ASCIIDOC_CONF = 'asciidocrc'
 
 NAV = [
     ('Posts', '/' + POSTS_PATH + '/'),
@@ -65,38 +146,49 @@ NAV = [
 --------------------------------------------------------------------------------
 
 
-=== 3. Add vcard photo
+=== 3. Add content
+
+First of all, commit the configuration files then switch to the master branch:
+
+[source,sh]
+git add requirements.txt Procfile asciidocrc flogrc
+git commit -m'add configuration files'
+git checkout master
+
+
+==== Vcard photo
 
 [source,sh]
 mkdir -p wherever/it/is/stored
 cp path/to/photo.jpg wherever/it/is/stored/me.jpg
 
-If `SRC_DIR` were `src` and `PAGES_PATH` was `pages`, then `me.jpg` would have
-to be placed in `src/pages/wherever/it/is/stored/`.
+If `PAGES_PATH` was `pages`, then `me.jpg` would have to be placed in
+`pages/wherever/it/is/stored/`.
 
 
-=== 4. Add home page content
+==== Home page content
 [source,sh]
-vim index  # asciidoc
+vim index.txt  # asciidoc
 
 This content is inserted into the home page template. It should not have a
 top-level title because it will not be rendered, instead the `TITLE` config
 option is used.
 
 
-=== 5. Add posts and pages
+==== Posts and pages
 
 Create posts in the `POSTS_PATH` directory. Each post has its own ordinal
-numbered directory. The content of the post resides in an `index` file inside
-that directory. This ensures that URLs are consistent and that media associated
-with a post is grouped together in one place.
+numbered directory. The content of the post resides in an `index.txt` file
+inside that directory (or whatever `INDEX_NAME` is set to). This ensures that
+URLs are consistent and that media associated with a post is grouped together
+in one place.
 
 [source,sh]
 mkdir -p posts/1
 vim posts/1/index
 cp photo.jpg posts/1/
 
-The URL for this first post is `/posts/1/`.
+The URL path for this first post is `/posts/1/`.
 
 Pages are created similarly, but without the restriction that their enclosing
 directory have an ordinal name.
@@ -104,61 +196,69 @@ directory have an ordinal name.
 [source,sh]
 --------------------------------------------------------------------------------
 mkdir historic-poems
-vim historic-poems/index
+vim historic-poems/index.txt
 
 mkdir historic-poems/jabberwock
-vim historic-poems/jabberwock/index
+vim historic-poems/jabberwock/index.txt
 --------------------------------------------------------------------------------
 
-These pages have URLS of `/historic-poems/` and `/historic-poems/jabberwock/`.
+These pages have URL paths of `/historic-poems/` and `/historic-poems/jabberwock/`.
 
 
-=== 6. Add requirements.txt
+=== 4. Test locally
 
---------------------------------------------------------------------------------
--e git://github.com/jedahu/flog.git#egg=Flog
-gunicorn
-gevent
---------------------------------------------------------------------------------
+To test locally the configuration files need to be merged into the content
+branch.
 
+[source,sh]
+git merge heroku
 
-=== 7. Install dependencies
+The dependencies are installed using `virtualenv` and `pip`:
 
 [source,sh]
 virtualenv venv --distribute
-. venv/bin/activate
+source venv/bin/activate
 pip install -r requirements.txt
 
-
-=== 8. Run!
+The server is run with the `FLOG_SOURCE_URL` environment variable set to the
+current directory and `FLOG_CACHE_EXPIRE` set to a small value so any changes
+are soon visible.
 
 [source,sh]
-FLOG_CACHE=nocache python -m flog
+FLOG_SOURCE_URL=file://`pwd` FLOG_CACHE_EXPIRE=10 python -m flog
 
 If the Flog config file is not named `flogrc`, the `FLOG_CONF` environment
 variable must be set to its location.
 
-
-=== 9. Add Procfile
-
---------------------------------------------------------------------------------
-web: gunicorn -w 4 -b 0.0.0.0:$PORT -k gevent flog:app
---------------------------------------------------------------------------------
-
-
-=== 10. Test with foreman
+Testing with Foreman is similar.
 
 [source,sh]
-foreman start
+SOURCE_URL=file://`pwd` FLOG_CACHE_EXPIRE=10 foreman start web
 
-The Flog cache defaults to `/tmp/flog-cache`, which is not deleted on program
+For more verbose debug output add `--debug --log-level debug` to gevent’s
+options in the Procfile.
+
+NOTE: The Flog cache defaults to `/tmp/flog-cache`, which is not deleted on program
 exit.
 
 
-=== 11. Deploy to Heroku
+=== 5. Deploy to Heroku
+
+To deploy, push the `master` branch to a public repository (in this case the
+`origin` remote) and the `heroku` branch to Heroku (in this case the `heroku`
+remote). Set the `FLOG_CACHE_EXPIRE` variable to taste; it defaults to 300 (5
+minutes).
 
 [source,sh]
+-------------------------------------------------------------------------------
+git add posts historic-poems
+git commit -m'add initial content'
+git push -u origin master
+
+git checkout heroku
 heroku create --stack cedar
-git add flogrc requirements.txt Procfile posts historic-poems
-git commit -m'initial commit'
-git push heroku master
+heroku config:set FLOG_CACHE_EXPIRE=1800  # 30 minutes
+
+git checkout heroku
+git push -u heroku heroku:master
+-------------------------------------------------------------------------------

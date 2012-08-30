@@ -13,6 +13,7 @@ import itertools
 import os
 import re
 import flog.core
+import flog.config
 from StringIO import StringIO
 from flog.mime import mimetype
 

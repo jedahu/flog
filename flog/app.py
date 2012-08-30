@@ -200,7 +200,7 @@ class Flog(flask.Flask):
           }
         )
     for k, v in c.items():
-      kwargs['attrs']['flog_' + k] = v
+      kwargs['attrs']['flog_' + k.lower()] = v
     if c.ASCIIDOC_CONF and c.ASCIIDOC_CONF.strip():
       conf_path = os.path.join(c.FLOG_DIR, c.ASCIIDOC_CONF)
       kwargs['conf_files'].append(conf_path)

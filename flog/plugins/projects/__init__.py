@@ -27,20 +27,21 @@ class Plugin:
       val['text_mimes'] = val.get('text_mimes', [])
 
   def asciicode_or_redirect(self, commit, url_path, project=None, name=None):
-    full_url = os.path.join(project['source'].format(commit=commit), url_path)
     index = None
     if url_path == '' or url_path.endswith('/'):
       index = project['index']
-      full_url = os.path.join(full_url, index)
+      url_path = os.path.join(url_path, index)
+    full_url = os.path.join(project['source'].format(commit=commit), url_path)
+
+    paths = []
+    try:
+      paths = self.manifest_list(project, name, commit)
+    except Exception, e:
+      print 'projects plugin: no manifest list found:', e
 
     @mimetype('text/html')
     @self.app.source(full_url)
     def asciicode_impl(src):
-      paths = []
-      try:
-        paths = self.manifest_list(project, name, commit)
-      except Exception, e:
-        print 'projects plugin: no manifest list found:', e
       asciidoc_fn = self.asciicode_asciidoc()
       log = []
       args = dict(inpath=full_url, log_names=['name', 'section'], log=log)

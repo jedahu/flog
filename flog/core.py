@@ -94,7 +94,7 @@ def favicon():
 @mimetype('application/atom+xml')
 def posts_feed():
   '''Blog posts atom feed'''
-  return generate_feed(app.latest_postn())
+  return generate_feed(app.latest_post_n())
 
 @app.route('/<path:path>')
 def catchall(path):

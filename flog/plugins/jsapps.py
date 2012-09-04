@@ -29,7 +29,7 @@ class Plugin:
         urllib2.urlopen(src_url)
         return flask.redirect(src_url)
       except urllib2.URLError:
-        return js_apps_impl()
+        return src
     return js_apps_impl()
 
 def init_for_flog(app, plug_conf):

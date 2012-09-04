@@ -211,10 +211,11 @@ class Flog(flask.Flask):
         kwargs[k].update(v)
       else:
         kwargs[k] = v
-    if 'flog_source_url' in kwargs and 'flog_url_path' in kwargs:
-      kwargs['flog_source_url_path'] = os.path.join(
-          kwargs['flog_source_url'],
-          kwargs['flog_url_path'])
+    attrs = kwargs['attrs']
+    if 'flog_source_url' in attrs and 'flog_url_path' in attrs:
+      attrs['flog_source_url_path'] = os.path.join(
+          attrs['flog_source_url'],
+          attrs['flog_url_path'])
     return kwargs
 
   '''.

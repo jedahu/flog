@@ -35,9 +35,11 @@ class Plugin:
 
     base_url = '/' + os.path.join(self.root, name, commit)
 
+    manifest = []
     paths = []
     try:
-      paths = self.manifest_list(project, name, commit)
+      manifest = self.manifest_list(project, name, commit)
+      paths = [x[1] for x in manifest if x[0] == 'path']
     except Exception, e:
       print 'projects plugin: no manifest list found:', e
 
@@ -75,7 +77,7 @@ class Plugin:
           title=project.get('title', name),
           current_path=current_path,
           content=flask.Markup(html),
-          paths=paths,
+          manifest=manifest,
           headings=headings,
           names=names,
           commit=commit,
@@ -128,7 +130,13 @@ class Plugin:
     manifest_url = os.path.join(project['source'].format(commit=commit), project['manifest'])
     @self.app.source(manifest_url)
     def manifest_list_impl(src):
-      return src.splitlines()
+      def filter(x):
+        return x.strip() != ''
+      def morph(x):
+        if x.startswith('= '):
+          return ('heading', x.strip()[2:])
+        return ('path', x.strip())
+      return [morph(x) for x in src.splitlines() if filter(x)]
     return manifest_list_impl()
 
 def init_for_flog(app, plug_conf):

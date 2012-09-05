@@ -111,20 +111,60 @@ ul
 
     li
       clear both
+      width manifest-width + 3em
+      height 1.8em
+      margin-left -2em
 
-      &.current
+      a
+        display block
+        padding-left 2em
+        padding-right 0.5em
+        //margin-left 1em
+        //text-indent -1em
+        //width manifest-width - 0.5em
+
+      &.path.current a
+        margin-right -3em
+        padding-right 3.5em
+
+      &.path.current:hover a
+        margin-right 0
+        padding-right 0.5em
+
+      &.path.current,
+      &.path.current:hover
         background-color white
         color crimson
-        box-shadow 0 0.5em 1em -0.5em black
-        margin-left -2em
-        padding-left 2em
-        width 14em
 
-    a
-      display block
-      margin-left 1em
-      text-indent -1em
-      width manifest-width - 1.8em
+      &.path:hover
+        background-color manifest-bg
+
+      &.path.current,
+      &.path:hover
+        a
+          box-shadow 0 0.5em 1em -0.5em black
+
+        &.full a
+          background-color inherit
+
+      &.heading
+        padding-left 2em
+        text-transform uppercase
+        font-weight bold
+        margin-top 1.8em
+
+      &.path.full
+        width 50em
+
+        a
+          display inline-block
+          position relative
+          z-index 101
+          box-shadow 0 0.5em 1em -0.5em black
+          background-color manifest-bg
+
+      &.path.full.current a
+        background-color white
 
 #flog-names
   height 100em

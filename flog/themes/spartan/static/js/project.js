@@ -5,6 +5,25 @@ function meta_val(name) {
 }
 
 jQuery(function($) {
+  var items = $('#flog-manifest .path'),
+      paths = $('#flog-manifest .path a');
+  paths.each(function(_idx, p) {
+    $(p).data('path', $(p).text());
+  });
+  paths.truncate({ center: true });
+  items.mouseenter(function() {
+    var p = $(this).find('a');
+    if (p.data('path') !== p.text()) {
+      p.text(p.data('path'));
+      $(this).addClass('full');
+    }
+  });
+  items.mouseleave(function() {
+    $(this).removeClass('full').find('a').truncate({ center: true });
+  });
+});
+
+jQuery(function($) {
   var form = $('#flog-commit');
   form.css('display', '');
   form.live('submit', function() {

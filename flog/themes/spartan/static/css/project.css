@@ -18,9 +18,18 @@ ul{list-style-position:inside}
 #flog-manifest a,#flog-manifest a:link,#flog-manifest a:hover{color:inherit}
 #flog-manifest h1{color:#fff;text-shadow:-.1em .1em .3em #000}
 #flog-manifest ul{list-style-type:none;margin:0;margin-top:1.8em;padding:0;}
-#flog-manifest ul li{clear:both;}
-#flog-manifest ul li.current{background-color:#fff;color:#dc143c;-webkit-box-shadow:0 .5em 1em -.5em #000;box-shadow:0 .5em 1em -.5em #000;margin-left:-2em;padding-left:2em;width:14em}
-#flog-manifest ul a{display:block;margin-left:1em;text-indent:-1em;width:10.2em}
+#flog-manifest ul li{clear:both;width:15em;height:1.8em;margin-left:-2em;}
+#flog-manifest ul li a{display:block;padding-left:2em;padding-right:.5em}
+#flog-manifest ul li.path.current a{margin-right:-3em;padding-right:3.5em}
+#flog-manifest ul li.path.current:hover a{margin-right:0;padding-right:.5em}
+#flog-manifest ul li.path.current,#flog-manifest ul li.path.current:hover{background-color:#fff;color:#dc143c}
+#flog-manifest ul li.path:hover{background-color:#e7eff3}
+#flog-manifest ul li.path.current a,#flog-manifest ul li.path:hover a{-webkit-box-shadow:0 .5em 1em -.5em #000;box-shadow:0 .5em 1em -.5em #000}
+#flog-manifest ul li.path.current.full a,#flog-manifest ul li.path:hover.full a{background-color:inherit}
+#flog-manifest ul li.heading{padding-left:2em;text-transform:uppercase;font-weight:bold;margin-top:1.8em}
+#flog-manifest ul li.path.full{width:50em;}
+#flog-manifest ul li.path.full a{display:inline-block;position:relative;z-index:101;-webkit-box-shadow:0 .5em 1em -.5em #000;box-shadow:0 .5em 1em -.5em #000;background-color:#e7eff3}
+#flog-manifest ul li.path.full.current a{background-color:#fff}
 #flog-names{height:100em;width:100em}
 #flog-names,#flog-headings{position:fixed;left:57em;top:3.6em;color:#808080;}
 #flog-names a,#flog-headings a,#flog-names a:link,#flog-headings a:link,#flog-names a:hover,#flog-headings a:hover{color:inherit}

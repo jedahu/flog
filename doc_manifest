@@ -1,11 +1,17 @@
 README
+
+= Core
 flog/app.py
-flog/asciidoc-html5.conf
 flog/config.py
 flog/core.py
 flog/mime.py
+flog/source.py
+
+= Config
+flog/asciidoc-html5.conf
+flogrc.sample
+
+= Plugins
 flog/plugins/jsapps.py
 flog/plugins/projects/__init__.py
 flog/plugins/projects/asciidoc-html5.conf
-flog/source.py
-flogrc.sample

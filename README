@@ -39,7 +39,7 @@ is loaded which defines a few extra linking macros among other (minor)
 modifications.
 
 Plugins allow subpaths to point to extra sources, such as the
-link:flog/plugins/projects/__init__.py[projects plugin] which fetches code
+link:flog/plugins/projects/\_\_init__.py[projects plugin] which fetches code
 annotated with AsciiDoc comments and transforms it into hyperlinked
 documentation.
 

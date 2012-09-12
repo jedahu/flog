@@ -5,7 +5,7 @@ Jeremy Hughes <itsjdh@gmail.com>
 :summary: A website engine.
 
 http://github.com/jedahu/flog[Flog] is website + blog engine that transforms
-http://methods.co.nz/asciidoc/[AsciiDoc] articles into posts and pages. I
+http://methods.co.nz/asciidoc/[AsciiDoc] articles into posts and pages. It
 creates post URLs by ordinal number, not date or title. It uses
 http://pygments.org[Pygments] for code highlighting. It is trivial to deploy to
 http://heroku.com[Heroku].

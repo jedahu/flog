@@ -1,4 +1,7 @@
-@charset 'UTF-8'
+@import 'nib'
+
+font-size = 12px
+line-height = 21px
 
 .content-trait
   margin-left 3em
@@ -22,6 +25,18 @@ html
   @extends .sans-serif-trait
   font-size 12px
   line-height 21px
+
+#flog-note
+  position fixed
+  opacity 0
+  width 20em
+  transition opacity 0.5s
+
+  &.active
+    opacity 1
+
+  &.error
+    background-color red
 
 #flog-content
   @extends .content-trait
@@ -167,8 +182,16 @@ html
     .time
       margin-right 0.5em
 
-  .comments
-    display none
+  .spinner
+    opacity 0
+    transition opacity 0.5s
+
+    &.active
+      opacity 1
+
+  .comments .fb-comments > span
+    overflow-y hidden
+    transition height 0.5s
 
   .nextprev
     padding-left 1px

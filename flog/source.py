@@ -20,6 +20,7 @@ class Source:
     self.etag_cache = self.cache_manager.get_cache('etags', expire=365*24*60*60)
     self.fn_cache = self.cache_manager.get_cache('processed')
     self.url_cache = self.cache_manager.get_cache('urls')
+    self.id_cache = self.cache_manager.get_cache('id')
 
   def url_cache_get_or_abort(self, url, code):
     try:
@@ -48,6 +49,13 @@ class Source:
 
   def cache(self, *args, **kwargs):
     return self.cache_manager.cache(*args, **kwargs)
+
+  def cache_with_id(self, key):
+    def decorate(fn):
+      def wrapper(*args, **kwargs):
+        def create_id_cache_value():
+          return fn(*args, **kwargs)
+        return self.id_cache.get(key=key, createfunc=create_id_cache_value)
 
   def source(self, url):
     def decorate(fn):

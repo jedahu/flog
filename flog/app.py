@@ -69,6 +69,12 @@ class Flog(flask.Flask):
     self.POSTS_PATH = self.config.POSTS_PATH
 
     '''.
+    .+name:Flog.THEME_PATH[THEME_PATH] string+
+    The absolute path under which theme resources are found.
+    .'''
+    self.THEME_PATH = self.config.THEME_PATH
+
+    '''.
     .+name:Flog.INDEX_NAME[INDEX_NAME] string+
     A directory’s index file. Defaults to +index+.
     .'''
@@ -153,11 +159,11 @@ class Flog(flask.Flask):
   .+name:Flog.cache[] (self) => decorator+
   The last decorator method caches the return value of the decorated function.
   .'''
-  def cache(self):
+  def cache(self, *args, **kwargs):
     '''
     A decorator method. Cache decorated function return value.
     '''
-    return self.config.SOURCE.cache()
+    return self.config.SOURCE.cache(*args, **kwargs)
 
 
   '''.
@@ -454,5 +460,22 @@ class Flog(flask.Flask):
     def latest_post_n_impl(src):
       return int(src)
     return latest_post_n_impl()
+
+  def concatenated_js_id(self, js_paths):
+    return ','.join(js_paths)
+
+  def concatenated_js(self, js_paths, minify=True):
+    @self.cache(self.concatenated_js_id(js_paths))
+    def concatenated_js_impl():
+      def compress(src):
+        import slimit
+        return slimit.minify(src, mangle=True, mangle_toplevel=True)
+      process = compress if minify else lambda x: x
+      out = StringIO()
+      for path in js_paths:
+        with open(os.path.join(self.THEME_PATH, 'static/js', path + '.js')) as f:
+          out.write(f.read())
+      return process(out.getvalue())
+    return concatenated_js_impl()
 
 # vim: set bomb:

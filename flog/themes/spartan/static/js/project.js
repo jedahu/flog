@@ -1,212 +1,272 @@
-jQuery.noConflict();
+addEventListener('DOMContentLoaded', function() {
+  var $ = Dumpling,
+      note = new Flog.Notifier(document.getElementById('flog-note'));
 
-function meta_val(name) {
-  return jQuery('meta[name="' + name + '"]').attr('content');
-}
-
-jQuery(function($) {
-  var items = $('#flog-manifest .path'),
-      paths = $('#flog-manifest .path a');
-  paths.each(function(_idx, p) {
-    $(p).data('path', $(p).text());
-  });
-  paths.truncate({ center: true });
-  items.mouseenter(function() {
-    var p = $(this).find('a');
-    if (p.data('path') !== p.text()) {
-      p.text(p.data('path'));
-      $(this).addClass('full');
-    }
-  });
-  items.mouseleave(function() {
-    $(this).removeClass('full').find('a').truncate({ center: true });
-  });
-});
-
-jQuery(function($) {
-  var form = $('#flog-commit');
-  form.css('display', '');
-  form.live('submit', function() {
-    var commit = $('#flog-commit .ui-combobox-input').val(),
-        prefix = meta_val('prefix'),
-        current_path = meta_val('current_path');
-    window.location = prefix + '/' + commit + '/' + current_path;
-  });
-});
-
-jQuery(function( $ ) {
-  $.widget( "ui.combobox", {
-    _create: function() {
-      var input,
-        self = this,
-        select = this.element.hide(),
-        selected = select.children( ":selected" ),
-        value = selected.val() ? selected.text() : "",
-        wrapper = this.wrapper = $( "<span>" )
-          .addClass( "ui-combobox" )
-          .insertAfter( select );
-
-      input = $( "<input>" )
-        .appendTo( wrapper )
-        .val( value )
-        .addClass( "ui-state-default ui-combobox-input" )
-        .autocomplete({
-          delay: 0,
-          minLength: 0,
-          source: function( request, response ) {
-            var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i" );
-            response( select.children( "option" ).map(function() {
-              var text = $( this ).text();
-              if ( this.value && ( !request.term || matcher.test(text) ) )
-                return {
-                  label: text.replace(
-                    new RegExp(
-                      "(?![^&;]+;)(?!<[^<>]*)(" +
-                      $.ui.autocomplete.escapeRegex(request.term) +
-                      ")(?![^<>]*>)(?![^&;]+;)", "gi"
-                    ), "<strong>$1</strong>" ),
-                  value: text,
-                  option: this
-                };
-            }) );
-          },
-          select: function( event, ui ) {
-            ui.item.option.selected = true;
-            self._trigger( "selected", event, {
-              item: ui.item.option
-            });
-          },
-          change: function( event, ui ) {
-            if ( !ui.item ) {
-              var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( $(this).val() ) + "$", "i" ),
-                valid = false;
-              select.children( "option" ).each(function() {
-                if ( $( this ).text().match( matcher ) ) {
-                  this.selected = valid = true;
-                  return false;
-                }
-              });
-            }
-          }
-        })
-        .addClass( "ui-widget ui-widget-content ui-corner-left" );
-
-      input.data( "autocomplete" )._renderItem = function( ul, item ) {
-        return $( "<li></li>" )
-          .data( "item.autocomplete", item )
-          .append( "<a>" + item.label + "</a>" )
-          .appendTo( ul );
-      };
-
-      $( "<a>" )
-        .attr( "tabIndex", -1 )
-        .attr( "title", "Show All Items" )
-        .appendTo( wrapper )
-        .button({
-          icons: {
-            primary: "ui-icon-triangle-1-s"
-          },
-          text: false
-        })
-        .removeClass( "ui-corner-all" )
-        .addClass( "ui-corner-right ui-combobox-toggle" )
-        .click(function() {
-          // close if already visible
-          if ( input.autocomplete( "widget" ).is( ":visible" ) ) {
-            input.autocomplete( "close" );
-            return;
-          }
-
-          // work around a bug (likely same cause as #5265)
-          $( this ).blur();
-
-          // pass empty string as value to search for, displaying all results
-          input.autocomplete( "search", "" );
-          input.focus();
-        });
-    },
-
-    destroy: function() {
-      this.wrapper.remove();
-      this.element.show();
-      $.Widget.prototype.destroy.call( this );
-    }
-  });
-});
-
-jQuery(function($) {
-  var github_user = meta_val('github_user')
-      github_repo = meta_val('github_repo'),
-      form = $('#flog-commit'),
-      select = form.find('select'),
-      current = select.find('option').val(),
-      request_url = 'https://api.github.com/repos/' +
-          github_user + '/' + github_repo + '/git/refs?callback=?';
-  if (github_user && github_repo && select) {
-    $.getJSON(request_url, function(message) {
-      $.each(message.data, function(_i, r) {
-        var ref = r.ref,
-            type = r.object.type === 'tag' ? 'tag' : 'branch',
-            name = ref.split('/').slice(-1)[0],
-            display = type === 'tag' ? 'tag:' + name : name,
-            option = $('<option>');
-        if (name !== current) {
-          option.attr('value', name);
-          option.text(display);
-          select.append(option);
-        }
-      });
-    });
-    select.combobox();
-    form.find('.ui-combobox-input').bind('autocompleteselect', function(_evt, ui) {
-      form.find('.ui-combobox-input').val(ui.item.value);
-      form.trigger('submit');
-    });
-    form.css('display', '');
-    form.bind('submit', function() {
-      var commit = $('#flog-commit .ui-combobox-input').val(),
-          prefix = meta_val('prefix'),
-          current_path = meta_val('current_path');
-      window.location = prefix + '/' + commit + '/' + current_path;
-    });
-    form.find('.ui-combobox-input').keypress(function(evt) {
-      evt.stopPropagation();
-    });
+  function currentPath() {
+    var prefix = $.getMeta('prefix'),
+        commit = $.getMeta('commit');
+    return location.pathname.substr(prefix.length + commit.length + 2);
   }
-});
 
-jQuery(function($) {
-  var lblocks = $('.listingblock .content');
-
-  lblocks.each(function(_i, b) {
-    $(b).attr('data-height', $(b).css('height'));
-  });
-
-  lblocks.dblclick(function() {
-    var block = $(this);
-    if (block.hasClass('collapsed')) {
-      block.animate({height: block.attr('data-height')}, function() {
-        block.css('height', '');
-        block.removeClass('collapsed');
-      });
-    }
-    else {
-      block.animate({height: '1em'}, function() {
-        block.css('height', '');
-        block.addClass('collapsed');
-      });
-    }
-    rangy.getSelection().removeAllRanges();
-  });
-
-  $(document).keypress(function(evt) {
-    if (evt.which === 99) {
-      if (lblocks.first().hasClass('collapsed')) {
-        lblocks.removeClass('collapsed');
+  // Path truncation
+  function truncatePaths() {
+    var items = document.querySelectorAll('#flog-manifest .path'),
+        paths = document.querySelectorAll('#flog-manifest .path a');
+    function truncate(elem) {
+      var tpath = elem.getAttribute('data-trunc-path');
+      if (tpath) {
+        elem.innerText = tpath;
       }
       else {
-        lblocks.addClass('collapsed');
+        JTruncate.truncate(elem, {center: true, width: elem.clientWidth - 72});
+        elem.setAttribute('data-trunc-path', elem.innerText);
       }
     }
-  });
+    $.forEach(paths, function(p) {
+      p.setAttribute('data-path', p.innerText);
+      truncate(p);
+    });
+    function enterCallback() {
+      var p = this.querySelector('a'),
+          path = null;
+      if (p) {
+        path = p.getAttribute('data-path');
+        if (path != p.innerText) {
+          p.innerText = path;
+          this.classList.add('full');
+        }
+      }
+    }
+    function leaveCallback() {
+      var p = this.querySelector('a');
+      if (p) {
+        this.classList.remove('full');
+        truncate(p);
+      }
+    }
+    $.forEach(items, function(it) {
+      it.addEventListener('mouseover', enterCallback, false);
+      it.addEventListener('mouseout', leaveCallback, false);
+    });
+  };
+
+  truncatePaths();
+
+  // Github commit form
+  !function() {
+    var github_user = $.getMeta('github_user')
+        github_repo = $.getMeta('github_repo'),
+        form = document.getElementById('flog-commit'),
+        options = form.getElementsByTagName('ul')[0],
+        input = form.getElementsByTagName('input')[0],
+        current = input.value,
+        button = form.getElementsByTagName('button')[0],
+        request_url = 'https://api.github.com/repos/' +
+            github_user + '/' + github_repo + '/git/refs',
+        refs = [],
+        xhr = null;
+    if (github_user && github_repo && input) {
+      xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function() {
+        var data = null;
+        if (this.readyState == 4) {
+          if (this.status >= 200 && this.status < 300) {
+            data = JSON.parse(this.responseText);
+            data.forEach(function(r) {
+              var ref = r.ref,
+                  type = r.object.type === 'tag' ? 'tag' : 'branch',
+                  name = ref.split('/').slice(-1)[0],
+                  display = type === 'tag' ? 'tag:' + name : name,
+                  option = document.createElement('li');
+              refs.push(name);
+              option.setAttribute('data-value', name);
+              option.innerText = display;
+              options.appendChild(option);
+            });
+          }
+        }
+      };
+      xhr.open('GET', request_url);
+      xhr.send();
+      form.style.display = '';
+      form.addEventListener('submit', function() {
+        var commit = input.value,
+            prefix = $.getMeta('prefix'),
+            commit_url = 'https://api.github.com/repos/' +
+                github_user + '/' + github_repo + '/commits/' + commit;
+        xhr.onreadystatechange = function() {
+          if (this.readyState == 4) {
+            if (this.status >= 200 && this.status < 300) {
+              window.location = prefix + '/' + commit + '/' + currentPath();
+            }
+            else {
+              note.error('Ref not found: ' + commit + '.');
+            }
+          }
+        };
+        xhr.open('GET', commit_url);
+        xhr.send();
+      }, false);
+      input.addEventListener('keypress', function(evt) {
+        evt.stopPropagation();
+      }, false);
+      options.addEventListener('click', function(evt) {
+        var li = evt.target;
+        if (li.tagName.toLowerCase() == 'li') {
+          input.value = li.getAttribute('data-value');
+          form.submit();
+        }
+      }, false);
+      function hideMenu(evt) {
+        options.classList.remove('active');
+      }
+      button.addEventListener('click', function(evt) {
+        evt.stopPropagation();
+        options.classList.toggle('active');
+      }, false);
+      document.addEventListener('click', hideMenu, false);
+    }
+  }();
+
+  // Listing collapse
+  !function() {
+    var lblocks = document.querySelectorAll('.listingblock .content'),
+        msgdiv  = document.createElement('div');
+    msgdiv.className = 'listing-collapser';
+
+    $.forEach(lblocks, function(b) {
+      b.setAttribute('data-height', getComputedStyle(b).height);
+    });
+
+    function collapse(block) {
+      block.classList.add('collapsed');
+    }
+    function expand(block) {
+      block.classList.remove('collapsed');
+      block.style.height = block.getAttribute('data-height');
+    }
+
+    msgdiv.addEventListener('click', function() {
+      var block = msgdiv.parentNode;
+      if (block.classList.contains('collapsed')) expand(block);
+      else collapse(block);
+    }, false);
+
+    function enterCallback() {
+      var collapsed = this.classList.contains('collapsed'),
+          mesg = collapsed ? 'click to expand' : 'click to collapse';
+      this.appendChild(msgdiv);
+      msgdiv.classList.add('active');
+    }
+    function leaveCallback() {
+      msgdiv.classList.remove('active');
+    }
+
+    $.forEach(lblocks, function(b) {
+      b.addEventListener('mouseover', enterCallback, false);
+      b.addEventListener('mouseout', leaveCallback, false);
+    });
+
+    document.addEventListener('keypress', function(evt) {
+      if (evt.which == 99) {
+        if (lblocks.length > 0 && lblocks[0].classList.contains('collapsed')) {
+          $.forEach(lblocks, expand);
+        }
+        else {
+          $.forEach(lblocks, collapse);
+        }
+      }
+    }, false);
+  }();
+
+  // In-place update with history
+  !function() {
+    var path_prefix = $.getMeta('prefix'),
+        manifest    = document.getElementById('#flog-manifest'),
+        spinner     = new Spinner({
+          lines: 7,
+          length: 3,
+          width: 1,
+          radius: 1,
+          corners: 0,
+          rotate: 0,
+          color: '#f00',
+          speed: 1,
+          trail: 70,
+          shadow: false,
+          hwaccel: true,
+          className: 'spinner',
+          zIndex: 2e9,
+          top: 'auto',
+          left: 12
+        });
+    function installCallback(resp) {
+      JSelect.fill(document.documentElement,
+        [['meta[name="current_path"]', function(elem) {
+          elem.setAttribute('content', currentPath());
+          return elem;
+        }],
+        ['#flog-manifest .current', function(elem) {
+          elem.classList.remove('current');
+          return elem;
+        }],
+        ['#flog-manifest > ul', resp.doc.body.querySelector('#flog-manifest > ul')],
+        ['#flog-manifest > ul', function(elem) {
+          var nodes = elem.getElementsByTagName('li'),
+              node = $.find(nodes, function(n) {
+                var a = n.getElementsByTagName('a');
+                return a.length == 1 && a[0].pathname == location.pathname;
+              });
+          if (node) node.classList.add('current');
+          return elem;
+        }],
+        ['#flog-headings', resp.doc.body.querySelector('#flog-headings')],
+        ['#flog-names', resp.doc.body.querySelector('#flog-names')],
+        ['#flog-content', resp.doc.body.querySelector('#flog-content')]]);
+      truncatePaths();
+    }
+    function uninstallCallback(resp) {
+      JSelect.fill(document.documentElement,
+          [['meta[name="current_path"]', null],
+          ['#flog-headings', function(elem) { elem.innerHTML = ''; return elem; }],
+          ['#flog-names', function(elem) { elem.innerHTML = ''; return elem; }],
+          ['#flog-content', function(elem) { elem.innerHTML = ''; return elem; }]]);
+    }
+    function finishCallback(resp) {
+      spinner.stop();
+    }
+    function xhrfailCallback(status) {
+      note.error('XHR failed with: ' + status + '.');
+      spinner.stop();
+      history.back();
+    }
+    function handler(req) {
+      var nodes = document.querySelectorAll('#flog-manifest li a'),
+          node = $.find(nodes, function(n) {
+            return n.pathname == req.locationMap.pathname;
+          });
+      if (node) spinner.spin(node.parentNode);
+      return {
+        id: req.locationMap.href.substr(0, req.locationMap.href.length - req.locationMap.hash.length),
+        html: req.locationMap.href,
+        title: null,
+        install: installCallback,
+        uninstall: uninstallCallback,
+        finish: finishCallback,
+        xhrfail: xhrfailCallback
+      };
+    }
+    Jorus.start(handler, {
+      aClass:    false,
+      aTest: function(a) {
+        var l = location;
+        console.log(a.getAttribute('href'));
+        return (a.getAttribute('href')[0] != '#'
+          && a.host == l.host
+          && a.protocol == l.protocol
+          && (a.pathname == path_prefix
+            || a.pathname.indexOf(path_prefix + '/') === 0));
+      }
+    });
+  }();
 });

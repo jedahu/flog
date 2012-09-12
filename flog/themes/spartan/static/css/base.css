@@ -1,10 +1,12 @@
-@charset 'UTF-8';
 .content-trait,#flog-content,#flog-footer,#flog-header{margin-left:3em;width:40em}
 .smaller-trait,#flog-content .imageblock .title,#flog-content article .sidebarblock,#flog-content .hentry .sidebarblock,#flog-content article .attribution.ulist,#flog-content .hentry .attribution.ulist,#flog-content article footer,#flog-content .hentry footer,#flog-content .meta,#flog-footer .title-block .vcard,#flog-header .title-block .vcard,.sidenote,.fnoteblock{font-size:10px;line-height:21px}
 .monospace-trait,#flog-content .monospaced,pre{font-family:Inconsolata,monospace}
 .sans-serif-trait,html{font-family:Nobile,Helvetica,Arial,sans-serif}
 .serif-trait,#flog-footer .title-block .tabs,#flog-header .title-block .tabs,h1,h2,h3,h4,h5,h6,.title-block .title{font-family:Vollkorn,Georgia,serif}
 html{font-size:12px;line-height:21px}
+#flog-note{position:fixed;opacity:0;-ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);filter:alpha(opacity=0);width:20em;-webkit-transition:opacity .5s;-moz-transition:opacity .5s;-o-transition:opacity .5s;-ms-transition:opacity .5s;transition:opacity .5s;}
+#flog-note.active{opacity:1;-ms-filter:none;filter:none}
+#flog-note.error{background-color:#f00}
 #flog-content p,#flog-content .listingblock,#flog-content blockquote,#flog-content .quoteblock,#flog-content .verseblock,#flog-content .paragraph,#flog-content ul,#flog-content ol{margin-top:0;margin-bottom:25px;}
 #flog-content p .title,#flog-content .listingblock .title,#flog-content blockquote .title,#flog-content .quoteblock .title,#flog-content .verseblock .title,#flog-content .paragraph .title,#flog-content ul .title,#flog-content ol .title{font-weight:bold}
 #flog-content p,#flog-content blockquote,#flog-content .quoteblock,#flog-content ul,#flog-content ol{text-align:justify}
@@ -34,7 +36,9 @@ html{font-size:12px;line-height:21px}
 #flog-content .latest-post-titles a:last-child:after{content:''}
 #flog-content .meta{color:#808080;clear:both;}
 #flog-content .meta .time{margin-right:.5em}
-#flog-content .comments{display:none}
+#flog-content .spinner{opacity:0;-ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);filter:alpha(opacity=0);-webkit-transition:opacity .5s;-moz-transition:opacity .5s;-o-transition:opacity .5s;-ms-transition:opacity .5s;transition:opacity .5s;}
+#flog-content .spinner.active{opacity:1;-ms-filter:none;filter:none}
+#flog-content .comments .fb-comments > span{overflow-y:hidden;-webkit-transition:height .5s;-moz-transition:height .5s;-o-transition:height .5s;-ms-transition:height .5s;transition:height .5s}
 #flog-content .nextprev{padding-left:1px;padding-right:1px;padding-bottom:3em;background-color:#000;color:#fff;height:2em;}
 #flog-content .nextprev a,#flog-content .nextprev a:hover{color:inherit}
 #flog-content .nextprev .prev{float:left;}

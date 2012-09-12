@@ -1,5 +1,6 @@
 @import 'nib'
 @import 'project-ui'
+@import 'base'
 
 content-width = 40em
 manifest-width = 12em
@@ -37,6 +38,7 @@ ul
 
   .listingblock .content
     float left
+    position relative
     width content-width
     padding-left content-padding
     padding-right content-padding
@@ -58,29 +60,24 @@ ul
       min-width content-width
       overflow-x visible
       box-shadow 0.5em 0 1em -0.5em
-      position relative
       z-index 20
-
-    &:before
-      font-size 0.8em
-      line-height 0.8em
-      color grey
-      position absolute
-      padding 0
-      margin 0
 
     &.collapsed,
     &.collapsed:hover
       height 1em
       overflow hidden
       width content-width
-      position normal
 
-      &:hover:before
-        content 'double click to expand'
-
-    &:hover:before
-      content 'double click to collapse'
+    .listing-collapser
+      color grey
+      font-size 0.8em
+      line-height 0.8em
+      cursor pointer
+      padding 0
+      margin 0
+      position absolute
+      top 0
+      left 0
 
 #flog-content:after
   content: ''
@@ -93,6 +90,7 @@ ul
   width manifest-width
   padding 1.2em
   color grey
+  resize width
 
   a,
   a:link,
@@ -103,7 +101,7 @@ ul
     color white
     text-shadow -0.1em 0.1em 0.3em black
 
-  ul
+  ul.paths
     list-style-type none
     margin 0
     margin-top 1.8em
@@ -111,25 +109,27 @@ ul
 
     li
       clear both
-      width manifest-width + 3em
+      width manifest-width + 4em
       height 1.8em
       margin-left -2em
 
       a
         display block
         padding-left 2em
-        padding-right 0.5em
+        padding-right 3.5em
+        width manifest-width + 0.5
+        white-space nowrap
         //margin-left 1em
         //text-indent -1em
         //width manifest-width - 0.5em
 
       &.path.current a
-        margin-right -3em
+        //margin-right -3em
         padding-right 3.5em
 
-      &.path.current:hover a
+      &.path:hover a
         margin-right 0
-        padding-right 0.5em
+        padding-right 1.5em
 
       &.path.current,
       &.path.current:hover
@@ -160,6 +160,7 @@ ul
           display inline-block
           position relative
           z-index 101
+          width auto
           box-shadow 0 0.5em 1em -0.5em black
           background-color manifest-bg
 
@@ -222,20 +223,56 @@ ul
 
 #flog-commit
 
-  .ui-combobox-input
-    width manifest-width - 5em
+  ul
+    position absolute
+    width auto
+    z-index 110
+    background-color white
+    box-shadow 0 0 1em 0 black
+    padding-left 0
+    padding-top 0
+    margin-top 0 - line-height + 1px
+    outline 1px solid white
+    list-style-type none
+    visibility hidden
+    opacity 0
+    transition visibility 0.5s linear 0s, opacity 0.5s
+    transition-delay 0s
+
+    &.active
+      visibility visible
+      opacity 1
+      transition visibility 0.5s linear 0s, opacity 0.5s
+
+    li
+      @extends .sans-serif-trait
+      width auto
+      min-width manifest-width - 1em
+      cursor pointer
+
+      &:hover
+        color white
+        background-color grey
+
+  input
+    @extends .sans-serif-trait
+    font-size font-size
+    width manifest-width - 3em
     color grey
-    outline none
+    border none
+    outline 1px solid grey
+    margin-right 0
 
-  .ui-state-hover,
-  .ui-state-focus
-    background grey
-    border #ddd
-    outline none
-
-#ui-active-menuitem
-  background grey
-  border #ddd
+  button
+    @extends .sans-serif-trait
+    font-size font-size
+    text-align center
+    width 2em
+    padding 0
+    margin-left 0
+    vertical-align baseline
+    height line-height
+    border solid 1px grey
 
 #flog-listing-toggle
   display none

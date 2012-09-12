@@ -102,11 +102,26 @@ def catchall(path):
     return app.page(path)
   return redirect(url_for('catchall', path=path + '/'), code=301)
 
+@app.route('/js/<path:paths>.js')
+@mimetype('text/javascript')
+def javascript(paths):
+  js_paths = paths.split(',')
+  return app.concatenated_js(js_paths)
+
+def js_scripts(*js_paths):
+  if c.DEV_MODE:
+    html = StringIO()
+    for path in js_paths:
+      html.write('<script src="/static/js/' + path + '.js"></script>\n')
+    return Markup(html.getvalue())
+  return Markup('<script src="'
+      + url_for('javascript', paths=app.concatenated_js_id(js_paths))
+      + '"></script>')
 
 @app.context_processor
 def inject_template_vars():
   '''Make these vars available to all templates'''
-  return dict(len=len)
+  return dict(len=len, scripts=js_scripts)
 
 
 for mod_name, plug_conf in c.PLUGINS.items():

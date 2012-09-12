@@ -16,7 +16,8 @@ CONFIG_DEFAULTS = dict(
     CACHE_EXPIRE = 300,
     INDEX_NAME = 'index',
     NAV = [],
-    PLUGINS = {}
+    PLUGINS = {},
+    DEV_MODE = False
     )
 
 class Config(flask.config.Config):
@@ -26,8 +27,10 @@ class Config(flask.config.Config):
     self['FLOG_CONF'] = os.environ.get('FLOG_CONF') or os.path.join(os.getcwd(), 'flogrc')
     self.from_pyfile(self.FLOG_CONF)
 
+    self['DEV_MODE'] = os.environ.get('FLOG_DEV_MODE') or self.DEV_MODE
     self['FLOG_DIR'] = os.path.dirname(self.FLOG_CONF)
     self['SOURCE_URL'] = os.environ.get('FLOG_SOURCE_URL') or self.SOURCE_URL
+    self['ROOT_URL'] = os.environ.get('FLOG_ROOT_URL') or self.ROOT_URL
     theme_path = self.THEME_PATH
     self['THEME_PATH'] = os.path.join(self.FLOG_DIR, theme_path)
     if not os.path.isdir(self.THEME_PATH):

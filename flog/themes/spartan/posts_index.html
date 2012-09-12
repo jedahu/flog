@@ -2,20 +2,7 @@
 {% block title %}Posts{% endblock %}
 {% block head %}
   {{ super() }}
-  <script src='{{ url_for('static', filename='css/jquery.ias.min.js') }}'></script>
-  <script>
-    jQuery(function($) {
-      jQuery.ias({
-          container: '#flog-content',
-          item: '.hentry',
-          pagination: '.nextprev',
-          next: '.nextprev .prev',
-          loader: '...',
-          history: false,
-          onRenderComplete: window.onLoadNewPosts
-      });
-    });
-  </script>
+  <meta name='page-id' content='posts-index'>
 {% endblock %}
 {% block header %}
   {% include 'title-block.html' %}
@@ -27,7 +14,10 @@
   {% for n, content, meta in posts %}
     {% include 'post_article.html' %}
   {% endfor %}
+  <div class='spinner'>...</div>
 {% endblock %}
-{% set n = posts[-1][0] %}
-{% include 'post_nextprev.html' %}
+{% block after_content %}
+  {% set n = posts[-1][0] %}
+  {% include 'post_nextprev.html' %}
+{% endblock %}
 {# vim: set ft=jinja: #}

@@ -12,8 +12,7 @@
           type='application/atom+xml'
           title='{{ config.TITLE }}'
           href='{{ config.FEED_URL }}'>
-      <script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
-      <script src='{{ url_for('static', filename='js/base.js') }}'></script>
+      {{ scripts('dumpling', 'flog', 'base') }}
       <meta name='MSSmartTagsPreventParsing' content='true'>
       <meta name='generator' content='flog'>
       <meta name='blog name' content='{{ config.TITLE }}'>
@@ -24,6 +23,7 @@
     {% endblock %}
   </head>
   <body>
+    <div id='flog-note'></div>
     {% if config.FACEBOOK %}
       <div id='fb-root'></div>
     {% endif %}
@@ -33,6 +33,7 @@
     <div id='flog-content'>
       {% block content %}{% endblock %}
     </div>
+    {% block after_content %}{% endblock %}
     <footer id='flog-footer'>
       {% block footer %}{% endblock %}
     </footer>

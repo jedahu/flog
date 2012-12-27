@@ -19,7 +19,7 @@ class Plugin:
     url = self.jsapps[name]
 
     @self.app.source(url)
-    def js_apps_impl(src):
+    def js_apps_impl(self, src):
       return src
     if path == name:
       return flask.redirect(flask.url_for('js_apps', path=path + '/'), code=301)

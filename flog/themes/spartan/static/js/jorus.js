@@ -1,22 +1,29 @@
-var Jorus = (function(d) {
-  var currentResponse = {},
-      currentHead     = [];
+var define = typeof define === 'function' ? define : function(x) { window.JSelect = x; };
 
-  function htmlToFragment(html) {
-    var tmp      = d.createElement('html'),
+define(Object.freeze(
+
+{ init: function(doc) {
+    this.currentResponse = {};
+    this.currentHead = [];
+    this._doc = doc;
+    return Object.freeze(this);
+  }
+
+, htmlToFragment: function(html) {
+    var tmp      = this._doc.createElement('html'),
         fragment = null;
     tmp.innerHTML = html;
     if (tmp.childNodes.length === 1) {
       return tmp.removeChild(tmp.firstChild);
     }
     else {
-      fragment = d.createDocumentFragment();
+      fragment = this._doc.createDocumentFragment();
       while (tmp.firstChild) fragment.appendChild(tmp.firstChild);
       return fragment;
     }
   }
 
-  function getAncestorByTagName(node, tagName) {
+, getAncestorByTagName: function(node, tagName) {
     while(node && node.tagName) {
       if (node.tagName.toLowerCase() == tagName.toLowerCase()) {
         return node;
@@ -26,25 +33,25 @@ var Jorus = (function(d) {
     return null;
   }
 
-  function callUninstall(resp) {
+, callUninstall: function(resp) {
     if (typeof resp.uninstall == 'function') {
       resp.uninstall(resp);
     }
   }
 
-  function callInstall(resp) {
+, callInstall: function(resp) {
     if (typeof resp.install == 'function') {
       resp.install(resp);
     }
   }
 
-  function callFinish(resp) {
+, callFinish: function(resp) {
     if (typeof resp.finish == 'function') {
       resp.finish(resp);
     }
   }
 
-  function getLocationMap() {
+, getLocationMap: function() {
     var l = location;
     return {
       hash:     l.hash,
@@ -58,10 +65,10 @@ var Jorus = (function(d) {
     };
   }
 
-  function replaceHead(newNodes) {
-    var head = d.head;
+, replaceHead: function(newNodes) {
+    var head = this._doc.head;
     try {
-      currentHead.forEach(function(node) {
+      this.currentHead.forEach(function(node) {
         head.removeChild(node);
       });
       newNodes.forEach(function(node) {
@@ -69,15 +76,15 @@ var Jorus = (function(d) {
       });
     }
     finally {
-      currentHead = newNodes;
+      this.currentHead = newNodes;
     }
   }
 
-  function replaceBody(newBody) {
-    d.body = newBody;
+, replaceBody: function(newBody) {
+    this._doc.body = newBody;
   }
 
-  function defaultXhr(url, callback, callfail) {
+, defaultXhr: function(url, callback, callfail) {
     var client = new XMLHttpRequest();
     client.onreadystatechange = function() {
       if (this.readyState === 4) {
@@ -93,7 +100,7 @@ var Jorus = (function(d) {
     client.send();
   }
 
-  function getDocument(xhr, x, callback, callfail) {
+, getDocument: function(xhr, x, callback, callfail) {
     var match = null;
     function normalize(node) {
       var title     = node.querySelector('title'),
@@ -109,21 +116,23 @@ var Jorus = (function(d) {
     else if (x instanceof Element) callback(normalize(x));
     else if (x.constructor === String) {
       match = x.match(/\S/);
-      if (match && match[0] == '<') callback(normalize(htmlToFragment(x)));
+      if (match && match[0] == '<') callback(normalize(this.htmlToFragment(x)));
       else (xhr || defaultXhr)(x, function(txt) {
-        callback(normalize(htmlToFragment(txt)));
+        callback(normalize(this.htmlToFragment(txt)));
       }, callfail);
     }
   }
 
-  function callHandler(handler, req, opts) {
+, callHandler: function(handler, req, opts) {
     console.log('callHandler');
     console.log('caller', arguments.callee.caller);
-    var loc  = getLocationMap(),
-        resp = null;
+    var self = this
+      , loc  = this.getLocationMap()
+      , resp = null
+      ;
     req.locationMap = loc;
     resp = handler(req);
-    if (resp.id === currentResponse.id) callFinish(resp);
+    if (resp.id === this.currentResponse.id) this.callFinish(resp);
     else {
       getDocument(
           opts.xhr,
@@ -131,23 +140,23 @@ var Jorus = (function(d) {
           function(doc) {
             try {
               resp.doc = doc;
-              callUninstall(currentResponse);
-              d.title = resp.title || doc.title;
-              replaceHead(resp.replaceHead ? doc.head : []);
-              if (resp.replaceBody) replaceBody(doc.body);
-              callInstall(resp);
-              callFinish(resp);
+              self.callUninstall(self.currentResponse);
+              self._doc.title = resp.title || doc.title;
+              self.replaceHead(resp.replaceHead ? doc.head : []);
+              if (resp.replaceBody) self.replaceBody(doc.body);
+              self.callInstall(resp);
+              self.callFinish(resp);
             }
             finally {
-              currentResponse = resp;
+              self.currentResponse = resp;
             }
           },
           resp.xhrfail);
     }
   }
 
-  function clickHandler(handler, opts, evt) {
-    var a = getAncestorByTagName(evt.target, 'a'),
+, clickHandler: function(handler, opts, evt) {
+    var a = this.getAncestorByTagName(evt.target, 'a'),
         url = a
           && (!opts.aClass || a.classList.contains(opts.aClass))
           && (!opts.aTest || opts.aTest(a))
@@ -161,32 +170,29 @@ var Jorus = (function(d) {
       state = a.getAttribute(opts.aStateAttr);
       obj = state ? JSON.parse(state) : null;
       history.pushState(obj, null, url);
-      callHandler(handler, {historyState: obj}, opts);
+      this.callHandler(handler, {historyState: obj}, opts);
     }
   }
 
-  function start(handler, opts) {
+, start: function(handler, opts) {
+    var self = this;
     if (!opts.aStateAttr) opts.aStateAttr = 'data-jorus-state';
     if (opts.immediateDispatch) {
-      callHandler(handler, {historyState: history.state}, opts);
+      this.callHandler(handler, {historyState: history.state}, opts);
     }
     function popstateListener(evt) {
       console.log('popped');
-      callHandler(handler, {historyState: evt.state}, opts);
+      self.callHandler(handler, {historyState: evt.state}, opts);
     }
     function clickListener(evt) {
-      clickHandler(handler, opts, evt);
+      self.clickHandler(handler, opts, evt);
     }
     addEventListener('popstate', popstateListener);
-    d.documentElement.addEventListener('click', clickListener);
+    this._doc.documentElement.addEventListener('click', clickListener);
     return function() {
       removeEventListener('popstate', popstateListener);
-      d.documentElement.removeEventListener('click', clickListener);
+      this._doc.documentElement.removeEventListener('click', clickListener);
     };
   }
 
-  return {
-    start: start
-  };
-
-})(document);
+}));

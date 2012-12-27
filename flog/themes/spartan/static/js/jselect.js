@@ -4,9 +4,14 @@ jselect.js
 
 Selector templating via a caller-defined selector function.
 .*/
-var JSelect = (function(d) {
+var define = typeof define === 'function' ? define : function(x) { window.JSelect = x; };
 
+define(Object.freeze(
 
+{ init: function(doc) {
+    this._doc = doc;
+    return Object.freeze(this);
+  }
 
   /*.
   Selector functions
@@ -20,7 +25,7 @@ var JSelect = (function(d) {
   Two selector functions are provided by JSelect. The first wraps the browser’s
   implementation of `querySelectorAll`.
   .*/
-  function defaultCssSelector(rootNode, query) {
+, defaultCssSelector: function(rootNode, query) {
     return rootNode.querySelectorAll(query);
   }
 
@@ -28,7 +33,7 @@ var JSelect = (function(d) {
   .+name:sizzleSelector[] (rootNode, query) => Array<Node>+
   The second uses http://sizzlejs.com[Sizzle].
   .*/
-  function sizzleSelector(rootNode, query) {
+, sizzleSelector: function(rootNode, query) {
     return Sizzle(query, rootNode);
   }
 
@@ -37,10 +42,10 @@ var JSelect = (function(d) {
   If no selector function is provided to <<fill>> and `window.Sizzle` exists,
   <<sizzleSelector>> is used, otherwise <<defaultCssSelector>> is used.
   .*/
-  function getSelector(selectorFn) {
+, getSelector: function(selectorFn) {
     var selector = selectorFn ||
-      (typeof Sizzle !== 'undefined' && sizzleSelector) ||
-      (d.querySelectorAll && defaultCssSelector);
+      (typeof Sizzle !== 'undefined' && this.sizzleSelector) ||
+      (this._doc.querySelectorAll && this.defaultCssSelector);
     if (selector) return selector;
     throw new Error(
         'No usable selector function found. Please supply one.');
@@ -72,25 +77,25 @@ var JSelect = (function(d) {
   +null|undefined|false+::
     Results in deletion of the matched Node.
   .*/
-  function replace(rep, matchedNode) {
+, replace: function(rep, matchedNode) {
     var value = typeof rep === 'function' ? rep(matchedNode) : rep;
     if (value !== null && value !== undefined && value !== false) {
-      replaceNode(matchedNode, wrapReplacement(value));
+      this.replaceNode(matchedNode, this.wrapReplacement(value));
     }
     else {
-      removeNode(matchedNode);
+      this.removeNode(matchedNode);
     }
   }
 
-  function wrapReplacement(r) {
-    return r instanceof Node ? r : d.createTextNode(r);
+, wrapReplacement: function(r) {
+    return r instanceof Node ? r : this._doc.createTextNode(r);
   }
 
-  function replaceNode(oldNode, newNode) {
+, replaceNode: function(oldNode, newNode) {
     oldNode.parentNode.replaceChild(newNode, oldNode);
   }
 
-  function removeNode(node) {
+, removeNode: function(node) {
     node.parentNode.removeChild(node);
   }
 
@@ -109,7 +114,7 @@ var JSelect = (function(d) {
   function which must take the matched Node as its argument and return a single
   replacement value of +Node|String|null|undefined|false+.
   .*/
-  function fill(rootNode, queryMap, selectorFn) {
+, fill: function(rootNode, queryMap, selectorFn) {
     var i,
         j,
         query,
@@ -117,29 +122,16 @@ var JSelect = (function(d) {
         matchedNode,
         matchedNodes,
         replacement,
-        select = getSelector(selectorFn);
+        select = this.getSelector(selectorFn);
     for (i in queryMap) {
       query = queryMap[i][0];
       replacement = queryMap[i][1];
       matchedNodes = select(rootNode, query);
       for (j = 0; j < matchedNodes.length; ++j) {
         matchedNode = matchedNodes[j];
-        replace(replacement, matchedNode);
+        this.replace(replacement, matchedNode);
       }
     }
   }
 
-
-
-  /*.
-  Exported functions
-  ------------------
-  .*/
-
-  return {
-    fill: fill,
-    getSelector: getSelector,
-    defaultCssSelector: defaultCssSelector,
-    sizzleSelector: sizzleSelector
-  };
-})(document);
+}));

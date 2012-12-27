@@ -50,14 +50,14 @@ define(Object.freeze(
     function tagNameTest(elem) {
       return elem.tagName.toLowerCase() == tagName;
     }
-    return self.getAncestor(node, tagNameTest);
+    return this.getAncestor(node, tagNameTest);
   }
 
 , getAncestorByClass: function(node, className) {
     function classNameTest(elem) {
       return self.containsClass(elem, className);
     }
-    return self.getAncestor(node, classNameTest);
+    return this.getAncestor(node, classNameTest);
   }
 
 , forEach: function(coll, fn, scope) {

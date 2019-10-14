@@ -12,7 +12,7 @@ setup(
     long_description=open('README').read(),
     include_package_data=True,
     install_requires=[
-      'Flask==0.9',
+      'Flask==1.0',
       'Pygments==1.5',
       'python-dateutil==2.1',
       'Beaker==1.6.3',

@@ -13,7 +13,7 @@ setup(
     include_package_data=True,
     install_requires=[
       'Flask==0.9',
-      'Pygments==1.5',
+      'Pygments==2.7.4',
       'python-dateutil==2.1',
       'Beaker==1.6.3',
       'python-magic==0.4.2',
